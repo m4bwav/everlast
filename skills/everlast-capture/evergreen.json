@@ -38,15 +38,15 @@
     "learnings": 2,
     "changes": 4,
     "research": 7,
-    "tests": 4
+    "tests": 5
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-09-06T18:29",
+    "last_run": "2026-09-13T10:47",
     "harness": "evergreen-tester",
-    "env": "home-pc Claude Code",
-    "cases": 2,
-    "passed": 2,
+    "env": "DESKTOP-7KS2S6E",
+    "cases": 1,
+    "passed": 1,
     "failed": 0,
     "failing": [],
     "last_failure": null,

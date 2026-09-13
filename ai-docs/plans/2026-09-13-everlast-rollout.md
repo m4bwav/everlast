@@ -20,7 +20,8 @@ Everlast installed and in daily use on every machine and agent product the user 
 - [x] Vault with user tier; evergreen profile moved in; evergreen points there
 - [x] GitHub repositories created and pushed
 - [x] Installed in Claude Code (mark-local marketplace); old ai-docs skills parked
-- [ ] Run the eval suites (claude plugin eval, and evergreen-test per skill) and log T- entries
+- [x] First eval runs logged (resume via plugin eval 4/4; privacy-1 via tester); remaining skill cases still to run
+- [ ] Run the rest of the skill evals (setup, vault, capture trigger cases) with evergreen-test
 - [ ] Install on the work laptop (Claude Code and Copilot) with `templates/INSTALL-PROMPT.txt`; register work repos in excluded mode
 - [ ] Codex hooks adapter (does Codex's plugin hooks.json share Claude's schema?)
 - [ ] Encryption at rest and an off-git backup route (deferred; see decisions/)
@@ -30,4 +31,4 @@ Everlast installed and in daily use on every machine and agent product the user 
 - Should the user-tier HANDOFF.md (what the user is doing across projects) be printed at session start too? Not yet; watch whether it gets written.
 
 ## Next single action
-Run the capture-solution plugin eval case and record the run in TESTS.md.
+Install on the work laptop with `templates/INSTALL-PROMPT.txt` and register one work repo in excluded mode.
