@@ -1,0 +1,59 @@
+# The Everlast Protocol
+
+Version 1.0 (2026-09-13). What an AI coding agent does so that nothing it learns is lost when the user changes session, model, tool or vendor. A sibling of the Evergreen Protocol (which keeps skills and research current); everlast keeps the knowledge gained while working. Every everlast skill points here. Companion specs: [DOC-TYPES.md](DOC-TYPES.md) (which documents, their shape, budgets, prune rules), [PRIVACY.md](PRIVACY.md) (what may sit in a shared repository), [PORTABILITY.md](PORTABILITY.md) (install per tool). Evidence: [../RESEARCH.md](../RESEARCH.md).
+
+## 1. Why this exists
+
+Every vendor now ships memory: Claude Code auto-memory, Codex memories, Copilot Memory, Gemini auto-memory. None of it survives a switch of product, and most of it is machine-local. The user works across all of them and wants the history to be theirs, on disk, in plain markdown, versioned, readable by whatever agent comes next. Three 2026 studies also show that always-loaded repository overviews cost tokens without raising success, while distilled, hard-won, on-demand procedures (setup steps, dead ends and fixes, decisions with reasons) measurably help. So everlast keeps the always-on layer tiny and puts everything else behind an index.
+
+Five principles decide most edge cases:
+
+1. Plain files the user owns. Markdown, git, relative links, no tool-specific syntax in shared files. The record is the files, never a product's memory; native memories hold pointers only.
+2. Two tiers, one layout. The user tier (about the person, their machines, lessons that span projects) lives in a private vault repository. The project tier lives with the project when the project can hold it, in the vault when it cannot. Both use the same doc set so one script and one habit cover both.
+3. Private by default at the boundary. Anything naming a person other than the user, an opinion about people or teams, a credential, an internal name or a customer goes to a private store, never to a repository other people can read. A scan enforces it; a human can override with a recorded decision.
+4. On demand, not always-on. One short pointer in the always-on file; an index of one line per entry; entries opened only when their title or tags match. Budgets keep every file small.
+5. Evidence, not narration. A capture is proven by the file the script printed; a resume by the file reads in the trace; a sync by the commit in the vault. A reply saying it was done proves nothing.
+
+## 2. The tiers
+
+| Tier | Where | Holds | Shared with |
+|---|---|---|---|
+| user | `<vault>/user/` | `PROFILE.md` (how the user wants work done, each rule with its reason), `ENVIRONMENTS.md` (machines, tools, paths, what works where), `INDEX.md`, `HANDOFF.md` (what the user was doing across projects), `log.md`, `decisions/ solutions/ plans/ notes/` for cross-project lessons | nobody; the vault is private |
+| project, mode `repo` | `<repo>/ai-docs/` | the project doc set (DOC-TYPES.md) | whoever reads the repository |
+| project, mode `excluded` | `<vault>/projects/<slug>/ai-docs/`, junctioned to `<repo>/ai-docs/` and listed in `.git/info/exclude` | the same doc set, for a repository that must not carry it (work, client, open source) | nobody |
+| private sidecar | `<vault>/projects/<slug>/private/` | the entries a project produces that fail PRIVACY.md, in the same shapes | nobody |
+
+The vault is one git repository with a private remote; every machine clones it. Its path comes from `EVERLAST_VAULT`, then `everlast.config.json` at the plugin root, then `~/everlast-vault`. `registry.json` in the vault lists every project with its path and mode, so a new session can find the roots without asking.
+
+## 3. Session shape
+
+- Start. The Claude Code SessionStart hook prints one orientation line (project slug and mode, user-tier entry count, vault behind or missing) and the project HANDOFF when it holds real content. In a tool without hooks, `everlast-resume` Step 1 does the same read by hand. New to a machine or product: read `user/PROFILE.md` and the machine's section of `user/ENVIRONMENTS.md` once.
+- During. Write a user-tier lesson the moment it happens (a correction, a preference, an environment fact); do not wait for the end. Anything about a skill goes to that skill's `LEARNINGS.md` (evergreen); anything about the code's layout to `CODEMAP.md`; a repo rule to `AGENTS.md`.
+- End. `everlast-capture`: harvest, route, classify for privacy, write with the script, rewrite HANDOFF when work is unfinished, lint. The Stop hook nudges once when the tree changed and nothing was written. The SessionEnd hook commits and pushes the vault in a detached process.
+
+## 4. Routing, most specific home wins
+
+1. A rule every session must obey in this repo: `AGENTS.md`, with its reason.
+2. Where a system lives: `CODEMAP.md` or the evergreen map.
+3. A lesson about how a skill performs: that skill's `LEARNINGS.md`.
+4. A research finding on a subject with its own skill: that skill's `RESEARCH.md`.
+5. About the user, their machines, or a lesson that spans projects: the user tier.
+6. About this project and safe to share: the project doc set.
+7. About this project and not safe to share: the private sidecar.
+8. Derivable from the code in a minute: nowhere.
+
+## 5. Privacy
+
+Classification happens before the write, by the rules in PRIVACY.md, and the script's scan repeats it: a repo-safe write that trips the scan is refused until it is written `--private` or `--allow-private` records a human decision. Names, hostnames and codenames the user adds to `<vault>/config/redact.txt` extend the scan. Private content is quoted to the user, never copied into a repo-safe file, a commit message, a pull request or a message to anyone else. Encryption at rest is a later layer (a decision in the plugin's `ai-docs/`); the layout does not change when it arrives.
+
+## 6. Portability
+
+The plugin is one git repository. Claude Code installs it as a plugin (hooks included); Cowork takes the packed `.plugin`; Copilot, Codex, OpenCode and Windsurf read the four skills from `~/.agents/skills/` after `everlast.py export`; Cursor and Gemini need one more link. The vault is a second repository cloned beside it. Details and the one-paste install prompt: PORTABILITY.md and `templates/INSTALL-PROMPT.txt`.
+
+## 7. Maintenance
+
+Every everlast skill and the plugin itself are evergreen units in pointer mode: research refreshes on a schedule, learnings captured as they happen, tests that pass on evidence. The protocol here changes by delta edits with a `C-` entry in `../CHANGELOG.md`; two clones adding entries merge by union.
+
+## 8. Tone and hygiene
+
+Write for the next reader, who may be a different model in a different tool with no chat history. Imperative voice. Absolute dates. No em dashes. Say what is uncertain. Every rule carries the reason it exists, so it can be deleted when the reason goes away.

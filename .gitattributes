@@ -1,0 +1,12 @@
+# Append-only logs merge by union so two machines adding entries never conflict (same rule as evergreen).
+CHANGELOG.md merge=union
+RESEARCH.md merge=union
+LEARNINGS.md merge=union
+TESTS.md merge=union
+**/CHANGELOG.md merge=union
+**/RESEARCH.md merge=union
+**/LEARNINGS.md merge=union
+**/TESTS.md merge=union
+ai-docs/log.md merge=union
+* text=auto eol=lf
+*.ps1 text eol=crlf

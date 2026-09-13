@@ -1,0 +1,16 @@
+{
+  "name": "everlast",
+  "owner": {
+    "name": "Mark Rogers"
+  },
+  "metadata": {
+    "description": "The Everlast Protocol: knowledge that outlives sessions, models and tools"
+  },
+  "plugins": [
+    {
+      "name": "everlast-protocol",
+      "source": "./",
+      "description": "Two-tier, privacy-split, cross-tool knowledge capture for AI coding agents"
+    }
+  ]
+}

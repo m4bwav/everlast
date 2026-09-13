@@ -1,0 +1,10 @@
+# Changelog: everlast-protocol
+
+Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scripts/`, `hooks/` and the plugin-level companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md). Each skill keeps its own changelog.
+
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
+### C-20260913-1 · 2026-09-13 · Plugin created: protocol 1.0, four skills, everlast.py, hooks, vault, cross-tool packaging
+- because: user request (an evergreen-style plugin so nothing learned across sessions, models and agent products is lost; user-level and per-project doc sets; an excluded-folder mode for repos that must not hold the docs; a repo-safe versus private split; encryption and other backups deferred); R-20260913-1 to R-20260913-8
+- files: protocol/PROTOCOL.md, PRIVACY.md, DOC-TYPES.md, PORTABILITY.md; scripts/everlast.py (aidocs.py plus vault, registry, modes, tiers, privacy gate and scan, export, pack, sync, hooks), scripts/everlast-hook.sh, scripts/test_everlast.py; hooks/hooks.json; adapters/copilot/hooks.json; templates/; evals/; .claude-plugin/plugin.json and marketplace.json; everlast.config.json; skills/everlast-setup, everlast-capture, everlast-resume (absorbed from the ai-docs-* skills with their histories), everlast-vault (new)
+- Decisions recorded in `ai-docs/decisions/`: absorb the ai-docs skills rather than depend on them; a separate private vault repository rather than data inside the plugin repo; excluded mode as a junction from the vault plus `.git/info/exclude`, with a lint re-check because Claude Code rewrites that file; privacy by rules first with a one-line question when borderline; evergreen pointer mode for every unit; encryption deferred.

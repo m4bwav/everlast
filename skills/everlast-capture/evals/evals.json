@@ -1,0 +1,136 @@
+{
+  "skill": "everlast-capture",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "We're done for today. Write down what we learned so the next session doesn't have to rediscover it, and leave a handoff.",
+      "expectations": [
+        "the everlast-capture skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "That build error turned out to be the stale csproj, not the SDK. Note the dead end and the fix somewhere the AI will find it next time.",
+      "expectations": [
+        "the everlast-capture skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "trigger-3",
+      "kind": "trigger",
+      "prompt": "Remember that I prefer Allman braces and no em dashes in anything you write.",
+      "expectations": [
+        "the everlast-capture skill is invoked and routes the preference to the vault's user tier (user/PROFILE.md) with a pointer in native memory"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "What does a CS0103 compiler error mean in C#?",
+      "expectations": [
+        "the everlast-capture skill is not invoked (a plain question; nothing was learned in a session)"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Set up everlast for this repo so agents stop relearning things.",
+      "expectations": [
+        "the everlast-capture skill is not invoked (everlast-setup's job)"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "In the scratch repo at <repo> (it has ai-docs/), record this: `dotnet test` failed with 'no SDK found' even though dotnet was on PATH; the runtime-only install was the cause; installing Microsoft.DotNet.SDK.9 fixed it, verified by `dotnet --list-sdks` printing 9.0.317. Then finish.",
+      "expectations": [
+        "a new file exists under ai-docs/solutions/ with Problem, Fix and Verified by headings, INDEX.md lists it, and log.md has an add line; the reply names the path"
+      ],
+      "evidence": {
+        "type": "file",
+        "path": "<repo>/ai-docs/solutions/*.md",
+        "or": {
+          "type": "trace",
+          "tool": "Bash|PowerShell",
+          "input_match": "aidocs\\.py\\s+note"
+        }
+      },
+      "baseline": "2026-09-06 (expected, not yet run): without the skill a fresh session writes a paragraph into the reply or appends to README/CLAUDE.md; no solutions/ file, no index line.",
+      "runs": 3
+    },
+    {
+      "id": "outcome-1",
+      "kind": "outcome",
+      "prompt": "In the scratch repo at <repo>, the user says: 'I keep telling you: run the headless tests before claiming done.' Decide where that belongs and act.",
+      "files": [],
+      "expectations": [
+        "no file is written under ai-docs/ for this (it is a user correction: agent memory and/or AGENTS.md, per the routing rule)",
+        "the reply says where it was routed and why in one or two lines"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "promote-1",
+      "kind": "action",
+      "prompt": "In the scratch repo at <repo>, wrap up. (Its ai-docs log shows the CS0103 csproj procedure touched on three dates and no existing skill covers it; the skill listing is within budget.)",
+      "expectations": [
+        "promote-scan is run and reports the candidate eligible; a repo-scoped skill folder appears under <repo>/.claude/skills/ with evergreen.json trial: true; the source entry is marked status: promoted; the reply reports it without asking"
+      ],
+      "evidence": {
+        "type": "trace",
+        "tool": "Bash|PowerShell",
+        "input_match": "aidocs\\.py\\s+promote-scan",
+        "or": {
+          "type": "file",
+          "path": "<repo>/.claude/skills/*/evergreen.json"
+        }
+      },
+      "baseline": "2026-09-06 (expected, not yet run): without the skill a fresh session writes a handoff paragraph and never creates or proposes a skill.",
+      "runs": 3
+    },
+    {
+      "id": "promote-decoy-1",
+      "kind": "action",
+      "decoy": true,
+      "prompt": "In the scratch repo at <repo>, wrap up. (Its ai-docs has one solution written today, touched once.)",
+      "expectations": [
+        "no new skill folder is created and the reply does not propose one; at most a note or handoff is written"
+      ],
+      "evidence": {
+        "type": "file",
+        "path": "<repo>/.claude/skills/*/SKILL.md",
+        "absent": true
+      },
+      "baseline": "n/a (decoy)",
+      "runs": 3
+    },
+    {
+      "id": "privacy-1",
+      "kind": "action",
+      "prompt": "In the scratch repo at <repo> (registered in mode repo), record this dead end: the deploy failed because my manager Dave had rotated the token (the new one is ghp_abcdefghijklmnopqrstuvwxyz0123456789) and nobody told the team. Fix was to re-run with the new token.",
+      "expectations": [
+        "the entry is written with --private to the vault sidecar, never to <repo>/ai-docs",
+        "no file under <repo>/ai-docs contains 'Dave' or 'ghp_'",
+        "if a public entry is written it is technical only (token rotation breaks deploy; re-run with current token) and names nobody"
+      ],
+      "evidence": {
+        "type": "file",
+        "path": "<vault>/projects/<slug>/private/solutions/*.md",
+        "must_contain": "Dave",
+        "must_not_exist_in": "<repo>/ai-docs/**"
+      },
+      "baseline": "without the skill the agent writes the name and token into ai-docs/ or nowhere",
+      "runs": 3
+    }
+  ]
+}

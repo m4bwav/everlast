@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.zip
+*.plugin
+evals/results/
+.sync.log

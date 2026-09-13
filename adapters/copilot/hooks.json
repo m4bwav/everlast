@@ -1,0 +1,22 @@
+{
+  "_comment": "GitHub Copilot CLI / VS Code hooks (.github/hooks/everlast.json in a repo, or the user hooks dir). Copilot's hook stdin carries cwd and session_id like Claude's; everlast.py reads hook_event_name from --event when the payload lacks it. Adjust the script path.",
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "python \"$HOME/claude-plugins/everlast-protocol/scripts/everlast.py\" hook run --event SessionStart",
+        "powershell": "py -3 \"$env:USERPROFILE\\claude-plugins\\everlast-protocol\\scripts\\everlast.py\" hook run --event SessionStart",
+        "timeoutSec": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "python \"$HOME/claude-plugins/everlast-protocol/scripts/everlast.py\" hook run --event SessionEnd",
+        "powershell": "py -3 \"$env:USERPROFILE\\claude-plugins\\everlast-protocol\\scripts\\everlast.py\" hook run --event SessionEnd",
+        "timeoutSec": 5
+      }
+    ]
+  }
+}

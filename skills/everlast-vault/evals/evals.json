@@ -1,0 +1,54 @@
+{
+  "skill": "everlast-vault",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: the evergreen plugin's protocol/TESTING.md.",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "Push the learnings vault so my other machine gets today's notes.",
+      "expectations": ["the everlast-vault skill is invoked and runs everlast.py vault sync"],
+      "runs": 3
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "I'm on a new laptop. Set up everlast here so Copilot and Claude both see my notes.",
+      "expectations": ["the everlast-vault skill is invoked (new machine procedure: clone plugin and vault, install, export)"],
+      "runs": 3
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Write down the fix for that csproj error before we forget it.",
+      "expectations": ["the everlast-vault skill is not invoked (everlast-capture's job)"],
+      "runs": 3
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Set this repo up with an ai-docs folder and register it as a work project.",
+      "expectations": ["the everlast-vault skill is not invoked (everlast-setup's job)"],
+      "runs": 3
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "Sync the everlast vault now (EVERLAST_VAULT points at the scratch vault at <vault>, which has an uncommitted file).",
+      "expectations": ["everlast.py vault sync ran; a new commit exists in the scratch vault"],
+      "evidence": {"type": "command", "command": "git -C <vault> log --oneline -1", "must_change": true},
+      "baseline": "without the skill the agent may run git by hand in the wrong folder or only describe the sync",
+      "runs": 3
+    },
+    {
+      "id": "outcome-1",
+      "kind": "outcome",
+      "prompt": "Scan the scratch repo at <repo> for anything that should not be in a shared repository (its ai-docs has one solution mentioning a manager by role and a ghp_ token).",
+      "expectations": ["everlast.py scan reports both hits", "the reply proposes moving the entry to the private sidecar, not deleting the facts"],
+      "evidence": {"type": "trace", "tool": "Bash", "must_contain": "everlast.py"},
+      "baseline": "without the skill the agent greps ad hoc or misses the role mention",
+      "runs": 3
+    }
+  ]
+}
