@@ -55,7 +55,7 @@ KINDS = ("decision", "solution", "plan", "note")
 DIRS = {"decision": "decisions", "solution": "solutions", "plan": "plans", "note": "notes"}
 STRICT = False
 PLUGIN_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = "0.1.0"
+VERSION = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".claude-plugin", "plugin.json"), encoding="utf-8")).get("version", "0.0.0")  # one source of truth: plugin.json
 
 TEMPLATES = {
     "solution": """## Problem
@@ -825,7 +825,7 @@ def cmd_project_register(a):
         slug = old
     for s, p in reg["projects"].items():
         if s == slug and os.path.normcase(os.path.abspath(p["path"])) != os.path.normcase(repo):
-            slug = f"{slug}-{int(hashlib.sha1(repo.encode("utf-8")).hexdigest()[:4], 16) % 10000:04d}"
+            slug = f"{slug}-{int(hashlib.sha1(repo.encode('utf-8')).hexdigest()[:4], 16) % 10000:04d}"
     entry = {"path": repo, "mode": a.mode, "root": a.root, "registered": today(), "private": f"projects/{slug}/private"}
     priv = os.path.join(vault_path(), "projects", slug, "private")
     scaffold(priv, readme=None)
