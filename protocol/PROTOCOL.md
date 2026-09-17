@@ -1,6 +1,6 @@
 # The Everlast Protocol
 
-Version 1.0 (2026-09-13). What an AI coding agent does so that nothing it learns is lost when the user changes session, model, tool or vendor. A sibling of the Evergreen Protocol (which keeps skills and research current); everlast keeps the knowledge gained while working. Every everlast skill points here. Companion specs: [DOC-TYPES.md](DOC-TYPES.md) (which documents, their shape, budgets, prune rules), [PRIVACY.md](PRIVACY.md) (what may sit in a shared repository), [PORTABILITY.md](PORTABILITY.md) (install per tool). Evidence: [../RESEARCH.md](../RESEARCH.md).
+Version 1.1 (2026-09-17). What an AI coding agent does so that nothing it learns is lost when the user changes session, model, tool or vendor. A sibling of the Evergreen Protocol (which keeps skills and research current); everlast keeps the knowledge gained while working. Every everlast skill points here. Companion specs: [DOC-TYPES.md](DOC-TYPES.md) (which documents, their shape, budgets, prune rules), [PRIVACY.md](PRIVACY.md) (what may sit in a shared repository), [PORTABILITY.md](PORTABILITY.md) (install per tool). Evidence: [../RESEARCH.md](../RESEARCH.md).
 
 ## 1. Why this exists
 
@@ -44,15 +44,19 @@ The vault is one git repository with a private remote; every machine clones it. 
 
 ## 5. Privacy
 
-Classification happens before the write, by the rules in PRIVACY.md, and the script's scan repeats it: a repo-safe write that trips the scan is refused until it is written `--private` or `--allow-private` records a human decision. Names, hostnames and codenames the user adds to `<vault>/config/redact.txt` extend the scan. Private content is quoted to the user, never copied into a repo-safe file, a commit message, a pull request or a message to anyone else. Encryption at rest is a later layer (a decision in the plugin's `ai-docs/`); the layout does not change when it arrives.
+Classification happens before the write, by the rules in PRIVACY.md, and the script's scan repeats it. An inline `<private>...</private>` block in a body is dropped from any repo-safe write and kept only in a `--private` one, so a single draft can hold both halves: a repo-safe write that trips the scan is refused until it is written `--private` or `--allow-private` records a human decision. Names, hostnames and codenames the user adds to `<vault>/config/redact.txt` extend the scan. Private content is quoted to the user, never copied into a repo-safe file, a commit message, a pull request or a message to anyone else. Encryption at rest is a later layer (a decision in the plugin's `ai-docs/`); the layout does not change when it arrives.
 
 ## 6. Portability
 
 The plugin is one git repository. Claude Code installs it as a plugin (hooks included); Cowork takes the packed `.plugin`; Copilot, Codex, OpenCode and Windsurf read the four skills from `~/.agents/skills/` after `everlast.py export`; Cursor and Gemini need one more link. The vault is a second repository cloned beside it. Details and the one-paste install prompt: PORTABILITY.md and `templates/INSTALL-PROMPT.txt`.
 
-## 7. Maintenance
+## 7. Maintenance and contribution
 
 Every everlast skill and the plugin itself are evergreen units in pointer mode: research refreshes on a schedule, learnings captured as they happen, tests that pass on evidence. The protocol here changes by delta edits with a `C-` entry in `../CHANGELOG.md`; two clones adding entries merge by union.
+
+The official version is https://github.com/m4bwav/everlast. Updates flow from it into every install with `git pull` (Claude Code: then `claude plugin marketplace update` and a reinstall). The other direction needs consent, asked once at install and stored in the user's config directory, never in the plugin tree: `everlast.py contribute yes` lets `everlast.py publish` (run by the SessionEnd hook) push the plugin's own changed `LEARNINGS.md`, `RESEARCH.md`, `CHANGELOG.md` and `TESTS.md` files as a draft pull request in the user's name; nothing else ever travels (not the vault, not a project's docs, not transcripts). `contribute no` means nothing leaves the machine by any route. Unanswered counts as no for anything unattended; `DO_NOT_TRACK=1` and `CI=true` are a no that also silences the question. The choice is not re-asked on a version bump, only if what is shared ever widens. A private fork holds customisations that should not be shared (a real vault path, private units) and pulls from the official repository routinely; it contributes only general lessons, as pull requests from a branch off the official `master`.
+
+Scripts and hooks are cross-platform wherever that is not onerous (the Evergreen Protocol section 8 and its PORTABILITY checklist): stdlib Python or POSIX `sh`, `pathlib`-style paths, UTF-8 and LF, no platform tool without a branch or a message; CI runs the self-test on Linux, macOS and Windows on every push.
 
 ## 8. Tone and hygiene
 

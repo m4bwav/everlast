@@ -11,7 +11,7 @@ Outcome: the task starts with the two or three entries that matter loaded and no
 
 Read `evergreen.json` next to this file. If `verify_at_use` is true, re-check the listed `volatile_claims` first. If `contradiction` is set or today is on or after `next_due`, say so in one line, do the task, then run `evergreen-refresh` in the same session. If `tests.failing` is non-empty, say so and run `evergreen-tune` after the task.
 
-`EVERLAST` means `python "<plugin>/scripts/everlast.py"` with an absolute path (`${CLAUDE_PLUGIN_ROOT}/scripts/everlast.py`; from a skill, `${CLAUDE_SKILL_DIR}/../../scripts/everlast.py`).
+`EVERLAST` means `python "<plugin>/scripts/everlast.py"` with an absolute path (`python` on Windows, `python3` on macOS and Linux; stdlib, 3.9+) (`${CLAUDE_PLUGIN_ROOT}/scripts/everlast.py`; from a skill, `${CLAUDE_SKILL_DIR}/../../scripts/everlast.py`).
 
 ## Step 1: the user tier, once per environment
 

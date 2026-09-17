@@ -27,6 +27,21 @@ Current understanding, open questions, the four-track search plan, and dated fin
 
 ## Findings (newest first)
 
+### R-20260917-1 · 2026-09-17 · Skill evals: paired with/without runs and deterministic verifiers; curated skills +16 pp on average, a fifth of tasks negative
+- Summary: SkillsBench (arXiv 2602.12670, 7,308 trajectories) finds curated skills add 16.2 pp on average while 16 of 84 tasks go negative and self-generated skills add nothing; focused two-to-three-module skills beat comprehensive docs. Mager (2026-06-26) runs each task with and without the skill, tracks lift and regressions, re-evaluates after model updates, and validates LLM judges to about 85% human agreement before gating. Everlast's suites already carry baseline cases; the rule to keep is deterministic graders first, LLM graders second, and a re-run after a model change.
+- Track: testing · Magnitude: 0.45 · Response: TESTS.md rule kept; no case change (baselines exist)
+- Sources: https://arxiv.org/abs/2602.12670v1 · https://www.mager.co/blog/2026-06-26-skill-evals
+
+### R-20260917-2 · 2026-09-17 · agentmemory handoff (11.8K installs) and its inline `<private>` marker; decision-centric memory; agent decision records
+- Summary: rohitg00/agentmemory's `handoff` skill (11.8K installs on skills.sh, 28.5K stars) resumes by working directory and strips `<private>` blocks plus token patterns before writing; "Remember the Decision, Not the Description" (arXiv 2605.10870) backs decisions-with-reasons over narrative logs; me2resh/agent-decision-record defines `agent`, `model`, `trigger`, `status`, `supersedes` frontmatter for agent-made decisions. Everlast adopts the inline marker (dropped from repo-safe writes, kept in `--private` ones) and optional `agent`/`model` provenance fields; the sidecar model stays.
+- Track: tooling, practice · Magnitude: 0.4 · Response: C-20260917-1 (`strip_private_blocks`, `--agent`/`--model`, README pointers)
+- Sources: https://www.skills.sh/rohitg00/agentmemory/handoff · https://arxiv.org/pdf/2605.10870 · https://github.com/me2resh/agent-decision-record
+
+### R-20260917-3 · 2026-09-17 · Claude Code 2.1.271 to 2.1.275 and Codex memories: SessionEnd timeout env fixed, repo-chosen memory dirs blocked, Codex path is `~/.codex/memories/`
+- Summary: `CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS` now extends SessionEnd hooks (2.1.271); with `blockReadsOutsideWorkingDirectories` on, an `autoMemoryDirectory` set by a repository's settings is neither loaded nor written (2.1.273); claude.ai skills and plugins sync into terminal sessions (2.1.271/275). Codex memories live in `~/.codex/memories/`, generated after a chat idles, with `memories.use_memories` and `memories.disable_on_external_context`; the docs say memories complement, not replace, checked-in documentation. Probe-and-refine tuning (arXiv 2606.20512) shows guidance files help mainly by pointing at the right files (+14.5 pp file location), which an index does. llms.txt is not read by agents (8.7% adoption, ~1/1000 crawls) and stays out of the layout.
+- Track: subject · Magnitude: 0.35 · Response: PORTABILITY.md (Codex path, SessionEnd env var, autoMemoryDirectory warning)
+- Sources: https://code.claude.com/docs/en/changelog · https://learn.chatgpt.com/docs/customization/memories · https://arxiv.org/abs/2606.20512 · https://ahrefs.com/blog/llmstxt-study/
+
 ### R-20260913-8 · 2026-09-13 · Testing: `claude plugin eval` ships with file, regex, tool and baseline graders
 - track: testing · magnitude: 0.6 · applied: C-20260913-1 (evals/ layout)
 - Claude Code 2.1.269: cases in `evals/<case>/prompt.md` plus `graders/*.md` (`regex`, `tool_used`, `tool_order`, `file_exists`, `llm`, `baseline`); three runs with and without the plugin; exit 1 below `--threshold`. `file_exists` plus `regex` over the written file is the exact check a capture plugin needs. Sources: https://code.claude.com/docs/en/plugin-evals, https://code.claude.com/docs/en/changelog

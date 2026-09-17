@@ -17,7 +17,7 @@ PY = sys.executable
 
 
 def run(*args, env=None, stdin=None):
-    p = subprocess.run([PY, SCRIPT, *args], capture_output=True, text=True, env=env, input=stdin, timeout=120)
+    p = subprocess.run([PY, SCRIPT, *args], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, input=stdin, timeout=120)
     return p.returncode, (p.stdout + p.stderr)
 
 
@@ -36,7 +36,8 @@ def main():
         for r in (r1, r2):
             os.makedirs(r)
             subprocess.run(["git", "init", "-q"], cwd=r, check=True)
-        env = dict(os.environ, EVERLAST_VAULT=vault)
+        env = dict(os.environ, EVERLAST_VAULT=vault, GIT_AUTHOR_NAME="everlast-test", GIT_AUTHOR_EMAIL="test@example.invalid",
+                   GIT_COMMITTER_NAME="everlast-test", GIT_COMMITTER_EMAIL="test@example.invalid")
 
         rc, out = run("vault", "init", "--owner", "Tester", env=env)
         check(os.path.isfile(os.path.join(vault, "user", "INDEX.md")) and os.path.isdir(os.path.join(vault, ".git")), "vault init scaffolds user tier and git", out)
@@ -50,7 +51,7 @@ def main():
         check("registered repo2 (excluded)" in out, "register excluded mode", out)
         link = os.path.join(r2, "ai-docs")
         check(os.path.isdir(link) and os.path.isfile(os.path.join(link, "INDEX.md")), "excluded mode links ai-docs into the repo", out)
-        st = subprocess.run(["git", "status", "--porcelain"], cwd=r2, capture_output=True, text=True).stdout
+        st = subprocess.run(["git", "status", "--porcelain"], cwd=r2, capture_output=True, text=True, encoding="utf-8", errors="replace").stdout
         check(st.strip() == "", "excluded ai-docs is invisible to git status", st)
 
         body = os.path.join(tmp, "b.md")
@@ -72,6 +73,12 @@ def main():
         check(os.path.join("vault", "user") in out.replace("/", os.sep) or "user" in out, "--user writes to the user tier", out)
         check(os.path.isdir(os.path.join(vault, "user", "notes")) and any(n.endswith("about-the-user.md") for n in os.listdir(os.path.join(vault, "user", "notes"))), "user tier entry exists", "")
 
+        pb = os.path.join(tmp, "pb.md")
+        with open(pb, "w", encoding="utf-8") as f:
+            f.write("## Problem\nx <private>the client is Acme and Bob approved it</private>\n\n## Fix\ny\n\n## Verified by\nz\n")
+        rc, out = run("note", r1, "--kind", "solution", "--title", "Inline private", "--body-file", pb, "--agent", "test-agent", env=env)
+        written = open(out.strip().splitlines()[-1], encoding="utf-8").read()
+        check("Acme" not in written and "agent: test-agent" in written and "block(s) dropped" in out, "<private> blocks are stripped from repo-safe writes; provenance recorded", out)
         rc, out = run("scan", os.path.join(vault, "projects", "repo1", "private"), env=env)
         check("hit(s)" in out and "API token" in out, "scan finds token and role mention", out)
         rc, out = run("lint", r1, "--all", env=env)
@@ -92,9 +99,27 @@ def main():
         check(out.strip().replace("/", os.sep).endswith(os.path.join("projects", "repo1", "private")), "resolve --private", out)
 
         rc, out = run("vault", "sync", "--message", "test", env=env)
-        log = subprocess.run(["git", "log", "--oneline"], cwd=vault, capture_output=True, text=True).stdout
+        log = subprocess.run(["git", "log", "--oneline"], cwd=vault, capture_output=True, text=True, encoding="utf-8", errors="replace").stdout
         check("test" in log, "vault sync commits locally without a remote", out + log)
 
+        cfg_home = os.path.join(tmp, "cfg")
+        env2 = dict(env, APPDATA=cfg_home, XDG_CONFIG_HOME=cfg_home)
+        for k in ("EVERLAST_CONTRIBUTE", "DO_NOT_TRACK", "CI"):
+            env2.pop(k, None)
+        rc, out = run("contribute", env=env2)
+        check("not decided" in out, "contribute is undecided on a fresh install", out)
+        rc, out = run("publish", "--if-changed", env=env2)
+        check(out.strip() == "", "undecided: unattended publish is silent and sends nothing", out)
+        rc, out = run("publish", env=env2)
+        check("not decided" in out, "undecided: explicit publish asks", out)
+        rc, out = run("contribute", "no", env=env2)
+        rc, out = run("publish", env=env2)
+        check("contribution is off" in out, "no: publish refuses", out)
+        rc, out = run("contribute", "yes", env=env2)
+        rc, out = run("publish", "--dry-run", env=env2)
+        check("would push" in out or "nothing to publish" in out, "yes: publish proceeds (dry run)", out)
+        rc, out = run("contribute", env=dict(env2, DO_NOT_TRACK="1"))
+        check("contribute no" in out, "DO_NOT_TRACK=1 reads as no", out)
         rc, out = run("project", "list", env=env)
         check("repo1" in out and "repo2" in out, "project list", out)
         print("all checks passed")

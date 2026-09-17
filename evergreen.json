@@ -14,8 +14,8 @@
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
   "interval_days": 14,
-  "last_checked": "2026-09-13",
-  "next_due": "2026-09-27",
+  "last_checked": "2026-09-17",
+  "next_due": "2026-10-01",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -36,8 +36,8 @@
   ],
   "counts": {
     "learnings": 0,
-    "changes": 0,
-    "research": 0,
+    "changes": 1,
+    "research": 3,
     "tests": 1
   },
   "consolidate_every": 25,

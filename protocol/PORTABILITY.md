@@ -35,11 +35,11 @@ The block is `templates/AGENTS.md.snippet`, eight lines, unchanged across tools.
 
 ## Native memory: pointers only
 
-Each product's memory (Claude auto-memory `MEMORY.md`, Codex `~/.codex/memory`, Gemini `~/.gemini/GEMINI.md`) gets one line: where the vault is and that the record lives there. Copilot Memory is server-side with no file to write; rely on the AGENTS.md block. Claude Code `/import` (2.1.213+) and Codex `/import` can migrate settings one time; the vault does not need them.
+Each product's memory (Claude auto-memory `MEMORY.md`, Codex `~/.codex/memories/` (generated after a chat idles; `memories.disable_on_external_context` keeps them out of shared contexts), Gemini `~/.gemini/GEMINI.md`) gets one line: where the vault is and that the record lives there. Copilot Memory is server-side with no file to write; rely on the AGENTS.md block. Claude Code `/import` (2.1.213+) and Codex `/import` can migrate settings one time; the vault does not need them.
 
 ## Hooks: what the harness gives
 
-Claude Code hook stdin: `session_id`, `transcript_path`, `cwd`, `hook_event_name`, `stop_hook_active` (Stop). Env: `CLAUDE_PLUGIN_ROOT`, `CLAUDE_PROJECT_DIR`, `CLAUDE_PLUGIN_DATA` (survives updates). SessionStart stdout reaches the model; SessionEnd stdout does not and the event shares a 1.5 s budget, so the vault sync is a detached process. Stop can block once with `{"decision": "block", "reason": ...}` and must check `stop_hook_active`. Copilot and Cursor hook payloads carry `transcript_path` too; Codex's `SessionEnd` has 1 s.
+Claude Code hook stdin: `session_id`, `transcript_path`, `cwd`, `hook_event_name`, `stop_hook_active` (Stop). Env: `CLAUDE_PLUGIN_ROOT`, `CLAUDE_PROJECT_DIR`, `CLAUDE_PLUGIN_DATA` (survives updates). SessionStart stdout reaches the model; SessionEnd stdout does not and the event shares a 1.5 s budget by default, so the vault sync is a detached process (`CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS` lengthens it since 2.1.271, a per-hook `timeout` does too). Do not point `autoMemoryDirectory` at the vault from a repository's settings: with `blockReadsOutsideWorkingDirectories` on, a repo-chosen memory directory is neither read nor written (2.1.273). Stop can block once with `{"decision": "block", "reason": ...}` and must check `stop_hook_active`. Copilot and Cursor hook payloads carry `transcript_path` too; Codex's `SessionEnd` has 1 s.
 
 ## A machine with no Python
 

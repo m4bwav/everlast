@@ -24,6 +24,12 @@ The spec is [protocol/PROTOCOL.md](protocol/PROTOCOL.md); which documents pay an
 | `templates/` | The AGENTS.md block, CLAUDE.md and copilot-instructions snippets, the one-paste install prompt. |
 | `evals/` | Cases for `claude plugin eval` (file and regex graders); each skill also carries `evals/evals.json` for trigger tests. |
 
+## Releases and contribution
+
+Official releases are on the Releases page of https://github.com/m4bwav/everlast: each `vX.Y.Z` tag runs the self-test and publishes a zip of the tree, the `.plugin` for Cowork and the install prompt. The self-test also runs on Linux, macOS and Windows on every push. Updates flow in with `git pull`; the other way is opt-in: at install the agent asks once whether this install may open draft pull requests with the plugin's own learnings (four log file kinds, never your vault or project docs), and `everlast.py contribute yes|no` records or changes the answer. `no` means nothing ever leaves the machine.
+
+Comparable tools worth knowing: agentmemory's `handoff` skill (session resume keyed by working directory, an inline `<private>` marker everlast now honours too), `/memory-doctor` and AgentMemora (memory inspectors), and each vendor's own memory (Claude auto-memory, Codex memories, Copilot Memory), which stay machine- or account-local; everlast is the portable layer beside them.
+
 ## Install
 
 Paste `templates/INSTALL-PROMPT.txt` into any agent. By hand, Claude Code:
@@ -38,7 +44,7 @@ claude plugin list
 
 Then in a project: "set up everlast for this repo" (one question: commit the docs with the repo, or keep them out of it). At the end of work: "write down what we learned". At the start: "pick up where we left off".
 
-Other tools: `python scripts/everlast.py export ~` (skills into `~/.agents/skills`), then the AGENTS.md block. Cowork: `python scripts/everlast.py pack`, upload the `.plugin`. Details: [protocol/PORTABILITY.md](protocol/PORTABILITY.md).
+`python` is `python3` on macOS and Linux (the hook probes for whichever runs). Other tools: `python scripts/everlast.py export ~` (skills into `~/.agents/skills`), then the AGENTS.md block. Cowork: `python scripts/everlast.py pack`, upload the `.plugin`. Details: [protocol/PORTABILITY.md](protocol/PORTABILITY.md).
 
 ## Using the script
 
@@ -51,6 +57,8 @@ python scripts/everlast.py handoff <repo> --body-file f
 python scripts/everlast.py lint <repo> [--all]      # budgets, headings, dead paths, stale, duplicates, privacy, exclusion
 python scripts/everlast.py scan <repo>              # privacy scan only
 python scripts/everlast.py export <target> | pack
+python scripts/everlast.py contribute [yes|no]      # asked once at install; publish is a no-op until yes
+python scripts/everlast.py publish [--dry-run]      # consent-gated draft pull request with the plugin's own learnings
 python scripts/test_everlast.py
 ```
 

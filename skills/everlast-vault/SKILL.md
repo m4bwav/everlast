@@ -11,7 +11,7 @@ Outcome: the vault exists, is a git repository with a private remote, is current
 
 Read `evergreen.json` next to this file. If `verify_at_use` is true, re-check the listed `volatile_claims` first. If `contradiction` is set or today is on or after `next_due`, say so in one line, do the task, then run `evergreen-refresh` in the same session. If `tests.failing` is non-empty, say so and run `evergreen-tune` after the task.
 
-`EVERLAST` means `python "<plugin>/scripts/everlast.py"` with an absolute path. Portability details per tool: [../../protocol/PORTABILITY.md](../../protocol/PORTABILITY.md).
+`EVERLAST` means `python "<plugin>/scripts/everlast.py"` with an absolute path (`python` on Windows, `python3` on macOS and Linux; stdlib, 3.9+). Portability details per tool: [../../protocol/PORTABILITY.md](../../protocol/PORTABILITY.md).
 
 ## Create or find the vault
 

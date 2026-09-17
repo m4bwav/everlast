@@ -12,3 +12,4 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-13] add | note: Research summary behind the plugin design
 ## [2026-09-13] handoff | 18 lines
 ## [2026-09-13] update | first eval runs logged; plan and handoff updated
+## [2026-09-17] add | solution: Cross-platform audit and research pass before the public release

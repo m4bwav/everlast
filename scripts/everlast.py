@@ -40,10 +40,12 @@ Commands
 """
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 import re
 import shutil
+import platform
 import subprocess
 import sys
 import tempfile
@@ -225,7 +227,7 @@ def load_json(path, default):
 
 def run(cmd, cwd=None, timeout=60):
     try:
-        out = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+        out = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout)
         return out.returncode, (out.stdout or "").strip(), (out.stderr or "").strip()
     except Exception as e:
         return 1, "", str(e)
@@ -253,6 +255,136 @@ def vault_path():
         else:
             return os.path.abspath(os.path.expanduser(v))
     return os.path.join(os.path.expanduser("~"), "everlast-vault")
+
+
+# ---------------------------------------------------------------- contribution choice (asked once at install)
+# May this install send the plugin's own learnings back to the official repository as pull requests? The answer lives
+# in the user's config dir (never in the plugin tree, which updates replace): %APPDATA%/everlast/settings.json on
+# Windows, ~/.config/everlast/settings.json elsewhere. EVERLAST_CONTRIBUTE=yes|no overrides per session; DO_NOT_TRACK=1
+# and CI=true count as no. Unanswered means nothing leaves unattended. Same shape as the Evergreen Protocol section 10.
+
+OFFICIAL_REPO = "m4bwav/everlast"
+SHAREABLE = ("LEARNINGS.md", "RESEARCH.md", "CHANGELOG.md", "TESTS.md")   # the only files a contribution may carry
+
+CONTRIBUTE_QUESTION = (
+    "May this install send the plugin's own learnings back to the official Everlast repository? "
+    "'yes': when a skill's LEARNINGS, RESEARCH, CHANGELOG or TESTS file changes here, the diff is pushed as a draft pull "
+    "request in your name that the maintainer reviews (those four file kinds only; never your vault, your projects' docs "
+    "or transcripts); revoke at any time. 'no': nothing ever leaves this machine (no pull requests, no reports); updates "
+    "still arrive with `git pull`. Answer with `everlast.py contribute yes` or `everlast.py contribute no`."
+)
+
+
+def settings_dir():
+    if os.name == "nt":
+        return os.path.join(os.environ.get("APPDATA") or os.path.join(os.path.expanduser("~"), "AppData", "Roaming"), "everlast")
+    return os.path.join(os.environ.get("XDG_CONFIG_HOME") or os.path.join(os.path.expanduser("~"), ".config"), "everlast")
+
+
+def settings_file():
+    return os.path.join(settings_dir(), "settings.json")
+
+
+def contribute_setting():
+    """'yes', 'no', or None when the question has not been answered on this install."""
+    env = (os.environ.get("EVERLAST_CONTRIBUTE") or "").strip().lower()
+    if env in ("yes", "no"):
+        return env
+    if (os.environ.get("DO_NOT_TRACK") or "").strip() not in ("", "0", "false"):
+        return "no"
+    if (os.environ.get("CI") or "").strip().lower() in ("1", "true", "yes"):
+        return "no"
+    v = load_json(settings_file(), {}).get("contribute")
+    return v if v in ("yes", "no") else None
+
+
+def set_contribute(value):
+    s = load_json(settings_file(), {})
+    s["contribute"] = value
+    s["decided_at"] = today()
+    s["asked_by_version"] = plugin_version()
+    write(settings_file(), json.dumps(s, indent=2) + "\n")
+
+
+def plugin_version():
+    return load_json(os.path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json"), {}).get("version", "0.0.0")
+
+
+def cmd_contribute(a):
+    if a.value in ("yes", "no"):
+        set_contribute(a.value)
+        print(f"contribute {a.value}: " + ("draft pull requests with this install's learnings are allowed; `contribute no` revokes it"
+                                           if a.value == "yes" else "nothing leaves this machine; updates still arrive with `git pull`"))
+        return
+    v = contribute_setting()
+    if v is None:
+        print("contribute: not decided on this install. " + CONTRIBUTE_QUESTION)
+    else:
+        src = "EVERLAST_CONTRIBUTE" if os.environ.get("EVERLAST_CONTRIBUTE") else ("DO_NOT_TRACK/CI" if (os.environ.get("DO_NOT_TRACK") or os.environ.get("CI")) else settings_file())
+        print(f"contribute {v} ({src})")
+
+
+def shareable_changes():
+    """Changed or untracked files in the plugin tree that a contribution may carry: the four log kinds, nowhere else."""
+    rc, out, _ = run(["git", "-c", "core.quotepath=off", "status", "--porcelain", "--untracked-files=all"], cwd=PLUGIN_ROOT)
+    if rc != 0:
+        return None
+    paths = []
+    for ln in out.splitlines():
+        if len(ln) > 3:
+            rel = ln[3:].strip().strip('"').replace("\\", "/")
+            if " -> " in rel:
+                rel = rel.split(" -> ", 1)[1]
+            if os.path.basename(rel) in SHAREABLE and not rel.startswith("ai-docs/"):
+                paths.append(rel)
+    return paths
+
+
+def cmd_publish(a):
+    """Consent-gated: push this install's plugin learnings as a draft pull request on the official repository."""
+    v = contribute_setting()
+    unattended = a.if_changed
+    if v != "yes":
+        if unattended:
+            return
+        print("contribution is off on this install (`everlast.py contribute yes` to allow pull requests); updates still arrive with `git pull`"
+              if v == "no" else "not decided on this install: " + CONTRIBUTE_QUESTION)
+        return
+    if not shutil.which("git"):
+        print("" if unattended else "git is not installed; nothing published"); return
+    if not os.path.isdir(os.path.join(PLUGIN_ROOT, ".git")):
+        if not unattended: print(f"{PLUGIN_ROOT} is not a git clone; nothing published")
+        return
+    paths = shareable_changes()
+    if not paths:
+        if not unattended: print("nothing to publish (only LEARNINGS, RESEARCH, CHANGELOG and TESTS files travel)")
+        return
+    env = os.environ.get("EVERLAST_ENV") or platform.node() or "host"
+    stamp = dt.datetime.now().strftime("%Y%m%d-%H%M")
+    branch = f"learnings/{re.sub(r'[^A-Za-z0-9._-]+', '-', env)}-{stamp}"
+    if a.dry_run:
+        print(f"would push {len(paths)} file(s) on {branch} and open a draft pull request on {OFFICIAL_REPO}: " + ", ".join(paths)); return
+    rc, head, _ = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=PLUGIN_ROOT)
+    for c in (["git", "stash", "push", "-u", "-q", "-m", "everlast publish", "--"] + paths,
+              ["git", "checkout", "-q", "-b", branch],
+              ["git", "stash", "pop", "-q"],
+              ["git", "add", "--"] + paths,
+              ["git", "commit", "-q", "-m", f"everlast: learnings from {env} ({', '.join(os.path.basename(p) for p in paths)})"]):
+        rc, out, err = run(c, cwd=PLUGIN_ROOT)
+        if rc != 0:
+            print(f"publish stopped at `{' '.join(c[:3])}`: {err[:200]}"); run(["git", "checkout", "-q", head], cwd=PLUGIN_ROOT); return
+    rc, out, err = run(["git", "push", "-q", "-u", "origin", branch], cwd=PLUGIN_ROOT, timeout=120)
+    if rc != 0:
+        print(f"push failed: {err[:200]} (branch {branch} kept locally)"); run(["git", "checkout", "-q", head], cwd=PLUGIN_ROOT); return
+    body = (f"Learnings from an everlast install on `{env}`, opened with the owner's consent (`everlast.py contribute yes`). "
+            f"Files: {', '.join(paths)}. No vault, project docs or transcripts. Reviewer: the repository owner.")
+    if shutil.which("gh"):
+        rc, out, err = run(["gh", "pr", "create", "--draft", "--repo", OFFICIAL_REPO, "--base", "master", "--head", branch,
+                            "--title", f"Learnings from {env} ({stamp})", "--body", body], cwd=PLUGIN_ROOT, timeout=90)
+        print(f"pull request: {out or err}"[:300])
+    else:
+        print(f"pushed {branch}; open the pull request on https://github.com/{OFFICIAL_REPO} by hand (gh is not installed)")
+    run(["git", "checkout", "-q", head], cwd=PLUGIN_ROOT)
 
 
 def registry_path():
@@ -412,6 +544,15 @@ def cmd_index(a):
     note(f"INDEX.md rebuilt: {n} entries ({root})")
 
 
+PRIVATE_BLOCK = re.compile(r"<private>.*?</private>", re.S | re.I)
+
+
+def strip_private_blocks(text):
+    """Remove inline <private>...</private> blocks (the agentmemory convention) from text bound for a repo-safe file."""
+    n = len(PRIVATE_BLOCK.findall(text))
+    return (PRIVATE_BLOCK.sub("", text) if n else text), n
+
+
 def privacy_hits(text, redact):
     hits = []
     for pat, label in PRIVACY_PATTERNS:
@@ -452,6 +593,10 @@ def cmd_note(a):
     missing = [h for h in REQUIRED_HEADINGS[a.kind] if h not in body]
     if missing and not a.allow_missing:
         fail(f"body lacks required headings {missing}; pass --allow-missing to write anyway")
+    if not (a.private or a.user):
+        body, dropped = strip_private_blocks(body)  # inline <private>...</private> never reaches a repo-safe file
+        if dropped:
+            note(f"  ({dropped} <private> block(s) dropped from the repo-safe copy; write them with --private to keep them)")
     if not (a.private or a.user) and not a.allow_private:
         hits = privacy_hits(a.title + "\n" + body, redact_list())
         if hits:
@@ -464,6 +609,12 @@ def cmd_note(a):
     if os.path.exists(path) and not a.force:
         fail(f"{rel} exists; use --force to overwrite or choose another title")
     meta = {"title": a.title, "kind": a.kind, "status": "active", "date": d, "verified": d, "tags": tags}
+    agent = a.agent or os.environ.get("EVERLAST_AGENT") or ""
+    model = a.model or os.environ.get("EVERLAST_MODEL") or ""
+    if agent:
+        meta["agent"] = agent   # provenance, as agent decision records do: which tool wrote this
+    if model:
+        meta["model"] = model
     if a.private:
         meta["tier"] = "private"
     elif a.user:
@@ -624,13 +775,22 @@ def cmd_scan(a):
 
 # ---------------------------------------------------------------- projects
 
+def is_link(p):
+    """True for a symlink or a Windows junction (os.path.islink is False for junctions on 3.12+)."""
+    return os.path.islink(p) or getattr(os.path, "isjunction", lambda _p: False)(p)
+
+
 def link_dir(link, target):
     """Junction on Windows (no admin), symlink elsewhere. Returns True when the link exists afterwards."""
     if os.path.lexists(link):
         return True
     os.makedirs(os.path.dirname(link) or ".", exist_ok=True)
     if os.name == "nt":
-        rc, _, err = run(["cmd", "/c", "mklink", "/J", link, target])
+        rc, _, err = run(["powershell", "-NoProfile", "-NonInteractive", "-Command", "New-Item -ItemType Junction -Path $args[0] -Target $args[1] | Out-Null", link, target])
+        if rc != 0:
+            rc, _, err = run(["cmd", "/c", "mklink", "/J", link, target])
+        if rc != 0 and err:
+            note(f"  junction error: {err[:200]}")
         return rc == 0
     try:
         os.symlink(target, link, target_is_directory=True)
@@ -644,8 +804,9 @@ def ensure_exclude(repo, root):
     if rc != 0:
         return "not a git repository; nothing to exclude"
     gitdir = gitdir if os.path.isabs(gitdir) else os.path.join(repo, gitdir)
-    excl = os.path.join(gitdir, "info", "exclude")
-    line = f"/{root}/"
+    rc2, gp, _ = run(["git", "rev-parse", "--git-path", "info/exclude"], cwd=repo)
+    excl = os.path.join(repo, gp) if rc2 == 0 and gp and not os.path.isabs(gp) else (gp if rc2 == 0 and gp else os.path.join(gitdir, "info", "exclude"))
+    line = f"/{root}"  # no trailing slash: on POSIX ai-docs is a symlink, which git treats as a file
     existing = read(excl) if os.path.exists(excl) else ""
     if line not in existing.splitlines():
         append(excl, ("" if existing.endswith("\n") or not existing else "\n") + f"# everlast: docs kept out of this repository\n{line}\n")
@@ -664,7 +825,7 @@ def cmd_project_register(a):
         slug = old
     for s, p in reg["projects"].items():
         if s == slug and os.path.normcase(os.path.abspath(p["path"])) != os.path.normcase(repo):
-            slug = f"{slug}-{abs(hash(repo)) % 10000:04d}"
+            slug = f"{slug}-{int(hashlib.sha1(repo.encode("utf-8")).hexdigest()[:4], 16) % 10000:04d}"
     entry = {"path": repo, "mode": a.mode, "root": a.root, "registered": today(), "private": f"projects/{slug}/private"}
     priv = os.path.join(vault_path(), "projects", slug, "private")
     scaffold(priv, readme=None)
@@ -674,7 +835,7 @@ def cmd_project_register(a):
         scaffold(store)
         entry["store"] = store
         link = os.path.join(repo, a.root)
-        if os.path.isdir(link) and not os.path.islink(link) and os.listdir(link) and not os.path.exists(os.path.join(store, ".moved")):
+        if os.path.isdir(link) and not is_link(link) and os.listdir(link) and not os.path.exists(os.path.join(store, ".moved")):
             for name in os.listdir(link):
                 shutil.move(os.path.join(link, name), os.path.join(store, name))
             os.rmdir(link)
@@ -684,7 +845,7 @@ def cmd_project_register(a):
             entry["link"] = False
             notes.append(f"no link requested; docs live only at {store}")
         else:
-            if os.path.isdir(link) and not os.path.islink(link) and not os.listdir(link):
+            if os.path.isdir(link) and not is_link(link) and not os.listdir(link):
                 os.rmdir(link)
             ok = link_dir(link, store)
             entry["link"] = ok
@@ -730,7 +891,7 @@ def cmd_vault_init(a):
     owner = a.owner or os.environ.get("USERNAME") or os.environ.get("USER") or "the owner"
     for name, text in (("README.md", VAULT_README.format(owner=owner)),
                        ("config/redact.txt", "# One regex per line. Matches make the privacy scan treat text as private (names of coworkers, internal hostnames, codenames).\n"),
-                       (".gitignore", "*.tmp\n.DS_Store\nThumbs.db\n"),
+                       (".gitignore", "*.tmp\n.DS_Store\nThumbs.db\n.sync.log\n"),
                        ("user/PROFILE.md", "# Profile\n\nHow this person wants AI agents to work, in any tool. Every rule carries its reason. Grows from corrections; never from web research.\n"),
                        ("user/ENVIRONMENTS.md", "# Environments\n\nThe machines and tools this person runs agents on: paths, ports, what works, what breaks. One section per machine and tool.\n")):
         p = os.path.join(v, name)
@@ -783,7 +944,7 @@ def cmd_vault_sync(a):
         flags = 0
         if os.name == "nt":
             flags = getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
-        log = open(os.path.join(v, ".sync.log"), "a")
+        log = open(os.path.join(v, ".sync.log"), "ab")
         subprocess.Popen(args, cwd=v, stdout=log, stderr=log, stdin=subprocess.DEVNULL, creationflags=flags, start_new_session=(os.name != "nt"))
         return
     dirty, remote, _, _ = vault_git_state(v)
@@ -792,8 +953,9 @@ def cmd_vault_sync(a):
         # nothing local to commit; still try a push of unpushed commits below
     if dirty:
         run(["git", "add", "-A"], cwd=v)
-        msg = a.message or f"everlast: vault update {dt.datetime.now().strftime('%Y-%m-%d %H:%M')} from {os.environ.get('COMPUTERNAME') or os.environ.get('HOSTNAME') or 'host'}"
-        rc, out, err = run(["git", "commit", "-q", "-m", msg], cwd=v)
+        msg = a.message or f"everlast: vault update {dt.datetime.now().strftime('%Y-%m-%d %H:%M')} from {platform.node() or 'host'}"
+        ident = [] if run(["git", "config", "user.email"], cwd=v)[1] else ["-c", "user.name=everlast", "-c", "user.email=everlast@localhost"]
+        rc, out, err = run(["git"] + ident + ["commit", "-q", "-m", msg], cwd=v)
         print(f"[{dt.datetime.now():%Y-%m-%d %H:%M}] commit: {'ok' if rc == 0 else err}")
     if not remote:
         print("no remote; committed locally only")
@@ -1010,7 +1172,7 @@ def docs_touched_recently(root, hours=8):
 
 def cmd_hook_run(a):
     try:
-        payload = json.loads(sys.stdin.read() or "{}")
+        payload = {} if sys.stdin.isatty() else json.loads(sys.stdin.buffer.read().decode("utf-8", "replace") or "{}")
     except Exception:
         payload = {}
     event = payload.get("hook_event_name", "") or a.event or ""
@@ -1033,6 +1195,8 @@ def cmd_hook_run(a):
                 bits.append(f"vault behind remote by {behind}; pull it")
         else:
             bits.append(f"no vault at {v} (everlast-vault init)")
+        if contribute_setting() is None:
+            bits.append("contribution not decided: ask the user once, then `everlast.py contribute yes|no`")
         if bits:
             print("[everlast] " + "; ".join(bits))
         h = os.path.join(root, "HANDOFF.md")
@@ -1066,11 +1230,13 @@ def cmd_hook_run(a):
         if os.path.isdir(os.path.join(v, ".git")):
             a2 = argparse.Namespace(if_changed=True, detach=True, message=None)
             cmd_vault_sync(a2)
+        if contribute_setting() == "yes":
+            cmd_publish(argparse.Namespace(if_changed=True, dry_run=False))
         return
 
 
 def hook_blocks(script):
-    py = "py -3" if os.name == "nt" else "python3"
+    py = "python" if os.name == "nt" else "python3"  # never the pinned launcher (absent with Store, pyenv, uv, conda installs)
     cmd = f'{py} "{script}" hook run'
     return {
         "SessionStart": [{"hooks": [{"type": "command", "command": cmd, "timeout": 10}]}],
@@ -1119,6 +1285,11 @@ def cmd_hook_print(a):
 
 def main():
     global STRICT
+    for s in (sys.stdout, sys.stderr):  # Windows consoles and pipes default to a code page; the docs are UTF-8
+        try:
+            s.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--strict", action="store_true")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -1137,6 +1308,7 @@ def main():
     p.add_argument("--kind", required=True); p.add_argument("--title", required=True)
     p.add_argument("--tags"); p.add_argument("--body-file"); p.add_argument("--stdin", action="store_true")
     p.add_argument("--supersedes"); p.add_argument("--force", action="store_true")
+    p.add_argument("--agent", help="provenance: the tool that wrote this (default EVERLAST_AGENT)"); p.add_argument("--model", help="provenance: the model (default EVERLAST_MODEL)")
     p.add_argument("--allow-missing", action="store_true"); p.add_argument("--allow-private", action="store_true", help="write despite privacy hits (reviewed)")
     p.set_defaults(fn=cmd_note)
     p = sub.add_parser("handoff"); common(p); p.add_argument("--body-file"); p.add_argument("--stdin", action="store_true")
@@ -1155,6 +1327,10 @@ def main():
     q = ps.add_parser("status"); q.set_defaults(fn=cmd_vault_status)
     q = ps.add_parser("sync"); q.add_argument("--if-changed", action="store_true"); q.add_argument("--detach", action="store_true"); q.add_argument("--message"); q.set_defaults(fn=cmd_vault_sync)
     q = ps.add_parser("where"); q.set_defaults(fn=cmd_vault_where)
+    p = sub.add_parser("contribute", help="asked once at install: may this install open pull requests with its learnings? (yes|no|status)")
+    p.add_argument("value", nargs="?", choices=["yes", "no", "status"]); p.set_defaults(fn=cmd_contribute)
+    p = sub.add_parser("publish", help="consent-gated: push this install's plugin learnings as a draft pull request")
+    p.add_argument("--if-changed", action="store_true"); p.add_argument("--dry-run", action="store_true"); p.set_defaults(fn=cmd_publish)
     p = sub.add_parser("export"); p.add_argument("target"); p.add_argument("--copy", action="store_true"); p.set_defaults(fn=cmd_export)
     p = sub.add_parser("pack"); p.add_argument("--out"); p.set_defaults(fn=cmd_pack)
     p = sub.add_parser("promote-scan"); common(p, tiers=False); p.add_argument("--min-dates", type=int, default=3)
