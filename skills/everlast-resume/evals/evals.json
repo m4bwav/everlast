@@ -1,0 +1,70 @@
+{
+  "skill": "everlast-resume",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "Pick up where we left off on the solar system map.",
+      "expectations": [
+        "the everlast-resume skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "Before you touch the build script, check whether we already ran into this dotnet SDK problem and what we did.",
+      "expectations": [
+        "the everlast-resume skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Where does the turn loop live and which class raises the phase events?",
+      "expectations": [
+        "the everlast-resume skill is not invoked (codemap / code reading)"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "We're done; write the handoff for tomorrow.",
+      "expectations": [
+        "the everlast-resume skill is not invoked (everlast-capture's job)"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "In the scratch repo at <repo> (it has ai-docs/ with a solution about a dotnet SDK error), the user asks: 'dotnet test says no SDK found again. What do we do?'",
+      "expectations": [
+        "INDEX.md is read first, then the matching solutions/ entry, and the answer cites that entry's verified command instead of re-experimenting"
+      ],
+      "evidence": {
+        "type": "trace",
+        "tool": "Read|Bash|PowerShell",
+        "input_match": "ai-docs[/\\\\]INDEX\\.md"
+      },
+      "baseline": "2026-09-06 (expected, not yet run): without the skill a fresh session starts diagnosing from scratch (dotnet --info, PATH checks) and never opens ai-docs/.",
+      "runs": 3
+    },
+    {
+      "id": "outcome-1",
+      "kind": "outcome",
+      "prompt": "In the scratch repo at <repo>, prune the ai-docs (it has two entries with the same title and one with a placeholder left in).",
+      "files": [],
+      "expectations": [
+        "afterwards log.md has a 'prune' line and INDEX.md no longer lists two entries with the same title",
+        "the reply names what was merged or superseded"
+      ],
+      "runs": 3
+    }
+  ]
+}

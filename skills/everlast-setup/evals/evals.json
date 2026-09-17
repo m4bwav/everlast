@@ -1,0 +1,74 @@
+{
+  "skill": "everlast-setup",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "Set this repo up so the AI stops relearning the same things every session. Keep the always-loaded context small.",
+      "expectations": [
+        "the everlast-setup skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "Add an ai-docs wiki for agents to this project and install the hook that reminds you to write notes.",
+      "expectations": [
+        "the everlast-setup skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Map this codebase so we know which systems talk to which.",
+      "expectations": [
+        "the everlast-setup skill is not invoked (evergreen-map's job)"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Write down the fix for that CS0103 error before we forget it.",
+      "expectations": [
+        "the everlast-setup skill is not invoked (everlast-capture's job)"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "Set up ai-docs in the scratch repo at <repo> (do not install any hook).",
+      "expectations": [
+        "ai-docs/INDEX.md, HANDOFF.md, log.md and the four layer folders exist afterwards, created by everlast.py init (visible in the trace), and lint was run"
+      ],
+      "evidence": {
+        "type": "file",
+        "path": "<repo>/ai-docs/INDEX.md",
+        "or": {
+          "type": "trace",
+          "tool": "Bash|PowerShell",
+          "input_match": "aidocs\\.py\\s+init"
+        }
+      },
+      "baseline": "2026-09-06 (expected, not yet run): without the skill a fresh session writes a long CLAUDE.md or a docs/ README by hand, no index, no lint.",
+      "runs": 3
+    },
+    {
+      "id": "outcome-1",
+      "kind": "outcome",
+      "prompt": "The scratch repo at <repo> already has docs/solutions/ from compound-engineering. Set up ai-docs.",
+      "files": [],
+      "expectations": [
+        "no second folder is created; the existing docs/ root is used (everlast.py init --root docs) or the reply says the existing layout is kept",
+        "the AGENTS.md block points at the root actually used"
+      ],
+      "runs": 3
+    }
+  ]
+}

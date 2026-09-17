@@ -1,0 +1,46 @@
+# Official releases. Push a tag `vX.Y.Z` (matching .claude-plugin/plugin.json): the self-test runs, the plugin is packed
+# (`everlast-protocol.plugin` for Cowork, a zip of the tree for everything else) and a GitHub Release is published.
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: version in plugin.json must match the tag
+        run: |
+          v=$(python -c "import json;print(json.load(open('.claude-plugin/plugin.json'))['version'])")
+          test "v$v" = "${GITHUB_REF_NAME}" || { echo "plugin.json says $v, tag is ${GITHUB_REF_NAME}"; exit 1; }
+      - name: git identity for the fixtures that commit
+        run: |
+          git config --global user.name "everlast-ci"
+          git config --global user.email "ci@example.com"
+      - name: self-test
+        env:
+          EVERLAST_VAULT: ${{ runner.temp }}/everlast-vault
+        run: python scripts/test_everlast.py
+      - name: pack
+        env:
+          EVERLAST_VAULT: ${{ runner.temp }}/everlast-vault
+        run: |
+          mkdir -p dist
+          python scripts/everlast.py pack --out dist
+          git archive --format=zip --prefix="everlast-${GITHUB_REF_NAME#v}/" -o "dist/everlast-${GITHUB_REF_NAME#v}.zip" HEAD
+          ls -la dist
+      - name: publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/* \
+            --title "Everlast ${GITHUB_REF_NAME#v}" \
+            --generate-notes \
+            --notes "Install: paste \`templates/INSTALL-PROMPT.txt\` into Claude Code, or unzip \`everlast-${GITHUB_REF_NAME#v}.zip\` under a local marketplace root. Cowork: upload the \`.plugin\`. Reasoned changes: CHANGELOG.md."
