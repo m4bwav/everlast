@@ -22,6 +22,9 @@ The vault is a private git repository (EVERLAST_VAULT, everlast.config.json, or 
 
 Commands
   init     <repo> [--root DIR]                 scaffold a docs root (idempotent); adopts existing .md files
+  pull     [--dry-run]                 update this clone from the official repository; SessionStart says when it is behind
+  contribute [yes|no|status]          asked once at install: may this install open pull requests with its learnings?
+  publish  [--if-changed] [--dry-run]  consent-gated draft pull request on the official repository (four log kinds only)
   note     <repo> --kind K --title T [--tags a,b] [--body-file F | --stdin] [--supersedes PATH] [--private | --user]
   handoff  <repo> (--body-file F | --stdin) [--private | --user]   replace HANDOFF.md
   index    <repo> [--private | --user]         rebuild INDEX.md
@@ -340,6 +343,56 @@ def shareable_changes():
     return paths
 
 
+def official_remote():
+    """The git remote of this clone that points at the official repository: `upstream` on a private fork, `origin`
+    on a plain clone, None when neither does (an archive install)."""
+    rc, out, _ = run(["git", "remote", "-v"], cwd=PLUGIN_ROOT)
+    if rc != 0:
+        return None
+    for ln in out.splitlines():
+        parts = ln.split()
+        if len(parts) >= 2 and "(fetch)" in ln:
+            url = parts[1].lower().rstrip("/")
+            if url.endswith(".git"):
+                url = url[:-4]
+            tail = "/".join(url.replace(":", "/").split("/")[-2:])  # owner/repo from https or ssh forms, exact match
+            if tail == OFFICIAL_REPO.lower():
+                return parts[0]
+    return None
+
+
+def behind_official(fetch=False):
+    """(remote, commits behind) using the last fetch (or a fresh one when fetch=True); (None, 0) when unknown."""
+    rem = official_remote()
+    if not rem:
+        return None, 0
+    if fetch:
+        run(["git", "fetch", "-q", rem, "master"], cwd=PLUGIN_ROOT, timeout=60)
+    rc, out, _ = run(["git", "rev-list", "--count", f"HEAD..{rem}/master"], cwd=PLUGIN_ROOT)
+    return rem, (int(out) if rc == 0 and out.isdigit() else 0)
+
+
+def cmd_pull(a):
+    """Bring this clone up to date from the official repository (a merge on a fork, a fast-forward on a plain clone)."""
+    rem = official_remote()
+    if not rem:
+        print(f"no remote points at {OFFICIAL_REPO}; add one: git remote add upstream https://github.com/{OFFICIAL_REPO}.git"); return
+    rc, out, err = run(["git", "status", "--porcelain"], cwd=PLUGIN_ROOT)
+    if out.strip() and not a.dry_run:
+        print("working tree has changes; commit or stash them first (nothing pulled)"); return
+    rem, n = behind_official(fetch=True)
+    if n == 0:
+        print(f"up to date with {rem}/master ({OFFICIAL_REPO})"); return
+    rc, files, _ = run(["git", "diff", "--name-only", f"HEAD...{rem}/master"], cwd=PLUGIN_ROOT)
+    reinstall = any(f.startswith(("skills/", "scripts/", "hooks/")) for f in files.splitlines())
+    if a.dry_run:
+        print(f"behind {rem}/master by {n} commit(s); would merge " + ("(skills/scripts/hooks change: reinstall the cached plugin afterwards)" if reinstall else "")); return
+    rc, out, err = run(["git", "merge", "-q", "--no-edit", f"{rem}/master"], cwd=PLUGIN_ROOT, timeout=120)
+    if rc != 0:
+        print(f"merge failed: {err[:300]} (resolve by hand: keep this side for private files)"); run(["git", "merge", "--abort"], cwd=PLUGIN_ROOT); return
+    print(f"merged {n} commit(s) from {rem}/master" + ("; skills, scripts or hooks changed: `claude plugin marketplace update` then uninstall and install so the cached copy picks it up" if reinstall else ""))
+
+
 def cmd_publish(a):
     """Consent-gated: push this install's plugin learnings as a draft pull request on the official repository."""
     v = contribute_setting()
@@ -373,7 +426,8 @@ def cmd_publish(a):
         rc, out, err = run(c, cwd=PLUGIN_ROOT)
         if rc != 0:
             print(f"publish stopped at `{' '.join(c[:3])}`: {err[:200]}"); run(["git", "checkout", "-q", head], cwd=PLUGIN_ROOT); return
-    rc, out, err = run(["git", "push", "-q", "-u", "origin", branch], cwd=PLUGIN_ROOT, timeout=120)
+    rem = official_remote() or "origin"  # the branch goes to the repository the pull request targets
+    rc, out, err = run(["git", "push", "-q", "-u", rem, branch], cwd=PLUGIN_ROOT, timeout=120)
     if rc != 0:
         print(f"push failed: {err[:200]} (branch {branch} kept locally)"); run(["git", "checkout", "-q", head], cwd=PLUGIN_ROOT); return
     body = (f"Learnings from an everlast install on `{env}`, opened with the owner's consent (`everlast.py contribute yes`). "
@@ -1197,6 +1251,9 @@ def cmd_hook_run(a):
             bits.append(f"no vault at {v} (everlast-vault init)")
         if contribute_setting() is None:
             bits.append("contribution not decided: ask the user once, then `everlast.py contribute yes|no`")
+        rem, n = behind_official()  # from the last fetch; `everlast.py pull` fetches
+        if n:
+            bits.append(f"plugin behind the official repository by {n} commit(s); `everlast.py pull`")
         if bits:
             print("[everlast] " + "; ".join(bits))
         h = os.path.join(root, "HANDOFF.md")
@@ -1329,6 +1386,8 @@ def main():
     q = ps.add_parser("where"); q.set_defaults(fn=cmd_vault_where)
     p = sub.add_parser("contribute", help="asked once at install: may this install open pull requests with its learnings? (yes|no|status)")
     p.add_argument("value", nargs="?", choices=["yes", "no", "status"]); p.set_defaults(fn=cmd_contribute)
+    p = sub.add_parser("pull", help="update this clone from the official repository (merge on a fork, fast-forward on a plain clone)")
+    p.add_argument("--dry-run", action="store_true"); p.set_defaults(fn=cmd_pull)
     p = sub.add_parser("publish", help="consent-gated: push this install's plugin learnings as a draft pull request")
     p.add_argument("--if-changed", action="store_true"); p.add_argument("--dry-run", action="store_true"); p.set_defaults(fn=cmd_publish)
     p = sub.add_parser("export"); p.add_argument("target"); p.add_argument("--copy", action="store_true"); p.set_defaults(fn=cmd_export)
