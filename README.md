@@ -35,8 +35,8 @@ Comparable tools worth knowing: agentmemory's `handoff` skill (session resume ke
 Paste `templates/INSTALL-PROMPT.txt` into any agent. By hand, Claude Code:
 
 ```
-git clone https://github.com/m4bwav/everlast-protocol <plugins root>/everlast-protocol
-git clone https://github.com/m4bwav/everlast-vault <vault path from everlast.config.json>
+git clone https://github.com/m4bwav/everlast <plugins root>/everlast-protocol
+git clone <your private vault repository> <vault path from everlast.config.json>   # or: everlast.py vault init
 claude plugin marketplace add <plugins root>/everlast-protocol     # or `marketplace update` when one already lists it
 claude plugin install everlast-protocol@everlast --scope user
 claude plugin list

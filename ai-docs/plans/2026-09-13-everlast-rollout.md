@@ -19,7 +19,7 @@ Everlast installed and in daily use on every machine and agent product the user 
 - [x] Protocol, four skills, script, hooks, templates, evals scaffold
 - [x] Vault with user tier; evergreen profile moved in; evergreen points there
 - [x] GitHub repositories created and pushed
-- [x] Installed in Claude Code (mark-local marketplace); old ai-docs skills parked
+- [x] Installed in Claude Code (a local marketplace); old ai-docs skills parked
 - [x] First eval runs logged (resume via plugin eval 4/4; privacy-1 via tester); remaining skill cases still to run
 - [ ] Run the rest of the skill evals (setup, vault, capture trigger cases) with evergreen-test
 - [ ] Install on the work laptop (Claude Code and Copilot) with `templates/INSTALL-PROMPT.txt`; register work repos in excluded mode

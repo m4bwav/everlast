@@ -4,10 +4,10 @@ Part of the [Everlast Protocol](PROTOCOL.md). Verified 2026-09-13 against each v
 
 ## The two repositories
 
-- Plugin: `https://github.com/m4bwav/everlast-protocol` (private; may be shared later, it holds no personal data). Clone it under a local marketplace root (Mark's machines: `D:\m4bwa\Claude\Projects\Ai\everlast-protocol`, listed in the `mark-local` marketplace; elsewhere `~/claude-plugins/everlast-protocol`).
-- Vault: `https://github.com/m4bwav/everlast-vault` (always private). Clone it to the path `everlast.config.json` names for the OS (Mark's Windows machines: `D:\m4bwa\Documents\Everlast\vault`; posix default `~/everlast-vault`) or set `EVERLAST_VAULT`.
+- Plugin: `https://github.com/m4bwav/everlast` (private; may be shared later, it holds no personal data). Clone it under a local marketplace root (under a local marketplace root, for example `~/claude-plugins/everlast`).
+- Vault: your own private repository (create it empty on any host; `everlast.py vault init` fills it). Clone it to the path `everlast.config.json` names for the OS (default `~/everlast-vault`) or set `EVERLAST_VAULT`.
 
-Both are private repositories: `gh auth login` once per machine, or SSH keys.
+The vault is private: `gh auth login` once per machine, or SSH keys. The plugin is public and needs no account to clone.
 
 ## Per tool
 
@@ -18,10 +18,10 @@ Both are private repositories: `gh auth login` once per machine, or SSH keys.
 | Copilot CLI, VS Code Copilot | reads `~/.agents/skills`, `~/.copilot/skills`, repo `.github/skills`, `.claude/skills`, `.agents/skills` | `.github/hooks/*.json` (`sessionStart`, `sessionEnd`, `agentStop`); `adapters/copilot/hooks.json` is the everlast set | `everlast.py export ~` (junctions into `~/.agents/skills`), paste `templates/copilot-instructions.md.snippet` |
 | Codex CLI | reads `.agents/skills` up to the repo root and `~/.agents/skills`; not `.claude/skills` | `~/.codex/hooks.json` or a Codex plugin's `hooks/hooks.json` (same events as Claude; SessionEnd budget 1 s) | `everlast.py export ~`; hooks optional, not yet adapted |
 | OpenCode, Windsurf | read `~/.agents/skills` and repo `.agents/skills` | none (OpenCode: TS plugins only) | `everlast.py export ~` |
-| Cursor | reads `.cursor/skills`, `~/.cursor/skills`; Agent Skills native since 2.4 | `~/.cursor/hooks.json` (`sessionStart`, `stop`) | link `~/.agents/skills/everlast-*` into `~/.cursor/skills`, or `npx skills add m4bwav/everlast-protocol -g -a cursor` |
+| Cursor | reads `.cursor/skills`, `~/.cursor/skills`; Agent Skills native since 2.4 | `~/.cursor/hooks.json` (`sessionStart`, `stop`) | link `~/.agents/skills/everlast-*` into `~/.cursor/skills`, or `npx skills add m4bwav/everlast -g -a cursor` |
 | Gemini CLI | reads `.gemini/skills`, `~/.gemini/skills` | `settings.json` hooks or an extension's `hooks/hooks.json` | link into `~/.gemini/skills`, or `npx skills add ... -a gemini-cli` |
 
-`npx skills add m4bwav/everlast-protocol -g -a codex -a github-copilot -a cursor -a gemini-cli -a opencode` is the community installer (vercel-labs/skills); it symlinks from `~/.agents/skills`. Verify the Claude Code link afterwards (open issue #851 sometimes skips it); the plugin install covers Claude Code anyway.
+`npx skills add m4bwav/everlast -g -a codex -a github-copilot -a cursor -a gemini-cli -a opencode` is the community installer (vercel-labs/skills); it symlinks from `~/.agents/skills`. Verify the Claude Code link afterwards (open issue #851 sometimes skips it); the plugin install covers Claude Code anyway.
 
 ## The always-on pointer per tool
 

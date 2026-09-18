@@ -13,7 +13,7 @@ tags: [vault, privacy]
 User-level knowledge (profile, environments, cross-project lessons) and project sidecars need a home that every machine can clone. Evergreen keeps its profile/ inside the plugin repo, which makes that repo unshareable.
 
 ## Decision
-A second, always-private repository, everlast-vault (github.com/m4bwav/everlast-vault), cloned to the path in `everlast.config.json` per OS (Windows: a Documents folder off the OS drive; posix: ~/everlast-vault). The plugin repo holds no personal data and can be shared later. Evergreen's profile/ files became pointers into the vault.
+A second, always-private repository, everlast-vault (a private repository of the owner's), cloned to the path in `everlast.config.json` per OS (Windows: a Documents folder off the OS drive; posix: ~/everlast-vault). The plugin repo holds no personal data and can be shared later. Evergreen's profile/ files became pointers into the vault.
 
 ## Reasons
 Separating code from data is what lets the protocol be published without a scrub. One vault also gives the excluded-mode projects and the private sidecars a single backup route. EVERLAST_VAULT overrides the config, mirroring evergreen's store convention.

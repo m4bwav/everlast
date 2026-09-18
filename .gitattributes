@@ -9,4 +9,3 @@ TESTS.md merge=union
 **/TESTS.md merge=union
 ai-docs/log.md merge=union
 * text=auto eol=lf
-*.ps1 text eol=crlf
