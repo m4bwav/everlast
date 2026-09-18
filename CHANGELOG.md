@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260918-1 · 2026-09-18 · Protocol 1.2: documents link each other (index per folder, Related lines, relative markdown links, no wikilinks); plugin 0.2.1
+- because: the owner's request (make AI-written doc sets navigable for a human in Obsidian as well as for agents; a set of markdown files should be a graph, reachable from an index, not a pile)
+- files: protocol/PROTOCOL.md §8 (new paragraph; version line), protocol/DOC-TYPES.md §Rules that keep it small (paths rule narrowed to files outside the doc set; new "linked, not just filed" rule), templates/AGENTS.md.snippet (one bullet), .claude-plugin/plugin.json (0.2.1)
+- The generated INDEX.md already made every entry reachable in two hops; the new rule adds the edges between entries and states why relative markdown links are the only form that works on GitHub, in VS Code and in graph editors alike. No script change: the lint still checks backticked paths; a link check on `Related:` lines is a candidate for a later release.
+
 ### C-20260917-2 · 2026-09-17 · `pull` from the official repository, SessionStart reports a clone that is behind, `publish` pushes to the official remote
 - because: the owner's request ("point the local copy to the repo as the official version to check for updates and to pull request learnings back to"); a private fork's `origin` is not the official repository, so `publish` pushing to `origin` could never open the pull request it announced
 - files: scripts/everlast.py (`official_remote`, `behind_official`, `cmd_pull`; SessionStart line; `publish` pushes to the official remote), README §Using the script, protocol/PROTOCOL.md §7, AGENTS.md (fork rules), scripts/test_everlast.py

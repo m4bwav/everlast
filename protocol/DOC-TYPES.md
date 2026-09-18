@@ -60,7 +60,8 @@ supersedes: solutions/2026-08-01-old.md   # optional; the old file gets status: 
 - Derivable gate: nothing a grep or one file read answers.
 - One entry per problem or decision, updated in place; a contradiction supersedes, it never edits history away.
 - Titles are what a future agent would search for (the error text, the feature name), never "session notes".
-- Absolute dates. Paths in backticks (the lint checks they exist). Commands with the output that proved them.
+- Absolute dates. Paths to code and files outside the doc set in backticks (the lint checks they exist). Commands with the output that proved them.
+- Linked, not just filed: a reference to another entry is a relative markdown link, and an entry that builds on, contradicts or supersedes another ends with a `Related:` line linking it (`Related: [the earlier fix](../solutions/2026-08-01-old.md)`). The generated `INDEX.md` is the hub, so every entry is reachable in two hops from the always-on pointer, and a graph-aware editor such as Obsidian shows the connections as backlinks. No wikilinks in a repo-safe root (they do not render on GitHub or in most tools); one distinct basename per entry (the date prefix does this) so a link is never ambiguous.
 - No secrets, credentials, or people, in any repo-safe root (PRIVACY.md).
 - Plain markdown; no `@imports`, no tool-specific front matter beyond the fields above.
 
