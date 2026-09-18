@@ -1,7 +1,7 @@
 {
   "_comment": "Where the private vault lives on this machine. A string, or a per-OS map (nt / posix). EVERLAST_VAULT in the environment overrides. A Windows drive path is ignored on Mac and Linux.",
   "vault": {
-    "nt": "%USERPROFILE%\\everlast-vault",
+    "nt": "D:\\m4bwa\\Documents\\Everlast\\vault",
     "posix": "~/everlast-vault"
   }
 }
