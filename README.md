@@ -57,6 +57,7 @@ python scripts/everlast.py handoff <repo> --body-file f
 python scripts/everlast.py lint <repo> [--all]      # budgets, headings, dead paths, stale, duplicates, privacy, exclusion
 python scripts/everlast.py scan <repo>              # privacy scan only
 python scripts/everlast.py export <target> | pack
+python scripts/everlast.py pull [--dry-run]         # update from the official repository; the SessionStart line says when this clone is behind
 python scripts/everlast.py contribute [yes|no]      # asked once at install; publish is a no-op until yes
 python scripts/everlast.py publish [--dry-run]      # consent-gated draft pull request with the plugin's own learnings
 python scripts/test_everlast.py

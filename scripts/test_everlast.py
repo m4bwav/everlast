@@ -120,6 +120,8 @@ def main():
         check("would push" in out or "nothing to publish" in out, "yes: publish proceeds (dry run)", out)
         rc, out = run("contribute", env=dict(env2, DO_NOT_TRACK="1"))
         check("contribute no" in out, "DO_NOT_TRACK=1 reads as no", out)
+        rc, out = run("pull", "--dry-run", env=env2)
+        check("official" in out.lower() or "up to date" in out or "behind" in out, "pull knows whether an official remote exists", out)
         rc, out = run("project", "list", env=env)
         check("repo1" in out and "repo2" in out, "project list", out)
         print("all checks passed")
