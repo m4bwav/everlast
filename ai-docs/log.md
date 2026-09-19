@@ -15,3 +15,6 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-17] add | solution: Cross-platform audit and research pass before the public release
 ## [2026-09-18] add | decision: Project docs: push when sure, pull request when not; vault remote asked once
 ## [2026-09-18] handoff | 18 lines
+
+## [2026-09-18] fix | register --mode excluded merged instead of nested (0.3.3)
+Registering indie-ai-scout with a pre-written ai-docs/ produced plans/plans/ and decisions/decisions/ in the vault store (C-20260918-5, everlast-setup L-20260918-1). Fixed in scripts/everlast.py; self-test passes. Candidate for a pull request to m4bwav/everlast.
