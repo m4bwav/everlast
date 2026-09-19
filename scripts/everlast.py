@@ -916,7 +916,13 @@ def cmd_project_register(a):
         link = os.path.join(repo, a.root)
         if os.path.isdir(link) and not is_link(link) and os.listdir(link) and not os.path.exists(os.path.join(store, ".moved")):
             for name in os.listdir(link):
-                shutil.move(os.path.join(link, name), os.path.join(store, name))
+                src, dst = os.path.join(link, name), os.path.join(store, name)
+                if os.path.isdir(src) and os.path.isdir(dst):
+                    for inner in os.listdir(src):  # the store is scaffolded first, so merge into its folders
+                        shutil.move(os.path.join(src, inner), os.path.join(dst, inner))
+                    os.rmdir(src)
+                else:
+                    shutil.move(src, dst)
             os.rmdir(link)
             write(os.path.join(store, ".moved"), today())
             notes.append(f"moved existing {a.root}/ contents into the vault store")

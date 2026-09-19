@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260918-5 · 2026-09-18 · Plugin 0.3.3: `project register --mode excluded` merges an existing `ai-docs/` into the scaffolded store instead of nesting it
+- because: L-20260918-1 in everlast-setup (registering indie-ai-scout moved `ai-docs/plans/` to `<store>/plans/plans/` because the store had been scaffolded first)
+- files: scripts/everlast.py (`cmd_project_register`, the move loop), .claude-plugin/plugin.json (0.3.3)
+- When both the source and the store hold a folder of the same name, the folder's files are moved into the store's folder and the empty source folder removed; files and folders with no counterpart move as before. General fix, worth a pull request to the official repository.
+
 ### C-20260918-4 · 2026-09-18 · Protocol 1.4: the index first, with a `summary` clause per entry and no back-link requirement; plugin 0.3.2
 - because: the owner's request (indexes that link most docs as a net positive for agents and people, without costing agent performance; back-links only where useful); R-20260918-1
 - files: protocol/PROTOCOL.md §8, protocol/DOC-TYPES.md (layer table, frontmatter `summary`, rules), templates/AGENTS.md.snippet, scripts/everlast.py (`note --summary`, `build_index` shows the summary after the link), README §Using the script, .claude-plugin/plugin.json (0.3.2)
