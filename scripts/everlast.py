@@ -999,6 +999,7 @@ def change_summary(cwd, pathspec=None):
         if pathspec and rel.startswith(pathspec.replace("\\", "/") + "/"):
             rel = rel[len(pathspec) + 1:]
         marks.append(("+" if "?" in code or "A" in code else "-" if "D" in code else "~") + rel)
+    marks.sort(key=lambda m: ("+", "~", "-").index(m[0]))  # new entries first: the subject line is what `git log --oneline` shows
     subject = ", ".join(marks)
     if len(subject) > 64:
         subject = subject[:60].rsplit(", ", 1)[0] + ", ..."
