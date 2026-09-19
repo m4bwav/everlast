@@ -1,6 +1,6 @@
 ---
 name: everlast-vault
-description: "Run the Everlast Protocol's private vault, the one git repository that carries everything AI agents have learned for and about the user across machines, models and tools: create it (vault init), check it (status, where), commit and push it (sync), scan a repo-safe doc set for content that must stay private (people, politics, credentials, internal names), bring everlast to a new machine or a new agent product (clone the plugin and the vault, install in Claude Code, pack the .plugin for Cowork, export the skills to ~/.agents/skills for Copilot, Codex and others), and list the registered projects. Use whenever the user says 'set up everlast here', 'install everlast', 'new machine', 'sync the vault', 'push the learnings', 'is the vault behind', 'scan for private info', 'privacy check', 'export the skills to Copilot', 'pack the plugin for Cowork', 'where is the vault', 'what projects are registered', or when a session-start line says the vault is missing or behind. Also for 'refresh everlast-vault' and 'is everlast-vault stale'. Per-project setup is everlast-setup; writing entries is everlast-capture; reading is everlast-resume."
+description: "Run the Everlast Protocol's private vault, the one git repository that carries everything AI agents have learned for and about the user across machines, models and tools: create it (vault init), back it up (remote: a private repository the user names, or one created with gh, asked once), check it (status, where), commit and push it (sync), scan a repo-safe doc set for content that must stay private (people, politics, credentials, internal names), bring everlast to a new machine or a new agent product (clone the plugin and the vault, install in Claude Code, pack the .plugin for Cowork, export the skills to ~/.agents/skills for Copilot, Codex and others), and list the registered projects. Use whenever the user says 'set up everlast here', 'install everlast', 'new machine', 'back up the vault', 'is the vault backed up', 'create a repo for the notes', 'sync the vault', 'push the learnings', 'is the vault behind', 'scan for private info', 'privacy check', 'export the skills to Copilot', 'pack the plugin for Cowork', 'where is the vault', 'what projects are registered', or when a session-start line says the vault is missing or behind. Also for 'refresh everlast-vault' and 'is everlast-vault stale'. Per-project setup is everlast-setup; writing entries is everlast-capture; reading is everlast-resume."
 ---
 
 # everlast vault (one private repository, every machine, every tool)
@@ -20,7 +20,17 @@ EVERLAST vault where                       # plugin root, vault path, registry, 
 EVERLAST vault init [--path P] [--owner N] # scaffold user/ (INDEX, HANDOFF, log, layers, PROFILE.md, ENVIRONMENTS.md), registry.json, config/redact.txt, git init
 ```
 
-The path comes from `EVERLAST_VAULT`, then `everlast.config.json` at the plugin root (a string or a per-OS map), then `~/everlast-vault`. Keep it off the OS drive when the user has said so. An existing vault on another machine: `git clone <private remote> <path>` instead of `init`, then set the config. The remote is always private (`gh repo create <owner>/everlast-vault --private`); the vault names people and machines by design.
+The path comes from `EVERLAST_VAULT`, then `everlast.config.json` at the plugin root (a string or a per-OS map), then `~/everlast-vault`. Keep it off the OS drive when the user has said so. An existing vault on another machine: `git clone <private remote> <path>` instead of `init`, then set the config.
+
+## Back it up (ask once)
+
+```
+EVERLAST vault remote                      # the remote, or none plus the question to ask
+EVERLAST vault remote <url>                # a private repository the user already has: set origin, push
+EVERLAST vault remote --create [name]      # gh repo create --private in the user's account, push, re-check that it is private
+```
+
+A vault on one disk is a single point of loss, and the remote's commit history is where the user sees what agents have been writing. So when `vault init` or the SessionStart line says the vault is local only, ask once, in one sentence: the URL of a private repository they already have, or permission to create one (default name `everlast-vault`, always private, `gh auth login` first if `gh` is not signed in). Push nothing until the user answers. Never accept a public remote: the vault names people and machines by design. If the host cannot make a private repository, leave the vault local and say so. Evidence: the `push: ok` line, then `vault status` showing the remote and `ahead 0`.
 
 ## Keep it current
 
@@ -29,7 +39,7 @@ EVERLAST vault status                      # projects, user-tier entries, remote
 EVERLAST vault sync [--if-changed] [--message M]   # add, commit, pull --rebase, push; fails soft, never force-pushes
 ```
 
-The SessionEnd hook runs `sync --if-changed --detach` in Claude Code. Other tools: run `sync` at the end of a session that wrote to the vault, or rely on the next Claude Code session. A rebase conflict is left for a human (`git status` in the vault); the append-only logs merge by union so conflicts are rare.
+The SessionEnd hook runs `sync --if-changed --detach` in Claude Code, and `project sync` for a mode `repo` project (commits its `ai-docs/` alone, pushes the branch when it is sure, opens a pull request when it is not; the rule is in [PROTOCOL.md](../../protocol/PROTOCOL.md) section 2 and the choice is made in `everlast-setup`). Other tools: run `sync` at the end of a session that wrote to the vault, or rely on the next Claude Code session. A rebase conflict is left for a human (`git status` in the vault); the append-only logs merge by union so conflicts are rare. Commit subjects list the files changed (`+new ~changed -gone`), so `git log --oneline` in the vault or the project reads as a record of what was written.
 
 ## Privacy scan
 
@@ -45,7 +55,7 @@ Run it before a commit that includes a repo-safe doc set, and when the user asks
 2. Claude Code: `claude plugin marketplace add <plugin clone dir>` (the repo carries its own `.claude-plugin/marketplace.json`; a marketplace that already lists it just needs `claude plugin marketplace update`), then `claude plugin install everlast-protocol@everlast --scope user`, `claude plugin list`. Hooks come with it. After editing the source, `claude plugin marketplace update`, uninstall, install (a same-version update does not recopy).
 3. Cowork: `EVERLAST pack` writes `everlast-protocol.plugin`; Customize > Plugins > upload. Hooks do not run in Cowork; Step 0 in each skill and this skill's `sync` are the mechanism.
 4. Copilot CLI and VS Code, Codex, OpenCode, Windsurf: `EVERLAST export ~` puts the four skills under `~/.agents/skills/` (junctions on Windows, symlinks elsewhere; `--copy` for a real copy), which those tools read. Cursor and Gemini CLI: also link `~/.cursor/skills` and `~/.gemini/skills`, or use `npx skills add <owner>/everlast-protocol -g -a cursor -a gemini-cli`. Then paste `templates/AGENTS.md.snippet` into the repo's `AGENTS.md` (`templates/copilot-instructions.md.snippet` for Copilot) so the always-on pointer exists there too.
-5. Verify: `EVERLAST vault status` (remote set, clean), `EVERLAST project list`, one `everlast-resume` in a project.
+5. Verify: `EVERLAST vault status` (remote set, clean; none: the back-up question above), `EVERLAST project list`, one `everlast-resume` in a project.
 6. Record the machine: a section in `<vault>/user/ENVIRONMENTS.md` (what is installed, paths, what works), logged `--user`.
 
 The one-paste prompt for all of this is `templates/INSTALL-PROMPT.txt`.

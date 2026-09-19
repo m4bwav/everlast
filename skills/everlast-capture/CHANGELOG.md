@@ -7,6 +7,11 @@ Entry shape: `### C-20260913-1 · 2026-09-13 · Absorbed into the everlast-proto
 - files: SKILL.md (rewritten for the vault, the private sidecar, the user tier and `everlast.py`), evals/evals.json (prompts renamed; capture gained trigger-3 and privacy-1), companions renamed in place
 - The skill's history before this entry belongs to `ai-docs-capture` (2026-09-06). `aidocs.py` became `scripts/everlast.py` at the plugin root; its `note`, `handoff`, `index`, `lint`, `log`, `promote-scan`, `skill-budget` and `hook` commands are unchanged in behaviour, with `--private` and `--user` added.
 
+### C-20260918-1 · 2026-09-18 · Prod mechanism names the project docs sync at session end
+- because: plugin C-20260918-2 (the SessionEnd hook now pushes a mode `repo` project's doc root, or opens a pull request)
+- files: SKILL.md section Prod mechanism
+- One sentence; `EVERLAST project sync <repo> --dry-run` shows what the hook would do.
+
 ### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20260906-1 · 2026-09-06 · Created as an evergreen unit (pointer mode) with the shared format reference and everlast.py

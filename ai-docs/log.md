@@ -13,3 +13,5 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-13] handoff | 18 lines
 ## [2026-09-13] update | first eval runs logged; plan and handoff updated
 ## [2026-09-17] add | solution: Cross-platform audit and research pass before the public release
+## [2026-09-18] add | decision: Project docs: push when sure, pull request when not; vault remote asked once
+## [2026-09-18] handoff | 18 lines

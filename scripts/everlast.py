@@ -32,9 +32,11 @@ Commands
   log      <repo> --op OP --title T [--private | --user]
   scan     <repo|path> [--json]                privacy scan of a repo-safe root (people, credentials, redact list)
   resolve  <repo> [--private | --user]         print the docs root a write would go to
-  project  register <repo> --mode repo|excluded [--slug S] [--no-link] [--root DIR]
+  project  register <repo> --mode repo|excluded [--sync push|pr|off] [--slug S] [--no-link] [--root DIR]
   project  status <repo> | list
+  project  sync <repo> [--if-changed] [--detach] [--pr] [--dry-run]   mode repo: commit the doc root, push when sure, pull request when not
   vault    init [--path P] | status | sync [--if-changed] [--detach] [--message M] | where
+  vault    remote [<url> | --create [name]] [--dry-run]   back the vault up: a private repository you name, or one gh creates (--private)
   export   <target> [--copy]                   put the skills under <target>/.agents/skills (junction or copy)
   pack     [--out DIR]                         everlast-protocol-<ver>.zip and everlast-protocol.plugin (Cowork)
   hook     run | install | uninstall | print   Claude Code hooks (plugin hooks.json normally does this)
@@ -236,6 +238,24 @@ def run(cmd, cwd=None, timeout=60):
         return 1, "", str(e)
 
 
+def status_lines(cwd, pathspec=None):
+    """`git status --porcelain` lines with the leading space intact (run() strips its output, which eats the first
+    line's unstaged-change marker and shifts the path); None when the command fails."""
+    try:
+        cmd = ["git", "-c", "core.quotepath=off", "status", "--porcelain", "--untracked-files=all", "--"] + ([pathspec] if pathspec else [])
+        out = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
+    except Exception:
+        return None
+    return [ln for ln in out.stdout.splitlines() if len(ln) > 3] if out.returncode == 0 else None
+
+
+def author_email(cwd):
+    """Whose commits count as the user's own: the identity git would commit with here (config or GIT_AUTHOR_EMAIL)."""
+    rc, ident, _ = run(["git", "var", "GIT_AUTHOR_IDENT"], cwd=cwd)
+    m = re.search(r"<([^>]*)>", ident) if rc == 0 else None
+    return (m.group(1) if m else "").strip().lower()
+
+
 # ---------------------------------------------------------------- config, vault, registry
 
 def config():
@@ -329,17 +349,16 @@ def cmd_contribute(a):
 
 def shareable_changes():
     """Changed or untracked files in the plugin tree that a contribution may carry: the four log kinds, nowhere else."""
-    rc, out, _ = run(["git", "-c", "core.quotepath=off", "status", "--porcelain", "--untracked-files=all"], cwd=PLUGIN_ROOT)
-    if rc != 0:
+    lines = status_lines(PLUGIN_ROOT)
+    if lines is None:
         return None
     paths = []
-    for ln in out.splitlines():
-        if len(ln) > 3:
-            rel = ln[3:].strip().strip('"').replace("\\", "/")
-            if " -> " in rel:
-                rel = rel.split(" -> ", 1)[1]
-            if os.path.basename(rel) in SHAREABLE and not rel.startswith("ai-docs/"):
-                paths.append(rel)
+    for ln in lines:
+        rel = ln[3:].strip().strip('"').replace("\\", "/")
+        if " -> " in rel:
+            rel = rel.split(" -> ", 1)[1]
+        if os.path.basename(rel) in SHAREABLE and not rel.startswith("ai-docs/"):
+            paths.append(rel)
     return paths
 
 
@@ -880,7 +899,10 @@ def cmd_project_register(a):
     for s, p in reg["projects"].items():
         if s == slug and os.path.normcase(os.path.abspath(p["path"])) != os.path.normcase(repo):
             slug = f"{slug}-{int(hashlib.sha1(repo.encode('utf-8')).hexdigest()[:4], 16) % 10000:04d}"
-    entry = {"path": repo, "mode": a.mode, "root": a.root, "registered": today(), "private": f"projects/{slug}/private"}
+    prev = reg["projects"].get(slug, {})
+    entry = {"path": repo, "mode": a.mode, "root": a.root, "registered": prev.get("registered") or today(), "private": f"projects/{slug}/private"}
+    if a.mode == "repo":
+        entry["sync"] = a.sync or prev.get("sync") or "push"
     priv = os.path.join(vault_path(), "projects", slug, "private")
     scaffold(priv, readme=None)
     notes = []
@@ -908,6 +930,9 @@ def cmd_project_register(a):
     else:
         scaffold(os.path.join(repo, a.root))
         notes.append(f"{a.root}/ committed with the project; private entries go to {priv}")
+        notes.append({"push": f"sync push: the SessionEnd hook commits {a.root}/ and pushes the branch when that is safe, else opens a pull request",
+                      "pr": f"sync pr: the SessionEnd hook commits {a.root}/ and always opens a pull request",
+                      "off": f"sync off: {a.root}/ is committed and pushed by hand"}[entry["sync"]])
     reg["projects"][slug] = entry
     save_registry(reg)
     print(f"registered {slug} ({a.mode}) at {repo}")
@@ -926,6 +951,13 @@ def cmd_project_status(a):
     if p["mode"] == "excluded":
         rc, _, _ = run(["git", "check-ignore", "-q", p.get("root") or "ai-docs"], cwd=p["path"])
         print(f"  excluded from git: {'yes' if rc == 0 else 'NO (re-run project register)'}; linked: {p.get('link')}")
+    else:
+        st = project_git_state(p["path"], p.get("root") or "ai-docs")
+        if st is None:
+            print(f"  sync {p.get('sync') or 'push'}: not a git work tree")
+        else:
+            print(f"  sync {p.get('sync') or 'push'}: branch {st['branch'] or 'detached'}, upstream {st['upstream'] or 'none'}, remote {st['remote'] or 'none'}; "
+                  f"{len(st['dirty_docs'])} uncommitted doc file(s), {st['unpushed_docs']} unpushed commit(s) touching the docs")
 
 
 def cmd_project_list(a):
@@ -933,7 +965,226 @@ def cmd_project_list(a):
     if not reg["projects"]:
         print("no projects registered")
     for slug, p in sorted(reg["projects"].items()):
-        print(f"{slug:30s} {p['mode']:9s} {p['path']}")
+        print(f"{slug:30s} {p['mode']:9s} {('sync ' + (p.get('sync') or 'push')) if p['mode'] == 'repo' else 'vault':10s} {p['path']}")
+
+
+# ---------------------------------------------------------------- project docs sync (mode repo)
+
+SYNC_MODES = ("push", "pr", "off")
+VAULT_REMOTE_QUESTION = ("the vault is local only (no remote); ask the user once: the URL of a private repository they already have "
+                         "(`everlast.py vault remote <url>`), or permission to create one (`everlast.py vault remote --create [name]`, "
+                         "runs `gh repo create --private` in their account). The vault names people and machines, so the remote must be "
+                         "private; nothing is pushed until they choose.")
+
+
+def host_label():
+    return os.environ.get("EVERLAST_ENV") or platform.node() or "host"
+
+
+def git_ident(cwd):
+    return [] if run(["git", "config", "user.email"], cwd=cwd)[1] else ["-c", "user.name=everlast", "-c", "user.email=everlast@localhost"]
+
+
+def change_summary(cwd, pathspec=None):
+    """What a commit would carry, as (subject tail, body): `+new ~changed -gone` per file, so the log says what
+    everlast added without opening the diff. Paths are relative to pathspec when one is given."""
+    lines = status_lines(cwd, pathspec)
+    if lines is None:
+        return "", ""
+    marks = []
+    for ln in lines:
+        code, rel = ln[:2], ln[3:].strip().strip('"').replace("\\", "/")
+        if " -> " in rel:
+            rel = rel.split(" -> ", 1)[1]
+        if pathspec and rel.startswith(pathspec.replace("\\", "/") + "/"):
+            rel = rel[len(pathspec) + 1:]
+        marks.append(("+" if "?" in code or "A" in code else "-" if "D" in code else "~") + rel)
+    subject = ", ".join(marks)
+    if len(subject) > 64:
+        subject = subject[:60].rsplit(", ", 1)[0] + ", ..."
+    return subject, "\n".join(marks)
+
+
+def commit_paths(cwd, pathspec, prefix):
+    """Stage and commit only the files under pathspec; other changed or staged files are left exactly as they were."""
+    tail, body = change_summary(cwd, pathspec)
+    if not tail:
+        return False, "nothing to commit"
+    run(["git", "add", "-A", "--", pathspec], cwd=cwd)
+    rc, out, err = run(["git"] + git_ident(cwd) + ["commit", "-q", "-m", f"{prefix}: {tail}", "-m", body, "--", pathspec], cwd=cwd, timeout=60)
+    return rc == 0, ("ok: " + tail if rc == 0 else (err or out)[:300])
+
+
+def project_git_state(repo, root, fetch=False):
+    """What a docs push needs to know about the project repository; None when it is not a git work tree."""
+    rc, _, _ = run(["git", "rev-parse", "--show-toplevel"], cwd=repo, timeout=10)
+    if rc != 0:
+        return None
+    rc, branch, _ = run(["git", "symbolic-ref", "--short", "-q", "HEAD"], cwd=repo)
+    st = {"branch": branch if rc == 0 and branch else None, "upstream": None, "remote": None, "ahead": 0, "behind": 0,
+          "dirty_docs": [], "unpushed_docs": 0, "foreign": []}
+    st["dirty_docs"] = [ln[3:].strip() for ln in (status_lines(repo, root) or [])]
+    rc, up, _ = run(["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"], cwd=repo)
+    if rc == 0 and up and "/" in up:
+        st["upstream"], st["remote"] = up, up.split("/", 1)[0]
+        if fetch:
+            run(["git", "fetch", "-q", st["remote"]], cwd=repo, timeout=60)
+        rc, ab, _ = run(["git", "rev-list", "--left-right", "--count", "HEAD...@{upstream}"], cwd=repo)
+        if rc == 0 and len(ab.split()) == 2:
+            st["ahead"], st["behind"] = (int(x) for x in ab.split())
+        rc, n, _ = run(["git", "rev-list", "--count", "@{upstream}..HEAD", "--", root], cwd=repo)
+        st["unpushed_docs"] = int(n) if rc == 0 and n.isdigit() else 0
+        me = author_email(repo)
+        rc, authors, _ = run(["git", "log", "--format=%ae", "@{upstream}..HEAD"], cwd=repo)
+        st["foreign"] = sorted({x.strip().lower() for x in authors.splitlines() if x.strip() and x.strip().lower() != me}) if rc == 0 and me else []
+    else:
+        rc, rems, _ = run(["git", "remote"], cwd=repo)
+        rems = [r.strip() for r in rems.splitlines() if r.strip()] if rc == 0 else []
+        st["remote"] = "origin" if "origin" in rems else (rems[0] if len(rems) == 1 else None)
+    return st
+
+
+def remote_default_branch(repo, remote):
+    rc, ref, _ = run(["git", "symbolic-ref", "-q", "--short", f"refs/remotes/{remote}/HEAD"], cwd=repo)
+    if rc == 0 and ref and "/" in ref:
+        return ref.split("/", 1)[1]
+    rc, out, _ = run(["git", "ls-remote", "--symref", remote, "HEAD"], cwd=repo, timeout=30)
+    m = re.search(r"ref: refs/heads/(\S+)\s+HEAD", out) if rc == 0 else None
+    if m:
+        return m.group(1)
+    for cand in ("main", "master"):
+        if run(["git", "rev-parse", "-q", "--verify", f"refs/remotes/{remote}/{cand}"], cwd=repo)[0] == 0:
+            return cand
+    return None
+
+
+def github_slug(repo, remote):
+    rc, url, _ = run(["git", "remote", "get-url", remote], cwd=repo)
+    m = re.search(r"github\.com[:/]([^/\s]+/[^/\s]+?)(?:\.git)?/?$", url.strip()) if rc == 0 else None
+    return m.group(1) if m else None
+
+
+def docs_pull_request(repo, root, st, reason, dry_run=False):
+    """Not sure enough to push the user's branch: put the doc root's current state on a fresh branch off the remote's
+    default branch, push that branch, open a pull request. Only the doc root travels; the user's own commits stay local."""
+    remote = st.get("remote")
+    if not remote:
+        return "no remote; committed locally only (push by hand)"
+    base = remote_default_branch(repo, remote)
+    if not base:
+        return f"cannot tell the default branch of {remote}; committed locally only (push by hand)"
+    branch = f"everlast/docs-{re.sub(r'[^A-Za-z0-9._-]+', '-', host_label())}-{dt.datetime.now():%Y%m%d-%H%M%S}"
+    if dry_run:
+        return f"would open a pull request ({reason}): {root}/ on {branch} against {remote}/{base}"
+    run(["git", "fetch", "-q", remote, base], cwd=repo, timeout=60)
+    wt = tempfile.mkdtemp(prefix="everlast-pr-")
+    os.rmdir(wt)
+    pushed = False
+    try:
+        rc, _, err = run(["git", "worktree", "add", "--detach", "-q", wt, f"{remote}/{base}"], cwd=repo, timeout=60)
+        if rc != 0:
+            return f"worktree failed: {err[:200]}; committed locally only"
+        dst = os.path.join(wt, root)
+        if os.path.isdir(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(os.path.join(repo, root), dst, ignore=shutil.ignore_patterns(".git"))
+        run(["git", "checkout", "-q", "-b", branch], cwd=wt)
+        ok, msg = commit_paths(wt, root, f"everlast: {root} from {host_label()}")
+        if not ok:
+            return f"{root}/ already matches {remote}/{base}; nothing to push" if msg == "nothing to commit" else f"commit failed: {msg}"
+        rc, _, err = run(["git", "push", "-q", "-u", remote, branch], cwd=wt, timeout=120)
+        if rc != 0:
+            return f"push of {branch} failed: {err[:200]} (branch kept locally)"
+        pushed = True
+        slug = github_slug(repo, remote)
+        if slug and shutil.which("gh"):
+            body = (f"Project docs (`{root}/`) written by everlast sessions on `{host_label()}`, opened as a pull request instead of a push "
+                    f"because {reason}. Only `{root}/` changed; no code travels with it.")
+            rc, out, err = run(["gh", "pr", "create", "--repo", slug, "--base", base, "--head", branch, "--title", f"everlast: {root} from {host_label()}", "--body", body], cwd=wt, timeout=90)
+            return f"pull request ({reason}): {(out or err)[:200]}"
+        return f"pushed {branch} ({reason}); open the pull request against {base} by hand" + (f": https://github.com/{slug}/compare/{base}...{branch}" if slug else "")
+    finally:
+        run(["git", "worktree", "remove", "--force", wt], cwd=repo, timeout=30)
+        shutil.rmtree(wt, ignore_errors=True)
+        if pushed:
+            run(["git", "branch", "-D", branch], cwd=repo)  # the remote has it; a local copy would only clutter the branch list
+
+
+def cmd_project_sync(a):
+    """Mode repo: commit the doc root (nothing else), push the branch when that is safe, open a pull request when it is not."""
+    repo = os.path.abspath(a.repo)
+    slug, p = find_project(repo)
+    quiet = a.if_changed
+    if not p:
+        if not quiet: print(f"unregistered: {repo} (project register first)")
+        return
+    if p["mode"] != "repo":
+        if not quiet: print(f"{slug} is mode {p['mode']}; its docs live in the vault (vault sync)")
+        return
+    mode = p.get("sync") or "push"
+    root = p.get("root") or "ai-docs"
+    if mode == "off":
+        if not quiet: print(f"sync is off for {slug} (project register --sync push|pr to change)")
+        return
+    if not shutil.which("git"):
+        return
+    if a.detach:
+        args = [sys.executable, os.path.abspath(__file__), "project", "sync", repo] + (["--if-changed"] if quiet else []) + (["--pr"] if a.pr else [])
+        rc, gitdir, _ = run(["git", "rev-parse", "--git-dir"], cwd=repo, timeout=10)
+        if rc != 0:
+            return
+        gitdir = gitdir if os.path.isabs(gitdir) else os.path.join(repo, gitdir)
+        flags = (getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)) if os.name == "nt" else 0
+        log = open(os.path.join(gitdir, "everlast-sync.log"), "ab")
+        subprocess.Popen(args, cwd=repo, stdout=log, stderr=log, stdin=subprocess.DEVNULL, creationflags=flags, start_new_session=(os.name != "nt"))
+        return
+    st = project_git_state(repo, root)
+    if st is None:
+        if not quiet: print(f"{repo} is not a git work tree; nothing to sync")
+        return
+    if not st["branch"]:
+        print("detached HEAD; nothing committed or pushed"); return
+    stamp = f"[{dt.datetime.now():%Y-%m-%d %H:%M}] {slug}"
+    if st["dirty_docs"]:
+        if a.dry_run:
+            print(f"{stamp} would commit {len(st['dirty_docs'])} file(s) under {root}/: " + change_summary(repo, root)[0])
+        else:
+            ok, msg = commit_paths(repo, root, f"everlast: {root} from {host_label()}")
+            print(f"{stamp} commit: {msg}")
+            if not ok:
+                return
+            st = project_git_state(repo, root)
+    elif quiet and st["unpushed_docs"] == 0:
+        return
+    if not st["remote"]:
+        print(f"{stamp} no remote; committed locally only"); return
+    if st["upstream"] and st["unpushed_docs"] == 0 and not st["dirty_docs"]:
+        print(f"{stamp} {root}/ is already on {st['upstream']}"); return
+    reason = None
+    if a.pr or mode == "pr":
+        reason = "--pr was given" if a.pr else f"sync mode is pr for {slug}"
+    elif not st["upstream"]:
+        if remote_default_branch(repo, st["remote"]) is None:  # an empty remote: nothing there to be unsure about
+            if a.dry_run:
+                print(f"{stamp} would push {st['branch']} to the empty remote {st['remote']} and set it as upstream"); return
+            rc, out, err = run(["git", "push", "-q", "-u", st["remote"], "HEAD"], cwd=repo, timeout=120)
+            print(f"{stamp} push: " + (f"ok ({st['branch']} -> {st['remote']}, upstream set)" if rc == 0 else err[:300])); return
+        reason = f"branch {st['branch']} has no upstream"
+    else:
+        st = project_git_state(repo, root, fetch=not a.dry_run)
+        if st["behind"]:
+            reason = f"{st['branch']} is behind {st['upstream']} by {st['behind']} commit(s)"
+        elif st["foreign"]:
+            reason = f"the unpushed commits include work by {', '.join(st['foreign'])}"
+    if reason is None:
+        target = st["upstream"].split("/", 1)[1]
+        if a.dry_run:
+            print(f"{stamp} would push {st['branch']} -> {st['upstream']} ({st['ahead']} commit(s), {st['unpushed_docs']} touching {root}/)"); return
+        rc, out, err = run(["git", "push", "-q", st["remote"], f"HEAD:refs/heads/{target}"], cwd=repo, timeout=120)
+        if rc == 0:
+            print(f"{stamp} push: ok ({st['branch']} -> {st['upstream']}, {st['unpushed_docs']} commit(s) touching {root}/)"); return
+        reason = "the push was rejected: " + ((err.strip().splitlines() or ["unknown"])[-1][:120])
+    print(f"{stamp} " + docs_pull_request(repo, root, st, reason, dry_run=a.dry_run))
 
 
 # ---------------------------------------------------------------- vault
@@ -959,6 +1210,8 @@ def cmd_vault_init(a):
         rc, _, err = run(["git", "init", "-q"], cwd=v)
         made.append("git init" if rc == 0 else f"git init failed: {err}")
     print(f"vault at {v}: " + ", ".join(made))
+    if run(["git", "remote"], cwd=v)[1].strip() == "":
+        print("  " + VAULT_REMOTE_QUESTION)
     if a.path and os.path.normcase(v) != os.path.normcase(vault_path()):
         print(f"  set EVERLAST_VAULT={v} or everlast.config.json vault so the scripts find it")
 
@@ -1006,11 +1259,8 @@ def cmd_vault_sync(a):
         rc, _, _ = run(["git", "rev-list", "--count", "@{upstream}..HEAD"], cwd=v) if remote else (1, "", "")
         # nothing local to commit; still try a push of unpushed commits below
     if dirty:
-        run(["git", "add", "-A"], cwd=v)
-        msg = a.message or f"everlast: vault update {dt.datetime.now().strftime('%Y-%m-%d %H:%M')} from {platform.node() or 'host'}"
-        ident = [] if run(["git", "config", "user.email"], cwd=v)[1] else ["-c", "user.name=everlast", "-c", "user.email=everlast@localhost"]
-        rc, out, err = run(["git"] + ident + ["commit", "-q", "-m", msg], cwd=v)
-        print(f"[{dt.datetime.now():%Y-%m-%d %H:%M}] commit: {'ok' if rc == 0 else err}")
+        ok, msg = vault_commit(v, a.message)
+        print(f"[{dt.datetime.now():%Y-%m-%d %H:%M}] commit: {msg}")
     if not remote:
         print("no remote; committed locally only")
         return
@@ -1028,6 +1278,63 @@ def cmd_vault_where(a):
     print(f"vault: {vault_path()} ({'exists' if os.path.isdir(vault_path()) else 'missing'})")
     print(f"registry: {registry_path()}")
     print(f"config: {os.path.join(PLUGIN_ROOT, 'everlast.config.json')} ({'present' if os.path.exists(os.path.join(PLUGIN_ROOT, 'everlast.config.json')) else 'absent'}); EVERLAST_VAULT={os.environ.get('EVERLAST_VAULT', '')}")
+
+
+def vault_commit(v, message=None):
+    """Commit everything in the vault (it is private end to end); the message lists what changed."""
+    tail, body = change_summary(v)
+    if not tail:
+        return False, "nothing to commit"
+    run(["git", "add", "-A"], cwd=v)
+    msg = message or f"everlast: vault from {host_label()}: {tail}"
+    rc, out, err = run(["git"] + git_ident(v) + ["commit", "-q", "-m", msg, "-m", body], cwd=v, timeout=60)
+    return rc == 0, ("ok: " + tail if rc == 0 else (err or out)[:300])
+
+
+def cmd_vault_remote(a):
+    """Back the vault up: point it at a private repository the user names, or create one with gh (always --private)."""
+    v = vault_path()
+    if not os.path.isdir(os.path.join(v, ".git")):
+        fail(f"vault at {v} is not a git repository (vault init first)")
+    dirty, remote, ahead, behind = vault_git_state(v)
+    if not a.url and a.create is None:
+        print(f"vault {v}: remote {remote or 'none'}" + ("" if remote else "\n  " + VAULT_REMOTE_QUESTION))
+        return
+    if a.url and a.create is not None:
+        fail("give a URL or --create, not both")
+    if a.dry_run:
+        print(f"would " + (f"set origin to {a.url} and push" if a.url else f"run: gh repo create {a.create or 'everlast-vault'} --private --source {v} --remote origin --push, then verify it is private"))
+        return
+    if dirty or run(["git", "rev-parse", "-q", "--verify", "HEAD"], cwd=v)[0] != 0:
+        ok, msg = vault_commit(v)
+        print(f"commit: {msg}")
+    if a.url:
+        rc, _, err = run(["git", "remote", "set-url" if remote else "add", "origin", a.url], cwd=v)
+        if rc != 0:
+            print(f"remote not set: {err[:200]}"); return
+        rc, branch, _ = run(["git", "symbolic-ref", "--short", "-q", "HEAD"], cwd=v)
+        rc, _, err = run(["git", "push", "-q", "-u", "origin", branch or "HEAD"], cwd=v, timeout=180)
+        print(f"remote origin = {a.url}; push: {'ok' if rc == 0 else err[:300]}")
+        return
+    if remote:
+        print(f"the vault already has a remote ({remote}); `vault remote <url>` changes it, nothing created"); return
+    if not shutil.which("gh"):
+        print("gh is not installed; create a private repository by hand and run `vault remote <url>` (nothing created)"); return
+    rc, _, err = run(["gh", "auth", "status"], timeout=30)
+    if rc != 0:
+        print("gh is not logged in (`gh auth login`); nothing created"); return
+    name = a.create or "everlast-vault"
+    rc, out, err = run(["gh", "repo", "create", name, "--private", "--source", v, "--remote", "origin", "--push"], cwd=v, timeout=300)
+    if rc != 0:
+        print(f"gh repo create failed: {(err or out)[:300]} (nothing pushed)"); return
+    url = (out.strip().splitlines() or [""])[-1]
+    slug = github_slug(v, "origin") or name
+    rc, vis, _ = run(["gh", "repo", "view", slug, "--json", "isPrivate", "-q", ".isPrivate"], timeout=30)
+    if rc == 0 and vis.strip().lower() != "true":
+        run(["git", "remote", "remove", "origin"], cwd=v)
+        print(f"created {url or slug} but it is NOT private (an organisation policy?); remote removed. Delete that repository and use a private host.")
+        return
+    print(f"created private repository {url or slug}; origin set and pushed" + ("" if rc == 0 else " (could not re-verify visibility with gh; check it)"))
 
 
 # ---------------------------------------------------------------- export, pack
@@ -1239,6 +1546,13 @@ def cmd_hook_run(a):
         bits = []
         if p:
             bits.append(f"project {slug} (mode {p['mode']})")
+            if p["mode"] == "repo" and (p.get("sync") or "push") != "off":
+                st = project_git_state(cwd, p.get("root") or "ai-docs")
+                if st and not st["remote"]:
+                    bits.append(f"{p.get('root') or 'ai-docs'}/ has no remote to back up to")
+                elif st and (st["dirty_docs"] or st["unpushed_docs"]):
+                    bits.append(f"{p.get('root') or 'ai-docs'}/: {len(st['dirty_docs'])} uncommitted file(s), {st['unpushed_docs']} unpushed commit(s); "
+                                f"the SessionEnd hook pushes them (`everlast.py project sync .` to do it now)")
         elif os.path.isdir(root):
             bits.append("project docs present, unregistered (everlast-setup registers it)")
         if os.path.isdir(v):
@@ -1247,6 +1561,8 @@ def cmd_hook_run(a):
             dirty, remote, ahead, behind = vault_git_state(v)
             if behind and behind != "0":
                 bits.append(f"vault behind remote by {behind}; pull it")
+            if not remote and os.path.isdir(os.path.join(v, ".git")):
+                bits.append(VAULT_REMOTE_QUESTION)
         else:
             bits.append(f"no vault at {v} (everlast-vault init)")
         if contribute_setting() is None:
@@ -1287,6 +1603,9 @@ def cmd_hook_run(a):
         if os.path.isdir(os.path.join(v, ".git")):
             a2 = argparse.Namespace(if_changed=True, detach=True, message=None)
             cmd_vault_sync(a2)
+        slug, p = find_project(cwd)
+        if p and p["mode"] == "repo":
+            cmd_project_sync(argparse.Namespace(repo=cwd, if_changed=True, detach=True, pr=False, dry_run=False))
         if contribute_setting() == "yes":
             cmd_publish(argparse.Namespace(if_changed=True, dry_run=False))
         return
@@ -1376,14 +1695,22 @@ def main():
     p = sub.add_parser("resolve"); common(p); p.set_defaults(fn=cmd_resolve)
     p = sub.add_parser("project"); ps = p.add_subparsers(dest="sub", required=True)
     q = ps.add_parser("register"); q.add_argument("repo"); q.add_argument("--mode", choices=["repo", "excluded"], required=True)
-    q.add_argument("--slug"); q.add_argument("--no-link", action="store_true"); q.add_argument("--root", default="ai-docs"); q.set_defaults(fn=cmd_project_register)
+    q.add_argument("--slug"); q.add_argument("--no-link", action="store_true"); q.add_argument("--root", default="ai-docs")
+    q.add_argument("--sync", choices=list(SYNC_MODES), help="mode repo: push the docs at session end (push, default; pull request when unsure), always pr, or off")
+    q.set_defaults(fn=cmd_project_register)
     q = ps.add_parser("status"); q.add_argument("repo"); q.set_defaults(fn=cmd_project_status)
     q = ps.add_parser("list"); q.set_defaults(fn=cmd_project_list)
+    q = ps.add_parser("sync", help="mode repo: commit the doc root only, push the branch when sure, open a pull request when not")
+    q.add_argument("repo"); q.add_argument("--if-changed", action="store_true"); q.add_argument("--detach", action="store_true")
+    q.add_argument("--pr", action="store_true", help="always the pull request route"); q.add_argument("--dry-run", action="store_true"); q.set_defaults(fn=cmd_project_sync)
     p = sub.add_parser("vault"); ps = p.add_subparsers(dest="sub", required=True)
     q = ps.add_parser("init"); q.add_argument("--path"); q.add_argument("--owner"); q.set_defaults(fn=cmd_vault_init)
     q = ps.add_parser("status"); q.set_defaults(fn=cmd_vault_status)
     q = ps.add_parser("sync"); q.add_argument("--if-changed", action="store_true"); q.add_argument("--detach", action="store_true"); q.add_argument("--message"); q.set_defaults(fn=cmd_vault_sync)
     q = ps.add_parser("where"); q.set_defaults(fn=cmd_vault_where)
+    q = ps.add_parser("remote", help="back the vault up: <url> of a private repository, or --create [name] (gh repo create --private)")
+    q.add_argument("url", nargs="?"); q.add_argument("--create", nargs="?", const="", help="create a private GitHub repository with gh (default name everlast-vault)")
+    q.add_argument("--dry-run", action="store_true"); q.set_defaults(fn=cmd_vault_remote)
     p = sub.add_parser("contribute", help="asked once at install: may this install open pull requests with its learnings? (yes|no|status)")
     p.add_argument("value", nargs="?", choices=["yes", "no", "status"]); p.set_defaults(fn=cmd_contribute)
     p = sub.add_parser("pull", help="update this clone from the official repository (merge on a fork, fast-forward on a plain clone)")

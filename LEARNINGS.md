@@ -6,6 +6,13 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-002 · 2026-09-18 · `run()` strips stdout, so the first `git status --porcelain` line loses its leading space and `ln[3:]` returns a wrong path
+- Trigger: the first `project sync` self-test committed `~i-docs/INDEX.md` in its subject; `shareable_changes` (publish) had the same shape since 0.2.0, silently dropping the first unstaged LEARNINGS/RESEARCH file from every pull request.
+- Hypothesis: porcelain v1 encodes the unstaged-modified state as a leading space (` M path`); `str.strip()` on the whole output removes it on line one only, so every fixed-offset parse is off by one for that line.
+- Rule: never parse `git status --porcelain` from `run()`; use `status_lines()` (unstripped) and keep `ln[:2]` / `ln[3:]`. The same applies to any git output where a leading space is data.
+- Evidence: scripts/test_everlast.py "the commit subject lists what was added" (fails on the old parse, passes on `status_lines`).
+- helpful: 1 · harmful: 0 · promoted: no
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-09-13 · `claude plugin eval` refuses cases that grant Bash on this Windows PC (no sandbox backend)
 - Trigger: first eval run; every run with `--allow-tools Bash` exited 1: "sandbox required but unavailable: the Windows sandbox is not active on this session (feature gate off); sandbox.failIfUnavailable is set".
