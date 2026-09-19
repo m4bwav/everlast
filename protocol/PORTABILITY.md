@@ -5,7 +5,7 @@ Part of the [Everlast Protocol](PROTOCOL.md). Verified 2026-09-13 against each v
 ## The two repositories
 
 - Plugin: `https://github.com/m4bwav/everlast` (private; may be shared later, it holds no personal data). Clone it under a local marketplace root (under a local marketplace root, for example `~/claude-plugins/everlast`).
-- Vault: your own private repository (create it empty on any host; `everlast.py vault init` fills it). Clone it to the path `everlast.config.json` names for the OS (default `~/everlast-vault`) or set `EVERLAST_VAULT`.
+- Vault: your own private repository. Either create it empty on any host and give its URL to `everlast.py vault remote <url>` after `vault init`, or let `everlast.py vault remote --create` make a private one with `gh`. Clone it to the path `everlast.config.json` names for the OS (default `~/everlast-vault`) or set `EVERLAST_VAULT`.
 
 The vault is private: `gh auth login` once per machine, or SSH keys. The plugin is public and needs no account to clone.
 
@@ -14,7 +14,7 @@ The vault is private: `gh auth login` once per machine, or SSH keys. The plugin 
 | Tool | Skills | Hooks | Install |
 |---|---|---|---|
 | Claude Code | plugin `skills/` | `hooks/hooks.json`: SessionStart, Stop, SessionEnd (plugin hooks run wherever the plugin is enabled; user scope by default) | `claude plugin marketplace add <clone dir>` (or `update` when a marketplace already lists it), `claude plugin install everlast-protocol@everlast --scope user`. After a source edit: marketplace update, uninstall, install |
-| Cowork (desktop) | same, from the packed `.plugin` | none run in Cowork; Step 0 in each skill and `vault sync` by hand | `everlast.py pack`, Customize > Plugins > upload `everlast-protocol.plugin` |
+| Cowork (desktop) | same, from the packed `.plugin` | none run in Cowork; Step 0 in each skill, `vault sync` and `project sync` by hand | `everlast.py pack`, Customize > Plugins > upload `everlast-protocol.plugin` |
 | Copilot CLI, VS Code Copilot | reads `~/.agents/skills`, `~/.copilot/skills`, repo `.github/skills`, `.claude/skills`, `.agents/skills` | `.github/hooks/*.json` (`sessionStart`, `sessionEnd`, `agentStop`); `adapters/copilot/hooks.json` is the everlast set | `everlast.py export ~` (junctions into `~/.agents/skills`), paste `templates/copilot-instructions.md.snippet` |
 | Codex CLI | reads `.agents/skills` up to the repo root and `~/.agents/skills`; not `.claude/skills` | `~/.codex/hooks.json` or a Codex plugin's `hooks/hooks.json` (same events as Claude; SessionEnd budget 1 s) | `everlast.py export ~`; hooks optional, not yet adapted |
 | OpenCode, Windsurf | read `~/.agents/skills` and repo `.agents/skills` | none (OpenCode: TS plugins only) | `everlast.py export ~` |
@@ -39,8 +39,8 @@ Each product's memory (Claude auto-memory `MEMORY.md`, Codex `~/.codex/memories/
 
 ## Hooks: what the harness gives
 
-Claude Code hook stdin: `session_id`, `transcript_path`, `cwd`, `hook_event_name`, `stop_hook_active` (Stop). Env: `CLAUDE_PLUGIN_ROOT`, `CLAUDE_PROJECT_DIR`, `CLAUDE_PLUGIN_DATA` (survives updates). SessionStart stdout reaches the model; SessionEnd stdout does not and the event shares a 1.5 s budget by default, so the vault sync is a detached process (`CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS` lengthens it since 2.1.271, a per-hook `timeout` does too). Do not point `autoMemoryDirectory` at the vault from a repository's settings: with `blockReadsOutsideWorkingDirectories` on, a repo-chosen memory directory is neither read nor written (2.1.273). Stop can block once with `{"decision": "block", "reason": ...}` and must check `stop_hook_active`. Copilot and Cursor hook payloads carry `transcript_path` too; Codex's `SessionEnd` has 1 s.
+Claude Code hook stdin: `session_id`, `transcript_path`, `cwd`, `hook_event_name`, `stop_hook_active` (Stop). Env: `CLAUDE_PLUGIN_ROOT`, `CLAUDE_PROJECT_DIR`, `CLAUDE_PLUGIN_DATA` (survives updates). SessionStart stdout reaches the model; SessionEnd stdout does not and the event shares a 1.5 s budget by default, so the vault sync and the project docs sync are detached processes (`CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS` lengthens it since 2.1.271, a per-hook `timeout` does too). Do not point `autoMemoryDirectory` at the vault from a repository's settings: with `blockReadsOutsideWorkingDirectories` on, a repo-chosen memory directory is neither read nor written (2.1.273). Stop can block once with `{"decision": "block", "reason": ...}` and must check `stop_hook_active`. Copilot and Cursor hook payloads carry `transcript_path` too; Codex's `SessionEnd` has 1 s.
 
 ## A machine with no Python
 
-Every command in this protocol can be done by hand: the layout is folders and markdown, the index is one line per file, the exclusion is one line in `.git/info/exclude`, the sync is `git add -A && git commit && git pull --rebase && git push` in the vault. The script is a convenience.
+Every command in this protocol can be done by hand: the layout is folders and markdown, the index is one line per file, the exclusion is one line in `.git/info/exclude`, the sync is `git add -A && git commit && git pull --rebase && git push` in the vault and `git add ai-docs && git commit -- ai-docs && git push` in a mode `repo` project. The script is a convenience.

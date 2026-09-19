@@ -73,7 +73,7 @@ Two or three lines: entries added, updated or superseded (paths, with tier), whe
 
 ## Prod mechanism (why this fires without being asked)
 
-Cheapest first: the repo's AGENTS.md pointer block names this skill; this description matches end-of-task phrasing; the plugin's Stop hook blocks once per session when the tree changed and no doc was written in eight hours (`[everlast]` line); the SessionEnd hook commits and pushes the vault.
+Cheapest first: the repo's AGENTS.md pointer block names this skill; this description matches end-of-task phrasing; the plugin's Stop hook blocks once per session when the tree changed and no doc was written in eight hours (`[everlast]` line); the SessionEnd hook commits and pushes the vault and, in mode `repo`, the project's doc root (push when sure, pull request when not; `EVERLAST project sync <repo>` does it now, `--dry-run` shows what it would do).
 
 ## While working: capture learnings
 

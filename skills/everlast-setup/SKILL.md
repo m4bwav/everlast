@@ -15,25 +15,33 @@ Read `evergreen.json` next to this file. If `verify_at_use` is true, re-check th
 
 ## Step 1: is there a vault?
 
-`EVERLAST vault where`. No vault: run `everlast-vault` first (`vault init`, one command) or, on a machine that already has one elsewhere, point `everlast.config.json` or `EVERLAST_VAULT` at it. Do not register projects into a missing vault.
+`EVERLAST vault where`. No vault: run `everlast-vault` first (`vault init`, one command) or, on a machine that already has one elsewhere, point `everlast.config.json` or `EVERLAST_VAULT` at it. Do not register projects into a missing vault. A vault with no remote (`vault remote` says local only): ask the one-line back-up question from `everlast-vault` (an existing private repository's URL, or permission to create one) and push nothing until it is answered.
 
 ## Step 2: read what the repo already has
 
 Look at the root for `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `CODEMAP.md`, `docs/`, `ai-docs/`, `.claude/rules/`, and any `docs/solutions` or `docs/plans` (Every's compound-engineering layout). Repo conventions win: a repo already running compound-engineering keeps `docs/solutions/` as its root (`--root docs`); say so.
 
-## Step 3: choose the mode (ask once)
+## Step 3: choose the mode and the sync (ask once)
 
-Ask the user one question unless the answer is already known from the vault registry or the conversation:
+Ask the user one question (two in mode `repo`) unless the answers are already known from the vault registry or the conversation:
 
 - `repo`: the doc set is committed with the project (`<repo>/ai-docs/`). Right for personal repos and teams that want shared agent memory. Private entries still go to the vault sidecar.
 - `excluded`: the repo must not carry it (a work repo, a client's, an open-source project, a monorepo with its own rules). The doc set lives in the vault (`<vault>/projects/<slug>/ai-docs/`), is junctioned into the project as `ai-docs/` so paths stay local, and `/ai-docs/` is written to `.git/info/exclude` so it never shows in `git status`. `--no-link` keeps it in the vault only.
 
 Signals for `excluded` without asking: a remote on a company host, a `CODEOWNERS` file, more than one committer in `git shortlog -sn`, or the user has said the repo is work. When in doubt, ask; the cost of a wrong `repo` choice is a leak.
 
+In mode `repo`, also ask how the docs reach the remote (`--sync`):
+
+- `push` (default): at session end everlast commits `ai-docs/` alone, pushes the branch when it is sure (upstream set, not behind after a fetch, every unpushed commit the user's own, push accepted) and opens a pull request from a docs-only `everlast/docs-*` branch when it is not. Right for a personal repo.
+- `pr`: always the pull request, never a push of the user's branch. Right for a shared repo, a protected default branch, or a user who reviews everything.
+- `off`: git stays the user's; the SessionStart line reports uncommitted or unpushed docs instead.
+
+No remote yet: say so; `push` still commits locally, and the first push happens once a remote exists (an empty remote is pushed to directly).
+
 ## Step 4: register and scaffold (the action)
 
 ```
-EVERLAST project register <repo> --mode repo|excluded [--root ai-docs] [--no-link]
+EVERLAST project register <repo> --mode repo|excluded [--sync push|pr|off] [--root ai-docs] [--no-link]
 EVERLAST project status <repo>
 ```
 
@@ -45,11 +53,11 @@ Add the block from `templates/AGENTS.md.snippet` to `AGENTS.md` (or the file the
 
 ## Step 6: hooks (Claude Code only)
 
-Installed as a plugin, the hooks are already active: SessionStart orientation and HANDOFF, one Stop nudge, SessionEnd vault sync. Running from a bare clone: `EVERLAST hook install` adds them to `~/.claude/settings.json` (ask first; hooks edit the user's settings). Copilot: copy `adapters/copilot/hooks.json` into the repo's `.github/hooks/` only if the user wants the nudge there.
+Installed as a plugin, the hooks are already active: SessionStart orientation and HANDOFF (with the project's uncommitted or unpushed docs count in mode `repo`), one Stop nudge, SessionEnd vault sync and project docs sync (`project sync`, unless `--sync off`). Running from a bare clone: `EVERLAST hook install` adds them to `~/.claude/settings.json` (ask first; hooks edit the user's settings). Copilot: copy `adapters/copilot/hooks.json` into the repo's `.github/hooks/` only if the user wants the nudge there.
 
 ## Step 7: report
 
-Three lines: mode and slug, files created or adopted (public root and sidecar paths), whether AGENTS.md got the block, lint result.
+Three lines: mode, sync and slug, files created or adopted (public root and sidecar paths), whether AGENTS.md got the block, lint result.
 
 ## Output
 

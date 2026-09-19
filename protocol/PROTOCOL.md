@@ -1,6 +1,6 @@
 # The Everlast Protocol
 
-Version 1.2 (2026-09-18). What an AI coding agent does so that nothing it learns is lost when the user changes session, model, tool or vendor. A sibling of the Evergreen Protocol (which keeps skills and research current); everlast keeps the knowledge gained while working. Every everlast skill points here. Companion specs: [DOC-TYPES.md](DOC-TYPES.md) (which documents, their shape, budgets, prune rules), [PRIVACY.md](PRIVACY.md) (what may sit in a shared repository), [PORTABILITY.md](PORTABILITY.md) (install per tool). Evidence: [../RESEARCH.md](../RESEARCH.md).
+Version 1.3 (2026-09-18). What an AI coding agent does so that nothing it learns is lost when the user changes session, model, tool or vendor. A sibling of the Evergreen Protocol (which keeps skills and research current); everlast keeps the knowledge gained while working. Every everlast skill points here. Companion specs: [DOC-TYPES.md](DOC-TYPES.md) (which documents, their shape, budgets, prune rules), [PRIVACY.md](PRIVACY.md) (what may sit in a shared repository), [PORTABILITY.md](PORTABILITY.md) (install per tool). Evidence: [../RESEARCH.md](../RESEARCH.md).
 
 ## 1. Why this exists
 
@@ -12,7 +12,7 @@ Five principles decide most edge cases:
 2. Two tiers, one layout. The user tier (about the person, their machines, lessons that span projects) lives in a private vault repository. The project tier lives with the project when the project can hold it, in the vault when it cannot. Both use the same doc set so one script and one habit cover both.
 3. Private by default at the boundary. Anything naming a person other than the user, an opinion about people or teams, a credential, an internal name or a customer goes to a private store, never to a repository other people can read. A scan enforces it; a human can override with a recorded decision.
 4. On demand, not always-on. One short pointer in the always-on file; an index of one line per entry; entries opened only when their title or tags match. Budgets keep every file small.
-5. Evidence, not narration. A capture is proven by the file the script printed; a resume by the file reads in the trace; a sync by the commit in the vault. A reply saying it was done proves nothing.
+5. Evidence, not narration. A capture is proven by the file the script printed; a resume by the file reads in the trace; a sync by the commit in the vault or the project remote. A reply saying it was done proves nothing.
 
 ## 2. The tiers
 
@@ -23,13 +23,17 @@ Five principles decide most edge cases:
 | project, mode `excluded` | `<vault>/projects/<slug>/ai-docs/`, junctioned to `<repo>/ai-docs/` and listed in `.git/info/exclude` | the same doc set, for a repository that must not carry it (work, client, open source) | nobody |
 | private sidecar | `<vault>/projects/<slug>/private/` | the entries a project produces that fail PRIVACY.md, in the same shapes | nobody |
 
-The vault is one git repository with a private remote; every machine clones it. Its path comes from `EVERLAST_VAULT`, then `everlast.config.json` at the plugin root, then `~/everlast-vault`. `registry.json` in the vault lists every project with its path and mode, so a new session can find the roots without asking.
+The vault is one git repository with a private remote; every machine clones it. Its path comes from `EVERLAST_VAULT`, then `everlast.config.json` at the plugin root, then `~/everlast-vault`. `registry.json` in the vault lists every project with its path, mode and sync setting, so a new session can find the roots without asking.
+
+Backup is part of the layout. When a vault is created and whenever a session starts with a vault that has no remote, the agent asks the user once: the URL of a private repository they already have (`everlast.py vault remote <url>`), or permission to create one (`everlast.py vault remote --create [name]` runs `gh repo create --private` in their account and re-checks that the result is private; one that comes out public is disconnected on the spot). Nothing is pushed until the user chooses. The remote must be private because the vault names people and machines by design; credentials never belong in it at all (PRIVACY.md), so a private remote is the whole requirement. The reason for a remote at all: a vault on one disk is a single point of loss, and the commit history is where the user sees what agents have been writing.
+
+A mode `repo` project's doc set is backed up by the project's own remote. At session end the SessionEnd hook (or `everlast.py project sync <repo>`) commits the doc root, and only the doc root (the user's other changes stay as they were, staged or not), with a subject that lists what was added or changed, then pushes the branch when it is sure and opens a pull request when it is not. Sure means all of: the branch has an upstream, it is not behind that upstream after a fetch, every unpushed commit is the user's own, and the push is accepted. Anything else (no upstream, behind or diverged, someone else's commits in the range, a rejected or protected push, or the project registered with `--sync pr`) puts the doc root's current state on a fresh `everlast/docs-<host>-<stamp>` branch off the remote's default branch and opens a pull request from it, so the docs still reach the remote for review and no code travels with them. An empty remote is pushed to directly; there is nothing on it to be unsure about. `--sync off` leaves the project's git to the user, and the SessionStart line reports uncommitted or unpushed docs instead. Commit subjects and bodies list the files (`+new ~changed -gone`), in the vault as well, so the history itself shows what everlast wrote.
 
 ## 3. Session shape
 
 - Start. The Claude Code SessionStart hook prints one orientation line (project slug and mode, user-tier entry count, vault behind or missing) and the project HANDOFF when it holds real content. In a tool without hooks, `everlast-resume` Step 1 does the same read by hand. New to a machine or product: read `user/PROFILE.md` and the machine's section of `user/ENVIRONMENTS.md` once.
 - During. Write a user-tier lesson the moment it happens (a correction, a preference, an environment fact); do not wait for the end. Anything about a skill goes to that skill's `LEARNINGS.md` (evergreen); anything about the code's layout to `CODEMAP.md`; a repo rule to `AGENTS.md`.
-- End. `everlast-capture`: harvest, route, classify for privacy, write with the script, rewrite HANDOFF when work is unfinished, lint. The Stop hook nudges once when the tree changed and nothing was written. The SessionEnd hook commits and pushes the vault in a detached process.
+- End. `everlast-capture`: harvest, route, classify for privacy, write with the script, rewrite HANDOFF when work is unfinished, lint. The Stop hook nudges once when the tree changed and nothing was written. The SessionEnd hook commits and pushes the vault, and a mode `repo` project's doc root (push when sure, pull request when not; section 2), each in a detached process.
 
 ## 4. Routing, most specific home wins
 
