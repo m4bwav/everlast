@@ -54,7 +54,7 @@ python scripts/everlast.py vault remote [<url> | --create [name]]   # back the v
 python scripts/everlast.py project register <repo> --mode repo|excluded [--sync push|pr|off] [--no-link]
 python scripts/everlast.py project status <repo> | list
 python scripts/everlast.py project sync <repo> [--dry-run] [--pr]    # mode repo: commit the doc root only, push when sure, pull request when not
-python scripts/everlast.py note <repo> --kind solution|decision|plan|note --title "..." --tags a,b --body-file f [--private | --user]
+python scripts/everlast.py note <repo> --kind solution|decision|plan|note --title "..." --tags a,b [--summary "when to read it"] --body-file f [--private | --user]
 python scripts/everlast.py handoff <repo> --body-file f
 python scripts/everlast.py lint <repo> [--all]      # budgets, headings, dead paths, stale, duplicates, privacy, exclusion
 python scripts/everlast.py scan <repo>              # privacy scan only

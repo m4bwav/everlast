@@ -25,7 +25,7 @@ Commands
   pull     [--dry-run]                 update this clone from the official repository; SessionStart says when it is behind
   contribute [yes|no|status]          asked once at install: may this install open pull requests with its learnings?
   publish  [--if-changed] [--dry-run]  consent-gated draft pull request on the official repository (four log kinds only)
-  note     <repo> --kind K --title T [--tags a,b] [--body-file F | --stdin] [--supersedes PATH] [--private | --user]
+  note     <repo> --kind K --title T [--tags a,b] [--summary "when to read it"] [--body-file F | --stdin] [--supersedes PATH] [--private | --user]
   handoff  <repo> (--body-file F | --stdin) [--private | --user]   replace HANDOFF.md
   index    <repo> [--private | --user]         rebuild INDEX.md
   lint     <repo> [--stale-days N] [--all]     budgets, headings, dead paths, stale, duplicates, privacy scan
@@ -590,19 +590,20 @@ def cmd_init(a):
 def build_index(root):
     rows = []
     for rel, meta, _ in entries(root):
-        rows.append((meta.get("date", ""), meta["kind"], meta["status"], meta["title"], rel, meta.get("tags", [])))
+        rows.append((meta.get("date", ""), meta["kind"], meta["status"], meta["title"], rel, meta.get("tags", []), str(meta.get("summary") or "").strip()))
     for name, meta in adopt_loose_files(root):
-        rows.append((meta["date"], meta["kind"], meta["status"], meta["title"], name, meta["tags"]))
+        rows.append((meta["date"], meta["kind"], meta["status"], meta["title"], name, meta["tags"], ""))
     rows.sort(key=lambda r: (r[1], r[0]))
     lines = [INDEX_HEADER.rstrip()]
     current = None
-    for date, kind, status, title, rel, tags in rows:
+    for date, kind, status, title, rel, tags, summary in rows:
         if kind != current:
             lines.append(f"\n## {DIRS.get(kind, kind)}\n")
             current = kind
         tag = (" `" + ",".join(tags) + "`") if tags else ""
         flag = "" if status == "active" else f" ({status})"
-        lines.append(f"- {date or 'undated'} [{title}]({rel}){flag}{tag}")
+        why = f": {summary}" if summary else ""
+        lines.append(f"- {date or 'undated'} [{title}]({rel}){flag}{tag}{why}")
     write(os.path.join(root, "INDEX.md"), "\n".join(lines).rstrip() + "\n")
     return len(rows)
 
@@ -682,6 +683,8 @@ def cmd_note(a):
     if os.path.exists(path) and not a.force:
         fail(f"{rel} exists; use --force to overwrite or choose another title")
     meta = {"title": a.title, "kind": a.kind, "status": "active", "date": d, "verified": d, "tags": tags}
+    if getattr(a, "summary", None):
+        meta["summary"] = a.summary.strip()   # one line, when to read it; shown in INDEX.md so the entry is not a bare link
     agent = a.agent or os.environ.get("EVERLAST_AGENT") or ""
     model = a.model or os.environ.get("EVERLAST_MODEL") or ""
     if agent:
@@ -1683,7 +1686,7 @@ def main():
     p = sub.add_parser("index"); common(p); p.set_defaults(fn=cmd_index)
     p = sub.add_parser("note"); common(p)
     p.add_argument("--kind", required=True); p.add_argument("--title", required=True)
-    p.add_argument("--tags"); p.add_argument("--body-file"); p.add_argument("--stdin", action="store_true")
+    p.add_argument("--tags"); p.add_argument("--summary", help="one line: when to read this entry (shown in INDEX.md)"); p.add_argument("--body-file"); p.add_argument("--stdin", action="store_true")
     p.add_argument("--supersedes"); p.add_argument("--force", action="store_true")
     p.add_argument("--agent", help="provenance: the tool that wrote this (default EVERLAST_AGENT)"); p.add_argument("--model", help="provenance: the model (default EVERLAST_MODEL)")
     p.add_argument("--allow-missing", action="store_true"); p.add_argument("--allow-private", action="store_true", help="write despite privacy hits (reviewed)")

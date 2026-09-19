@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260918-4 · 2026-09-18 · Protocol 1.4: the index first, with a `summary` clause per entry and no back-link requirement; plugin 0.3.2
+- because: the owner's request (indexes that link most docs as a net positive for agents and people, without costing agent performance; back-links only where useful); R-20260918-1
+- files: protocol/PROTOCOL.md §8, protocol/DOC-TYPES.md (layer table, frontmatter `summary`, rules), templates/AGENTS.md.snippet, scripts/everlast.py (`note --summary`, `build_index` shows the summary after the link), README §Using the script, .claude-plugin/plugin.json (0.3.2)
+- 1.2 asked every entry to link back to its index; 1.4 drops that (the index-to-entry edge is the one graph editors show, and no study shows an agent using the reverse) and instead asks for a one-line `summary` so an index line says when to open the entry rather than being a bare path. Existing entries without a summary keep their old line; the field is optional.
+
 ### C-20260918-3 · 2026-09-18 · Plugin 0.3.1: commit subjects list added files first
 - because: the owner's stated reason for the remote ("I can see what it's adding in the commits"); the first real vault commit under 0.3.0 led with `~.gitignore, -.sync.log, ...` and the new note fell into the body
 - files: scripts/everlast.py (`change_summary` sorts `+` before `~` before `-`), .claude-plugin/plugin.json (0.3.1)
