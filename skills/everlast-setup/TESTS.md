@@ -8,7 +8,7 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
-### T-20260906-1 · 2026-09-06 · evergreen-tester subagent (one run per case, not three) · home-pc Claude Code · 2/2
+### T-20260906-1 · 2026-09-06 · evergreen-tester subagent (one run per case, not three) · owner-pc Claude Code · 2/2
 - action-1 pass (Skill(everlast-setup) invoked; `everlast.py init` and `lint` in the trace; repo2/ai-docs/{INDEX,HANDOFF,log,README}.md and four folders exist; AGENTS.md block written; no hook, settings untouched)
 - decoy-2 pass (everlast-setup not invoked; everlast-capture handled the note)
 - Not run: trigger-1, trigger-2, decoy-1, outcome-1. Subagent trigger results are a proxy for the main loop.

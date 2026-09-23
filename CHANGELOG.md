@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260922-1 · 2026-09-22 · Machine and project labels generalised in the published files
+- because: the repository rule (no personal data, machine names only in a fork's state files); found while refreshing everlast-capture
+- files: TESTS.md (T-20260913-1, T-20260913-2 env), ai-docs/plans/2026-09-13-everlast-rollout.md (log line), skills/everlast-capture/LEARNINGS.md (a Scope and an Evidence line), skills/everlast-capture/TESTS.md, skills/everlast-resume/TESTS.md, skills/everlast-setup/TESTS.md (T- env labels), skills/everlast-setup/evergreen.json (tests env)
+- The development machine's nickname became `owner-pc` (the label the public state files already use) and a private project and skill name became generic descriptions. The git history still carries the old strings.
+
 ### C-20260918-4 · 2026-09-18 · Protocol 1.4: the index first, with a `summary` clause per entry and no back-link requirement; plugin 0.3.2
 - because: the owner's request (indexes that link most docs as a net positive for agents and people, without costing agent performance; back-links only where useful); R-20260918-1
 - files: protocol/PROTOCOL.md §8, protocol/DOC-TYPES.md (layer table, frontmatter `summary`, rules), templates/AGENTS.md.snippet, scripts/everlast.py (`note --summary`, `build_index` shows the summary after the link), README §Using the script, .claude-plugin/plugin.json (0.3.2)

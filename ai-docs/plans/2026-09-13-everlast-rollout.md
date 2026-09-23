@@ -13,7 +13,7 @@ tags: [rollout]
 Everlast installed and in daily use on every machine and agent product the user runs, with the vault current everywhere.
 
 ## Status
-2026-09-13: plugin 0.1.0 built, self-test passing, vault created and seeded from the evergreen profile, repositories pushed, plugin installed in Claude Code on the home PC.
+2026-09-13: plugin 0.1.0 built, self-test passing, vault created and seeded from the evergreen profile, repositories pushed, plugin installed in Claude Code on the owner's machine.
 
 ## Steps
 - [x] Protocol, four skills, script, hooks, templates, evals scaffold

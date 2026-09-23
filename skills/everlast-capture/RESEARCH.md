@@ -2,31 +2,35 @@
 
 Findings that back [SKILL.md](SKILL.md). Changes they caused are logged in [CHANGELOG.md](CHANGELOG.md); procedural lessons live in [LEARNINGS.md](LEARNINGS.md); test runs and their evidence in [TESTS.md](TESTS.md); schedule and state in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Topic: how AI coding agents capture session knowledge in modular, on-demand repo documentation. Tier `fast`. Last refresh 2026-09-06; next due 2026-09-20. This is the suite's research hub: `everlast-setup` and `everlast-resume` keep only the findings specific to their own claims and point here for the rest.
+Topic: how AI coding agents capture session knowledge in modular, on-demand repo documentation. Tier `fast`. Last refresh 2026-09-22; next due per `evergreen.json`. This is the suite's research hub: `everlast-setup` and `everlast-resume` keep only the findings specific to their own claims and point here for the rest.
 
 ## Current understanding
 
 - Always-on context has a measured cost and a narrow benefit. ETH Zurich (arXiv 2602.11988, rev. 2026-06-23; SWE-bench, several agents) found repo context files did not raise success and cost over 20% more tokens, while their *instructions* were followed well and their *repository overviews* were not useful; a Codex study of 124 PRs (arXiv 2601.20404) found AGENTS.md cut wall-clock 28.6% and output tokens 16.6%. Read together: keep always-on text short and rule-shaped, put everything else behind an index. This is the reason for the layers.
-- Claude Code's auto-memory (code.claude.com/docs/en/memory, 2026-06) stores four typed notes (user, feedback, project, reference), loads the first 200 lines of MEMORY.md, and explicitly skips anything derivable from the codebase and "debugging fixes". Debugging dead ends, verified commands and decision rationale are therefore nobody's job by default; that is the gap this skill fills. `.claude/rules/` with `paths:` frontmatter gives path-scoped always-on rules; `/doctor` proposes CLAUDE.md trims; `InstructionsLoaded` hook logs which files loaded.
+- Claude Code's auto-memory (code.claude.com/docs/en/memory, 2026-06) stores four typed notes (user, feedback, project, reference), loads the first 200 lines or 25KB of MEMORY.md (whichever comes first), and explicitly skips anything derivable from the codebase and "debugging fixes". Debugging dead ends, verified commands and decision rationale are therefore nobody's job by default; that is the gap this skill fills. `.claude/rules/` with `paths:` frontmatter gives path-scoped always-on rules; `/doctor` proposes CLAUDE.md trims; `InstructionsLoaded` hook logs which files loaded. Since 2.1.277 (2026-09-18) Claude Code reads a repository's AGENTS.md itself, but by default only when no CLAUDE.md or CLAUDE.local.md exists in the working directory or above; with one, only the CLAUDE.md files load unless CLAUDE.md imports AGENTS.md with an `@AGENTS.md` line, and a pointer written in prose loads nothing (not available on Bedrock, Vertex or Foundry yet).
 - Agent-maintained doc sets decay. A 391-session action study (arXiv 2606.19121) documents "index sickness": agent-kept indexes drifted from the files and the model fell back to self-referential reasoning. Hence a generated index (from frontmatter, never hand-edited) and a lint that runs at resume time.
-- Shape: Karpathy's llm-wiki gist (2026-04, 5k stars in two weeks) settled the pattern of an immutable source layer, an LLM-owned wiki with `index.md`, an append-only `log.md`, and three operations (ingest, query, lint); Every's compound-engineering plugin (24.9k stars, 33 skills, 14 hosts) writes learnings to `docs/solutions/` and plans to `docs/plans/` and has its planning skill read them back. The suite's folder names follow these so files stay portable.
-- Handoff files are a commodity (mattpocock/skills `handoff`, softaworks session-handoff and clones): done, in progress, decisions with reasons, failed approaches, one next action, under 50 lines. Adopted as HANDOFF.md rather than re-invented.
+- Shape: Karpathy's llm-wiki gist (2026-04, 5k stars in two weeks) settled the pattern of an immutable source layer, an LLM-owned wiki with `index.md`, an append-only `log.md`, and three operations (ingest, query, lint); Every's compound-engineering plugin (25.2k stars, 36 skills, 14 hosts by 2026-09-22; `ce-handoff` and Compound Packs added in September) writes learnings to `docs/solutions/` and plans to `docs/plans/` and has its planning skill read them back. The suite's folder names follow these so files stay portable.
+- Handoff files are a commodity (mattpocock/skills `handoff`, softaworks session-handoff and clones): done, in progress, decisions with reasons, failed approaches, one next action, under 50 lines. Adopted as HANDOFF.md rather than re-invented. The most-installed handoff skills are deliberately temporary (mattpocock `handoff`, ~852K installs, writes to the OS temp dir; `claude-handoff`, ~305K, starts a background session; compound-engineering's `ce-handoff` writes under /tmp with repo, branch and HEAD), so HANDOFF.md is the durable, versioned variant. Handoff Debt (arXiv 2606.02875, 724 takeover runs on small open models) measured notes cutting the successor's prompt tokens 42 to 63% against the repository alone; its schema carries the latest validation command and its evidence.
 - Consolidation vocabulary comes from Anthropic's Dreams (Managed Agents beta `dreaming-2026-04-21`) and Claude Code's Auto Dream: merge duplicates, drop contradicted facts, absolute dates, rebuild the index, write only memory files. Adopted as the prune pass.
-- Prod mechanism: Claude Code has Stop (with `stop_hook_active`), SessionStart (stdout injected as context) and PreCompact hooks; Stop can block once with `{"decision":"block","reason":...}`. Copilot CLI hooks (`.github/hooks/*.json`) fired per prompt in interactive mode as of 2026-01 (github/copilot-cli#991). The instruction-file line plus the skill description are the portable prods; the hook is a Claude Code extra.
-- No neutral benchmark measures whether repo docs reduce relearning for coding agents (LoCoMo, LongMemEval, MemoryAgentBench test conversational recall; vendor memory benchmarks are self-run). Evidence for this skill is self-made: the file exists with the required headings, the index line exists, and a repeat-task probe consults `solutions/` before re-experimenting. Linters for context files exist (cclint, YawLabs/ctxlint cross-references paths against the codebase) and shaped the dead-path check.
-- Nothing in the MCP registry (`search=memory`, 30 servers, mostly hosted vector stores plus Letta) does this job; claude-mem (hook-driven transcript memory, large user base, stars unverified) is complementary, not a substitute: it stores observations, this stores curated, git-tracked, human-readable entries.
+- Prod mechanism: Claude Code has Stop (with `stop_hook_active`), SessionStart (stdout injected as context) and PreCompact hooks; Stop can block once with `{"decision":"block","reason":...}`. Copilot CLI hooks (`.github/hooks/*.json`) misfired per prompt in interactive mode until github/copilot-cli#991 was closed (2026-04-08); 1.0.88 (2026-09-22) merges sessionStart `additionalContext`, and since 1.0.86 custom agents read AGENTS.md or CLAUDE.md only with `include-custom-instructions: true`. The instruction-file line plus the skill description are the portable prods; the hook is a Claude Code extra.
+- The first neutral benchmark of memory for coding agents, VibeMemBench (arXiv 2609.23570, 2026-09-20; 111 targets from 90 repositories; five open-weight solvers, no Claude or GPT), found four systems that ingest the full history beat memory-off in only 1 of 12 pairings, while injecting verified experience gave +0 to +4.5 points and fewer steps for every solver; 69.3% of failures were the fix buried in raw transcript, and the records that helped were about four or five lines with an explicit fix and a file, directory or identifier anchor. Before it, LoCoMo, LongMemEval and MemoryAgentBench tested conversational recall and vendor benchmarks were self-run. Evidence for this skill is self-made: the file exists with the required headings, the index line exists, and a repeat-task probe consults `solutions/` before re-experimenting. Linters for context files exist (cclint, YawLabs/ctxlint cross-references paths against the codebase) and shaped the dead-path check.
+- Nothing in the MCP registry (`search=memory`, 30 servers, mostly hosted vector stores plus Letta) does this job; claude-mem (hook-driven transcript memory, large user base, stars unverified) is complementary, not a substitute: it stores observations, this stores curated, git-tracked, human-readable entries. Since 2026-09-06: claude-mem is at ~94.5k stars (v13.25.3); new file-first servers (bettermemory, memory-fabric, project-memory) have 0 to 1 stars; Funes claims transcript recall is cheaper than a written handoff on two tasks of its own authors'.
 
-- Automatic skill creation (2026-09-06 pass): no shipped product creates skills unasked; Anthropic's internal `/skillify` leaked as interactive community ports with tiny adoption, Every's `/ce-compound` writes solutions not skills, the "self-improving skills" Stop-hook pattern updates existing skills only. The literature is clear on the costs: triggering accuracy falls past roughly 64 to 128 skills (Dynamic Agent Skills survey), model-generated skills show non-trivial negative transfer without a baseline (arXiv 2605.23899), skills evolved in one context lose 4.8 to 7.5 points when moved (arXiv 2606.23127), and SkillOps-style merge/repair/retire keeps a library healthy where plain growth does not. Claude Code itself caps the skill listing at about 1% of context (default `skillListingBudgetFraction` 0.01, 1536 chars per description, least-invoked skills evicted silently; community-documented from source, not in the changelog) and ships `/skill-doctor` (2.1.261) for unused-skill and cost reports. Vercel measured skills unused in 56% of relevant tasks while an 8KB always-on index hit 100%. Policy adopted: evidence-gated, overlap-gated, budget-gated, repo-scoped, trial-until-tested, retire-on-non-use, one per session, report not ask.
+- Automatic skill creation (2026-09-06 pass): no shipped product installs a skill unasked (Gemini CLI's experimental Auto Memory drafts SKILL.md files into a `/memory inbox` for review); Anthropic's internal `/skillify` leaked as interactive community ports with tiny adoption, Every's `/ce-compound` writes solutions not skills, the "self-improving skills" Stop-hook pattern updates existing skills only. The literature is clear on the costs: triggering accuracy falls past roughly 64 to 128 skills (Dynamic Agent Skills survey), model-generated skills show non-trivial negative transfer without a baseline (arXiv 2605.23899), skills evolved in one context lose 4.8 to 7.5 points when moved (arXiv 2606.23127), and SkillOps-style merge/repair/retire keeps a library healthy where plain growth does not. Claude Code itself caps the skill listing at about 1% of context (default `skillListingBudgetFraction` 0.01, 1536 chars per description, least-invoked skills evicted silently; community-documented from source, not in the changelog) and ships `/skill-doctor` (2.1.261) for unused-skill and cost reports. Vercel measured skills unused in 56% of relevant tasks while an 8KB always-on index hit 100%. Policy adopted: evidence-gated, overlap-gated, budget-gated, repo-scoped, trial-until-tested, retire-on-non-use, one per session, report not ask.
+- Lessons hold better as checks than as text: Cursor's `principle-encode-lessons-in-structure` skill ("the instruction is the symptom"), TRACE (arXiv 2606.13174: 57.5% of corrections still violated with memory-only storage; compiling them into runtime checks cuts that) and a study of instruction-file smells (arXiv 2606.15828: rules that belong in lint or CI in 62% of AGENTS.md and CLAUDE.md files). An eight-month single-project case study (arXiv 2609.05510) kept 59 of 154 decisions and 47 of 186 dead ends after triage: a store that ingests everything becomes noise.
 
 ## Open questions
 
 - Does the 1% listing budget apply identically to plugin and junctioned skills, and is `/skill-doctor` output readable from a file? (Affects `skill-budget` accuracy and the rollback signal.)
 
-- skills.sh install counts for handoff, compound-engineering and documentation skills (site search failed 2026-09-06); use `skills.sh/api/skills` next time.
+- (resolved 2026-09-22) skills.sh install counts come from `skills.sh/api/search?q=<term>`; `/api/skills` returns 404.
 - Is Auto Dream GA in Claude Code, and does it touch anything outside the auto-memory directory? If it ever consolidates repo files, the prune pass should defer to it.
-- Copilot CLI #991 status: if fixed, add a `sessionEnd` variant of the nudge hook to `everlast-setup`.
+- (resolved 2026-09-22) Copilot CLI #991 was closed 2026-04-08, so a `sessionEnd` variant of the nudge hook for Copilot CLI is possible (everlast-setup).
+- Excluded mode writes a CLAUDE.local.md, which stops Claude Code 2.1.277+ from reading the repository's AGENTS.md unless it imports it; everlast-setup Step 5 and the excluded-mode writer need the `@AGENTS.md` import (contradiction flagged on everlast-setup 2026-09-22).
+- HANDOFF sections: add `Last verified (command and result)` and branch/HEAD lines, as the Handoff Debt schema and `ce-handoff` do? That is a protocol DOC-TYPES change, not this skill's to make alone.
+- Does a hand-written pointer in `~/.codex/memories/` survive Codex's consolidation pass?
 - Does a Stop-hook nudge measurably raise capture rate without annoying the user? Watch the use log and the user's reaction; retire the hook if `harmful` climbs.
-- Karpathy gist URL and claude-mem star count were taken from secondary coverage; verify on the next refresh.
+- (resolved 2026-09-22) The Karpathy gist is karpathy/442a6bf555914893e9891c11519de94f (2026-04-04, 5k+ stars); claude-mem ~94.5k stars.
 
 ## Search plan
 
@@ -60,9 +64,60 @@ Testing (how work on this subject is verified, and how skills for it are tuned):
 
 Best sources (primary first): code.claude.com/docs (memory, hooks), arxiv.org (2602.11988, 2601.20404, 2606.19121 and citing papers), github.com repos named above, platform.claude.com (Dreams), docs.github.com (Copilot CLI hooks), promptfoo.dev/docs. Noisy: SEO "2026 guide to CLAUDE.md" pages, vendor memory benchmarks read alone, Medium (403), scraped skill mega-directories.
 
+Refresh notes (2026-09-22): `skills.sh/api/search?q=` for install counts; the MCP registry's `updated_since`; HN Algolia with `numericFilters=created_at_i>` a date; GitHub release tag pages (the raw Claude Code CHANGELOG starts at 2.1.269); raw.githubusercontent.com instead of blob or tree URLs, which return 404 to fetchers; developers.openai.com/codex now redirects to learn.chatgpt.com. Noisy: SEO "AGENTS.md guide" pages.
+
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20260922-7 · 2026-09-22 · Testing: the suite's trace matchers were stale; in-place updates are invisible to `file_exists`
+- summary: evals.json action-1 and promote-1 still matched `aidocs.py`, which the absorption into everlast renamed, so only their alternative branch could pass. `claude plugin eval`'s `file_exists` counts only files created during the run, so an in-place update of an entry cannot be proven that way.
+- track: testing
+- sources: https://code.claude.com/docs/en/plugin-evals
+- magnitude: 0.35
+- applied: C-20260922-2 (evals action-1 and promote-1 matchers; update and supersede cases left as an open question)
+
+### R-20260922-6 · 2026-09-22 · Practice: turn lessons into checks; keep the store selective
+- summary: Cursor's official `principle-encode-lessons-in-structure` skill, TRACE (arXiv 2606.13174) and a study of instruction-file smells (arXiv 2606.15828) converge: a rule that a linter, test, type or hook can hold should become that check, with one line naming it. A single-project case study (arXiv 2609.05510) kept about a third of its extracted decisions and a quarter of its dead ends after triage.
+- track: practice
+- sources: https://www.skills.sh/cursor/plugins/principle-encode-lessons-in-structure, https://arxiv.org/abs/2606.13174, https://arxiv.org/abs/2606.15828, https://arxiv.org/html/2609.05510
+- magnitude: 0.4
+- applied: C-20260922-2 (SKILL.md Step 3 rule 1; evals selectivity-1)
+
+### R-20260922-5 · 2026-09-22 · Subject: VibeMemBench, the first neutral benchmark of memory for coding agents
+- summary: 111 targets from 90 repositories: four full-history memory systems beat memory-off in 1 of 12 pairings; injected verified experience helped every solver (+0 to +4.5 points, fewer steps); 69.3% of failures were a fix buried in raw transcript; helpful records were four or five lines with an explicit fix and an anchor (file, directory or identifier). Five open-weight solvers only.
+- track: subject
+- sources: https://arxiv.org/abs/2609.23570
+- magnitude: 0.5
+- applied: C-20260922-2 (SKILL.md Writing rules; Current understanding)
+
+### R-20260922-4 · 2026-09-22 · Subject: handoff notes cut takeover cost; the popular handoff skills are temporary
+- summary: Handoff Debt (arXiv 2606.02875 v2, 724 takeover runs) measured 42 to 63% fewer successor prompt tokens with notes than with the repository alone; raw traces solved more but were over-trusted; its schema carries the latest validation command and its evidence. skills.sh: mattpocock `handoff` ~852K installs (OS temp dir), `claude-handoff` ~305K (background session), compound-engineering `ce-handoff` (/tmp, repo, branch, HEAD). Response: point; a `Last verified` HANDOFF section is left to a protocol change.
+- track: subject, tooling
+- sources: https://arxiv.org/abs/2606.02875, https://skills.sh/api/search?q=handoff, https://github.com/EveryInc/compound-engineering-plugin/releases
+- magnitude: 0.35
+- applied: RESEARCH.md only (Current understanding; Open questions)
+
+### R-20260922-3 · 2026-09-22 · Subject: Claude Code 2.1.277 reads AGENTS.md, but only when no CLAUDE.md or CLAUDE.local.md exists
+- summary: The memory docs: with an AGENTS.md and a CLAUDE.md or CLAUDE.local.md in the working directory or above, only the CLAUDE.md files load (default `claude-md-or-agents-md`); a CLAUDE.md that imports `@AGENTS.md` includes it; a pointer in prose loads nothing; adding a CLAUDE.local.md switches AGENTS.md reading off. MEMORY.md loads the first 200 lines or 25KB. The most discussed item of the period on HN.
+- track: subject
+- sources: https://code.claude.com/docs/en/memory (read 2026-09-22), https://github.com/anthropics/claude-code/releases/tag/v2.1.277
+- magnitude: 0.5
+- applied: C-20260922-2 (SKILL.md Prod mechanism; Current understanding); contradiction flagged on everlast-setup (Step 5 and the excluded-mode CLAUDE.local.md)
+
+### R-20260922-2 · 2026-09-22 · Subject: Copilot CLI hook bug fixed; Gemini CLI drafts skills for review
+- summary: github/copilot-cli#991 closed 2026-04-08; 1.0.88 merges sessionStart `additionalContext`; since 1.0.86 custom agents read instruction files only with `include-custom-instructions: true`. Gemini CLI's experimental Auto Memory mines idle sessions (3 hours, 10+ user messages) into SKILL.md drafts in `/memory inbox`, never editing the repository's GEMINI.md.
+- track: subject
+- sources: https://api.github.com/repos/github/copilot-cli/issues/991, https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md, https://geminicli.com/docs/cli/auto-memory/
+- magnitude: 0.25
+- applied: RESEARCH.md only (Current understanding; Open questions)
+
+### R-20260922-1 · 2026-09-22 · Tooling: new memory servers and claude-mem; nothing adopted
+- summary: claude-mem ~94.5k stars (v13.25.3, 2026-09-21). New file-first servers since the last check (bettermemory, memory-fabric, project-memory) have 0 to 1 stars; Funes indexes transcripts and claims recall beats a written handoff on two tasks of its authors'. None displaces this skill; note only.
+- track: tooling
+- sources: https://registry.modelcontextprotocol.io/v0/servers?search=memory&updated_since=2026-09-06T00:00:00Z, https://github.com/0Mattias/bettermemory, https://huggingface.co/blog/funes
+- magnitude: 0.15
+- applied: note only
 
 ### R-20260906-7 · 2026-09-06 · Testing: trigger-eval method, cross-skill decoys, linters for shape but none for overlap
 - Summary: agentskills.io and skill-creator converge on about 20 queries (8 to 10 triggers, 8 to 10 near-miss decoys), three runs each, pass at trigger rate 0.5, 60/40 split, five iterations, 1024-char description limit; the missing piece everywhere is using sibling skills' trigger prompts as decoys to catch competition. skill-lint, skillscheck and cclint check frontmatter and bloat; none detects two skills competing for one prompt. Applied: promote-scan's keyword overlap gate and the "sibling triggers as decoys" rule in Step 4b.
