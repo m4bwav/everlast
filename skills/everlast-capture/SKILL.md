@@ -5,7 +5,7 @@ description: "Write down what a work session learned so no future agent, model o
 
 # everlast capture (never relearn what a session already paid for)
 
-Outcome: the non-derivable knowledge from this session exists as small files in the right tier, listed in that tier's `INDEX.md`, logged in its `log.md`, with the project `HANDOFF.md` telling the next session where to start. Nothing naming people, politics or credentials is in a shared repository. Evidence: the paths the script prints.
+Outcome: the non-derivable knowledge from this session exists as small files in the right tier, listed in that tier's `INDEX.md`, logged in its `log.md`, with the project `HANDOFF.md` telling the next session where to start; every solution carries a proof the next session can re-run. Nothing naming people, politics or credentials is in a shared repository. Evidence: the paths the script prints.
 
 ## Step 0: freshness (every use, one read)
 
@@ -50,10 +50,10 @@ Apply [PRIVACY.md](../../protocol/PRIVACY.md) to each candidate. Private by defa
 
 ## Step 5: write it (the action, with evidence)
 
-For each surviving candidate, check the tier's `INDEX.md` for an entry on the same problem or decision. Same topic: update that file (bump `verified:`, add the new dead end or command, tighten the fix) and log `update`. Contradicted: write the new entry with `--supersedes <old relpath>`. Otherwise write the body to a temp file with the required headings, then:
+For each surviving candidate, check the tier's `INDEX.md` for an entry on the same problem or decision (`EVERLAST search "<terms>" <repo>` when no line matches, since an earlier session may have worded it differently). Same topic: update that file (add the new dead end or command, tighten the fix), record that it was confirmed with `EVERLAST verify <entry> <repo>`, and log `update`. Contradicted: write the new entry with `--supersedes <old relpath>`. Otherwise write the body to a temp file with the required headings, then:
 
 ```
-EVERLAST note <repo> --kind solution|decision|plan|note --title "<short, searchable>" --tags a,b --body-file <tmp> [--private | --user]
+EVERLAST note <repo> --kind solution|decision|plan|note --title "<short, searchable>" --tags a,b [--aliases "a,b"] [--alias "exact error text"] [--summary "when to read it"] [--stale-after YYYY-MM-DD|never] --body-file <tmp> [--private | --user]
 EVERLAST handoff <repo> --body-file <tmp>          # replace, never append; under 50 lines; sections Current state, In progress, Decisions made this session, Dead ends hit, Next single action
 ```
 
@@ -62,6 +62,14 @@ User-tier profile and environment facts are edits in place to `user/PROFILE.md` 
 Finished work with nothing pending: leave HANDOFF as it is, or reset it if it describes work now done. Then `EVERLAST lint <repo> --all` and fix what it reports.
 
 Writing rules: one entry per problem or decision, not per session. Title is what a future agent would search for. Absolute dates. Paths in backticks. Commands copy-pasteable with the output that proved them. Put the fix in the first five lines of `## Fix` and name the files, directories or identifiers it applies to: in the one neutral benchmark, the records that helped were four or five lines with an explicit fix and an anchor, and most failures were a fix buried in narrative. Plain markdown, no tool-specific syntax, because the next reader may be Copilot or Codex.
+
+Check-before-use rules (detail: [../../protocol/DOC-TYPES.md](../../protocol/DOC-TYPES.md), Check before use), because the next session re-checks a stale entry instead of trusting it:
+
+- A solution's `## Verified by` is runnable: the command, copy-pasteable, and the output that proved it (`dotnet --list-sdks` printed `9.0.317`). `everlast.py recheck` prints it for the next session to re-run when it is safe; a proof that says only "it worked" cannot be rechecked.
+- `stale_after` defaults to verified plus the kind's window (solution 90 days, decision 180, note 120, plan 30). Pass an earlier `--stale-after` for a fix tied to a fast-moving tool or a pinned version, and `--stale-after never` for an invariant such as a naming convention.
+- `--aliases`: the other names a future agent might search for, the exact error string first (`--alias` keeps a string with commas whole), the tool's own words, a synonym. The index shows only the title; search reads aliases at the title's weight.
+- `Related:` links carry a label: `supersedes`, `superseded by`, `contradicts`, `builds on`, `see also` (`Related: builds on [the Postgres decision](../decisions/2026-01-20-postgres.md); see also [x](y.md)`). `note --supersedes` writes its own link. A `contradicts` pair left active on both sides is reported by the lint until one is superseded.
+- In an entry holding several independent facts (versions on a build machine, store limits), end each fact that can go out of date with `(verified YYYY-MM-DD)`, so the lint and search flag the one that aged instead of trusting the whole entry.
 
 ## Step 5b: promote to a skill, conservatively and without asking
 

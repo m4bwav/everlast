@@ -13,9 +13,9 @@
   "source": null,
   "topic": "how AI coding agents capture session knowledge in modular, on-demand repo documentation",
   "tier": "fast",
-  "interval_days": 7.0,
-  "last_checked": "2026-09-22",
-  "next_due": "2026-09-29",
+  "interval_days": 3.5,
+  "last_checked": "2026-09-23",
+  "next_due": "2026-09-27",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -38,12 +38,18 @@
       "m": 0.5,
       "interval_after": 7.0,
       "note": "VibeMemBench (fix first, anchored), lessons as checks, Claude Code 2.1.277 AGENTS.md loading; stale aidocs.py matchers fixed; selectivity-1 added"
+    },
+    {
+      "date": "2026-09-23",
+      "m": 0.45,
+      "interval_after": 3.5,
+      "note": "check-before-use writing rules (runnable Verified-by, stale_after, aliases, typed links, fact stamps); Auto Dream corrected"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 4,
-    "research": 8,
+    "research": 9,
     "tests": 5
   },
   "consolidate_every": 25,

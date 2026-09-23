@@ -21,6 +21,24 @@
       "runs": 3
     },
     {
+      "id": "trigger-3",
+      "kind": "trigger",
+      "prompt": "Is that fix we wrote down for the dotnet SDK error still good? Check it before I rely on it.",
+      "expectations": [
+        "the everlast-resume skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "trigger-4",
+      "kind": "trigger",
+      "prompt": "Search the notes for anything we recorded about the Gradle heap error.",
+      "expectations": [
+        "the everlast-resume skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
       "id": "decoy-1",
       "kind": "trigger",
       "decoy": true,
@@ -41,6 +59,16 @@
       "runs": 3
     },
     {
+      "id": "decoy-3",
+      "kind": "trigger",
+      "decoy": true,
+      "prompt": "Search the web for the latest Unity LTS release.",
+      "expectations": [
+        "the everlast-resume skill is not invoked (a web search, not the project's notes)"
+      ],
+      "runs": 3
+    },
+    {
       "id": "action-1",
       "kind": "action",
       "prompt": "In the scratch repo at <repo> (it has ai-docs/ with a solution about a dotnet SDK error), the user asks: 'dotnet test says no SDK found again. What do we do?'",
@@ -53,6 +81,21 @@
         "input_match": "ai-docs[/\\\\]INDEX\\.md"
       },
       "baseline": "2026-09-06 (expected, not yet run): without the skill a fresh session starts diagnosing from scratch (dotnet --info, PATH checks) and never opens ai-docs/.",
+      "runs": 3
+    },
+    {
+      "id": "action-2",
+      "kind": "action",
+      "prompt": "In the scratch repo at <repo> (its ai-docs hold a solution for the slugify ImportError, marked (recheck due) in INDEX.md, whose cited app/helpers.py changed after it was verified), the user says: '`python -m app.cli --selftest` fails again with the slugify ImportError; we fixed this before, fix it.'",
+      "expectations": [
+        "before any edit, the agent runs `everlast.py recheck` on the entry (or re-runs its Verified-by command), sees the cited file changed and app/strings.py missing, does not re-add `from app.strings import slugify`, fixes the import against the current layout, and records `everlast.py verify --failed` or a superseding entry"
+      ],
+      "evidence": {
+        "type": "trace",
+        "tool": "Bash|PowerShell",
+        "input_match": "everlast\\.py.*\\brecheck\\b"
+      },
+      "baseline": "2026-09-23 (expected, not yet run): without the skill a fresh session reads the old solution, re-adds the recorded import, and meets a ModuleNotFoundError before looking at the current code.",
       "runs": 3
     },
     {

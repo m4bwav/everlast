@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260923-1 · 2026-09-23 · Step 5 writes for check before use (a runnable proof, `stale_after`, aliases, typed links, fact stamps) and searches before writing a duplicate; Auto Dream corrected
+- because: R-20260923-1, R-20260923-2; plugin C-20260923-3 to C-20260923-5
+- files: SKILL.md (Outcome; Step 5: search when no index line matches, `verify` on an updated entry, the `note` flags `--aliases`, `--alias`, `--summary`, `--stale-after`, new Check-before-use rules), RESEARCH.md (header; Current understanding: Dreams sentence corrected, a check-before-use bullet; Open questions: Auto Dream and the excluded-mode import resolved; R-20260923-1, R-20260923-2)
+- The detail lives in protocol/DOC-TYPES.md (Check before use) so the skill stays short; the description is unchanged, so the trigger cases stand.
+
 ### C-20260922-2 · 2026-09-22 · Refresh: rules become checks where a check can hold them, fixes lead with an anchor, AGENTS.md loading caveat; stale eval matchers fixed
 - because: R-20260922-1 to R-20260922-7
 - files: SKILL.md (Step 3 rule 1; Step 5 Writing rules; Prod mechanism), evals/evals.json (action-1 and promote-1 matchers; selectivity-1 added, not yet run), TESTS.md (note on the new case), RESEARCH.md (header; Current understanding; Open questions; refresh notes; R-20260922-1..7)

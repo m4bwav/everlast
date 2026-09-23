@@ -1,18 +1,21 @@
 # Handoff
 
 ## Current state
-Plugin 0.3.0, protocol 1.3 (2026-09-18). `scripts/test_everlast.py` passes 57 checks on Windows (T-20260918-1). New since 0.2.1: `vault remote [<url> | --create]` (asked once; private only), `project sync` for mode `repo` (commit the doc root alone, push when sure, pull request when not; `--sync push|pr|off` on register), descriptive commit subjects everywhere, SessionStart lines for a remote-less vault and for uncommitted or unpushed project docs, SessionEnd runs `project sync --if-changed --detach`. The reasoning is in `decisions/2026-09-18-project-docs-push-when-sure-pull-request-when-not-vault-remo.md`; the change log entry is C-20260918-2; L-002 records the `run()` strip bug that also affected `publish`.
+Plugin 0.4.0, protocol 1.5 on the local branch `release/0.4.0` (2026-09-23): not pushed, not tagged, not merged. New: check before use (`stale_after` by kind, `recheck`, `verify`, `(recheck due)` in the index, protocol principle 6), `search` (BM25 with `aliases`), typed `Related:` links and per-fact stamps in the lint, `maintain` (report; `--apply` archives and relinks), a SessionStart suffix (`recheck due: N (titles) · maintain: M`), `bench/` with `scripts/bench_everlast.py`. Ported from the owner's fork: C-20260918-5 (register merge) and C-20260920-1 (CREATE_NO_WINDOW). Fixed: the Windows default vault path (C-20260923-1, L-004). `python scripts/test_everlast.py` passes 110 checks on Python 3.14 and 3.9 (T-20260923-1).
 
 ## In progress
-Nothing half-done in the tree. Still open from earlier sessions: the skill eval suites (setup, vault, capture triggers) have not been run with `evergreen-test` on a machine with a sandbox backend (L-001); a link check on `Related:` lines in the lint is a candidate for a later release (C-20260918-1).
+- The `recheck` and `search` eval cases need Bash, which `claude plugin eval` refuses on native Windows (no sandbox backend); run them on Linux or macOS: `claude plugin eval <clone> --case recheck --scaffold --allow-tools Bash Edit Write` (T-20260923-2). The recheck case passed once through the evergreen-tester agent (T-20260923-3).
+- The external score (LongMemEval-V2 or a STALE-style probe) is planned, not built (RESEARCH.md Open questions).
 
 ## Decisions made this session
-See the 2026-09-18 decision entry: push directly only when upstream set, not behind, all commits the user's own, push accepted; otherwise a docs-only `everlast/docs-*` branch and a pull request; pathspec commits; temporary worktree for the PR branch; private remote is the whole requirement for the vault.
+- Search is lexical first; embeddings wait for a trigger: [the decision](decisions/2026-09-23-search-is-lexical-bm25-plus-aliases-first-embeddings-deferre.md).
+- `--stale-after never` writes the literal `never`; omitting the field would make the entry fall back to its kind's window.
+- `maintain --apply` only archives and relinks; merging and contradictions stay a judgment call.
+- `recheck` stays read-only; the agent re-runs a stored proof only when it is safe.
 
 ## Dead ends hit
-- Parsing `git status --porcelain` from `run()`: its `strip()` eats the first line's leading space, so `ln[3:]` returns `i-docs/INDEX.md` (L-002). Use `status_lines()`.
-- `git config user.email` is empty when identity comes from `GIT_AUTHOR_EMAIL`; `git var GIT_AUTHOR_IDENT` is the reliable source for "whose commits are the user's own".
-- `everlast.py note --kind note` needs a `## Summary` heading; a body with solution headings is refused (fail-soft, so the test saw nothing written).
+- A benchmark query filed as alias leaked through camel-case splitting ("SteamAPI" gives "steam"); the query-type check in `bench_everlast.py` caught it before any score.
+- Shell heredocs through the agent's Bash tool collapsed `\\` in Python patch scripts once (a `\b` became a backspace in evals.json); edit files with the editor, not heredoc-built Python.
 
 ## Next single action
-Tag `v0.3.0` on the official clone after the commit, pull it into the private fork (`everlast.py pull`), then `claude plugin marketplace update` and reinstall so the hooks run the new script.
+Review `git diff master..release/0.4.0`, merge to `master`, tag `v0.4.0`; then pull it into the private fork (union merge will duplicate C-20260920-1, C-20260918-5, L-003 and L-20260918-1: keep one copy of each) and reinstall the plugin.
