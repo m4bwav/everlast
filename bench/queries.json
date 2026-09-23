@@ -1,0 +1,52 @@
+{
+  "_comment": "Benchmark queries for bench/fixture/ai-docs, written with the fixture and before the first run. gold: entries that answer the query (a hit on any counts). stale: for type stale, the out-of-date entry that must rank below the gold one and carry a flag. Types: title (words from the title), paraphrase (no stem shared with the gold entry's title or tags; bench_everlast.py checks this), error (an exact error string), alias (words found only in the gold entry's aliases; checked), tag (words found in the tags but not the title; checked), stale.",
+  "today": "2026-09-23",
+  "queries": [
+    {"id": "t01", "type": "title", "query": "CS0103 after renaming a method", "gold": ["solutions/2026-09-06-cs0103-after-renaming-a-ui-method.md"]},
+    {"id": "t02", "type": "title", "query": "npm ci EINTEGRITY lockfile merge", "gold": ["solutions/2026-08-30-npm-ci-fails-with-eintegrity-after-a-lockfile-merge.md"]},
+    {"id": "t03", "type": "title", "query": "clone filename too long on windows", "gold": ["solutions/2026-06-11-clone-fails-on-windows-with-filename-too-long.md"]},
+    {"id": "t04", "type": "title", "query": "postgres connection refused in docker compose", "gold": ["solutions/2026-09-01-postgres-connection-refused-inside-docker-compose.md"]},
+    {"id": "t05", "type": "title", "query": "addressables content build unknown error", "gold": ["solutions/2026-08-14-addressables-content-build-fails-with-unknown-error-in-async.md"]},
+    {"id": "t06", "type": "title", "query": "steam overlay missing in development builds", "gold": ["solutions/2026-09-10-steam-overlay-missing-in-development-builds.md"]},
+    {"id": "t07", "type": "title", "query": "relay server instead of netcode", "gold": ["decisions/2026-03-01-relay-server-instead-of-netcode-for-co-op.md"]},
+    {"id": "t08", "type": "title", "query": "cut CI time in half", "gold": ["plans/2026-08-01-cut-ci-time-in-half.md"]},
+
+    {"id": "p01", "type": "paraphrase", "query": "RAM keeps growing the longer you play", "gold": ["solutions/2026-09-15-memory-leak-in-the-inventory-pool.md"]},
+    {"id": "p02", "type": "paraphrase", "query": "sound pops with wireless earphones", "gold": ["solutions/2026-07-19-audio-crackles-on-bluetooth-headsets.md"]},
+    {"id": "p03", "type": "paraphrase", "query": "players cannot see German text in the shipped game", "gold": ["solutions/2026-04-02-localized-strings-missing-in-release-builds.md"]},
+    {"id": "p04", "type": "paraphrase", "query": "whole suite stalls on the build server, only in a certain order", "gold": ["solutions/2026-04-20-flaky-playmode-test-left-time-timescale-at-zero.md"]},
+    {"id": "p05", "type": "paraphrase", "query": "login token rejected because the machine's time is off", "gold": ["solutions/2026-05-28-leaderboard-calls-get-401-after-build-agent-clock-drift.md"]},
+    {"id": "p06", "type": "paraphrase", "query": "the hosting service refuses a 300 MB image", "gold": ["solutions/2026-07-02-git-push-rejected-for-a-large-texture-committed-without-lfs.md"]},
+    {"id": "p07", "type": "paraphrase", "query": "which serializer writes player progress", "gold": ["decisions/2026-07-15-system-text-json-for-save-files.md"]},
+    {"id": "p08", "type": "paraphrase", "query": "frame rate goal for the handheld", "gold": ["decisions/2026-05-05-target-60-fps-on-steam-deck-at-800p.md"]},
+    {"id": "p09", "type": "paraphrase", "query": "why not the official online sync library from Unity", "gold": ["decisions/2026-03-01-relay-server-instead-of-netcode-for-co-op.md"]},
+    {"id": "p10", "type": "paraphrase", "query": "stop loading every prefab and sprite when the game boots", "gold": ["decisions/2026-02-10-addressables-instead-of-resources-folders.md"]},
+
+    {"id": "e01", "type": "error", "query": "error CS0103: The name 'ShowInventory' does not exist in the current context", "gold": ["solutions/2026-09-06-cs0103-after-renaming-a-ui-method.md"]},
+    {"id": "e02", "type": "error", "query": "npm ERR! code EINTEGRITY", "gold": ["solutions/2026-08-30-npm-ci-fails-with-eintegrity-after-a-lockfile-merge.md"]},
+    {"id": "e03", "type": "error", "query": "error: unable to create file: Filename too long", "gold": ["solutions/2026-06-11-clone-fails-on-windows-with-filename-too-long.md"]},
+    {"id": "e04", "type": "error", "query": "ModuleNotFoundError: No module named 'yaml'", "gold": ["solutions/2026-09-12-pre-commit-hook-fails-with-modulenotfounderror-for-yaml.md"]},
+    {"id": "e05", "type": "error", "query": "429 Too Many Requests", "gold": ["solutions/2026-09-18-leaderboard-api-returns-429-during-events.md"]},
+    {"id": "e06", "type": "error", "query": "java.lang.OutOfMemoryError: Java heap space", "gold": ["solutions/2026-06-30-android-build-fails-when-the-gradle-daemon-runs-out-of-memor.md"]},
+    {"id": "e07", "type": "error", "query": "SteamAPI_Init failed", "gold": ["solutions/2026-09-10-steam-overlay-missing-in-development-builds.md"]},
+
+    {"id": "a01", "type": "alias", "query": "AirPods static", "gold": ["solutions/2026-07-19-audio-crackles-on-bluetooth-headsets.md"]},
+    {"id": "a02", "type": "alias", "query": "GH001", "gold": ["solutions/2026-07-02-git-push-rejected-for-a-large-texture-committed-without-lfs.md"]},
+    {"id": "a03", "type": "alias", "query": "earbuds popping", "gold": ["solutions/2026-07-19-audio-crackles-on-bluetooth-headsets.md"]},
+    {"id": "a04", "type": "alias", "query": "ECONNREFUSED", "gold": ["solutions/2026-09-01-postgres-connection-refused-inside-docker-compose.md"]},
+    {"id": "a05", "type": "alias", "query": "mainline", "gold": ["decisions/2026-04-15-trunk-based-development-with-short-lived-branches.md"]},
+
+    {"id": "g01", "type": "tag", "query": "csharp", "gold": ["solutions/2026-09-06-cs0103-after-renaming-a-ui-method.md"]},
+    {"id": "g02", "type": "tag", "query": "serialization", "gold": ["decisions/2026-07-15-system-text-json-for-save-files.md", "notes/2026-06-18-how-the-save-format-evolved.md"]},
+    {"id": "g03", "type": "tag", "query": "environment", "gold": ["notes/2026-09-01-build-machine-facts.md"]},
+    {"id": "g04", "type": "tag", "query": "legal", "gold": ["notes/2026-09-19-third-party-licenses-in-the-build.md"]},
+    {"id": "g05", "type": "tag", "query": "networking", "gold": ["decisions/2026-03-01-relay-server-instead-of-netcode-for-co-op.md"]},
+
+    {"id": "s01", "type": "stale", "query": "shader import hang", "gold": ["solutions/2026-08-05-shader-variant-stripping-ends-the-import-hang.md"], "stale": ["solutions/2026-03-15-shader-import-hangs-at-compiling-variants.md"]},
+    {"id": "s02", "type": "stale", "query": "json library for save files", "gold": ["decisions/2026-07-15-system-text-json-for-save-files.md"], "stale": ["decisions/2026-02-02-newtonsoft-json-net-for-save-files.md"]},
+    {"id": "s03", "type": "stale", "query": "slow leaderboard reads cache", "gold": ["solutions/2026-09-08-leaderboard-reads-served-from-a-materialized-view.md"], "stale": ["solutions/2026-04-12-cache-leaderboard-reads-in-redis-for-60-seconds.md"]},
+    {"id": "s04", "type": "stale", "query": "dotnet test cannot find an SDK", "gold": ["solutions/2026-09-14-no-net-sdks-on-the-linux-build-agent-use-dotnet-install.md"], "stale": ["solutions/2026-05-10-dotnet-test-says-no-net-sdks-were-found.md"]},
+    {"id": "s05", "type": "stale", "query": "how to profile on the Steam Deck", "gold": ["notes/2026-09-16-steam-deck-profiling-with-the-performance-overlay.md"], "stale": ["notes/2026-04-28-profiling-on-the-steam-deck.md"]},
+    {"id": "s06", "type": "stale", "query": "unity 6 upgrade plan", "gold": ["plans/2026-09-12-upgrade-to-unity-6-3-on-a-release-branch.md"], "stale": ["plans/2026-07-01-upgrade-to-unity-6-lts.md"]}
+  ]
+}

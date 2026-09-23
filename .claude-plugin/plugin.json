@@ -1,7 +1,7 @@
 {
   "name": "everlast-protocol",
-  "version": "0.3.2",
-  "description": "Nothing an AI session learned is lost when you change model, session, tool or vendor. Two tiers of plain-markdown knowledge: a per-project doc set (solutions with dead ends, decisions with reasons, plans, a 50-line HANDOFF, an index) committed with the repo or kept in an excluded folder when the repo cannot hold it, and a user tier in a private vault repository (profile, environments, cross-project lessons). A privacy split keeps people, politics and credentials out of any shared repo. Hooks orient each session, nudge capture once, and at session end sync the vault and push the project's docs (a pull request whenever the push is not certain). The vault asks once for a private remote or creates one. Installs in Claude Code, Cowork, Copilot and anything that reads Agent Skills. Follows the Evergreen Protocol in pointer mode.",
+  "version": "0.4.0",
+  "description": "Nothing an AI session learned is lost when you change model, session, tool or vendor. Two tiers of plain-markdown knowledge: a per-project doc set (solutions with dead ends, decisions with reasons, plans, a 50-line HANDOFF, an index) committed with the repo or kept in an excluded folder when the repo cannot hold it, and a user tier in a private vault repository (profile, environments, cross-project lessons). A privacy split keeps people, politics and credentials out of any shared repo. Hooks orient each session, nudge capture once, and at session end sync the vault and push the project's docs (a pull request whenever the push is not certain). The vault asks once for a private remote or creates one. Every entry carries a recheck date: the index, the session-start line and a BM25 search over titles, aliases and bodies flag what is due, and recheck and verify check a stored fix against the current code before an agent acts on it. Typed links, a deterministic maintain command, and a reproducible benchmark. Installs in Claude Code, Cowork, Copilot and anything that reads Agent Skills. Follows the Evergreen Protocol in pointer mode.",
   "author": {
     "name": "Mark Rogers"
   },
@@ -16,7 +16,9 @@
     "cross-tool",
     "privacy",
     "vault",
-    "evergreen"
+    "evergreen",
+    "check-before-use",
+    "search"
   ],
   "skills": "./skills",
   "homepage": "https://github.com/m4bwav/everlast"

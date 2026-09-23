@@ -13,19 +13,16 @@
   "source": null,
   "topic": "repository layouts, instruction-file conventions and hooks for AI-agent documentation",
   "tier": "moderate",
-  "interval_days": 30,
-  "last_checked": "2026-09-06",
+  "interval_days": 14,
+  "last_checked": "2026-09-23",
   "next_due": "2026-10-06",
   "verify_at_use": false,
   "volatile_claims": [],
-  "contradiction": {
-    "date": "2026-09-22",
-    "note": "Claude Code 2.1.277+ reads AGENTS.md only when no CLAUDE.md/CLAUDE.local.md exists; Step 5's CLAUDE.md pointer and excluded mode's CLAUDE.local.md need an @AGENTS.md import (everlast-capture R-20260922-3)"
-  },
+  "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 0,
+    "pinned_min": 1,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -35,12 +32,18 @@
       "m": null,
       "interval_after": 30,
       "note": "created"
+    },
+    {
+      "date": "2026-09-23",
+      "m": 0.5,
+      "interval_after": 14,
+      "note": "Claude Code 2.1.277 AGENTS.md loading: Step 5 puts @AGENTS.md first in CLAUDE.md and excluded mode's CLAUDE.local.md; contradiction resolved"
     }
   ],
   "counts": {
-    "learnings": 0,
+    "learnings": 1,
     "changes": 1,
-    "research": 1,
+    "research": 2,
     "tests": 2
   },
   "consolidate_every": 25,

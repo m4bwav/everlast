@@ -13,9 +13,9 @@
   "source": null,
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
-  "interval_days": 14,
-  "last_checked": "2026-09-17",
-  "next_due": "2026-10-01",
+  "interval_days": 3.5,
+  "last_checked": "2026-09-23",
+  "next_due": "2026-09-26",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -32,21 +32,27 @@
       "m": null,
       "interval_after": 14,
       "note": "created"
+    },
+    {
+      "date": "2026-09-23",
+      "m": 0.6,
+      "interval_after": 3.5,
+      "note": "0.4.0: check before use (Copilot Memory; forced source checks +61 to 74 points), lexical BM25 search with aliases, typed links, maintain, bench; SkillsBench v4"
     }
   ],
   "counts": {
-    "learnings": 0,
+    "learnings": 3,
     "changes": 1,
-    "research": 3,
-    "tests": 1
+    "research": 4,
+    "tests": 3
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-09-18T19:10",
-    "harness": "scripts/test_everlast.py + claude plugin eval + evergreen-tester",
+    "last_run": "2026-09-23T11:14",
+    "harness": "scripts/test_everlast.py (110 checks, benchmark floor included) + claude plugin eval (resume) + evergreen-tester (recheck)",
     "env": "owner-pc",
-    "cases": 57,
-    "passed": 57,
+    "cases": 112,
+    "passed": 112,
     "failed": 0,
     "failing": [],
     "last_failure": null,
