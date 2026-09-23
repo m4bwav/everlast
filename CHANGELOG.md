@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260923-13 · 2026-09-23 · Plugin 0.4.1: the lint's link check skips inline code and fenced blocks
+- because: L-006 (the first 0.4.0 lint of a real user tier reported the format example `[title](path)` inside inline code as a dead link)
+- files: scripts/everlast.py (`CODE_RE`, `without_code`, the dead-link loop in `lint`), scripts/test_everlast.py (typed Related lint block), .claude-plugin/plugin.json (0.4.1)
+- Links are found in the body with fenced blocks and inline code spans blanked, so a documented example is not a finding and does not inflate the SessionStart `maintain` count. Backticked paths are still checked by the separate path check, which is what backticks are for.
+
 ### C-20260923-12 · 2026-09-23 · `note` keeps a body's own H1; the lint checks backticked paths in active entries only
 - because: T-20260923-3; L-005
 - files: scripts/everlast.py (`cmd_note`: no second `# title` when the body starts with an H1; `lint_root`: the dead-path check skips superseded, done and abandoned entries), scripts/test_everlast.py (two checks)
