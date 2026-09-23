@@ -36,7 +36,7 @@ Go through the session once and list every item of these kinds. Be concrete; the
 
 ## Step 3: route each candidate (most specific home wins)
 
-1. A rule every future session must obey in this repo: `AGENTS.md`, short, with its reason. Not here.
+1. A rule every future session must obey in this repo: if a lint rule, test, type or hook can enforce it, propose that check and add one `AGENTS.md` line naming it (rules kept only as text are the ones agents keep breaking); otherwise `AGENTS.md`, short, with its reason. Not here.
 2. Where a system lives, who calls whom: `CODEMAP.md` or the evergreen map. Not here.
 3. A lesson about how a skill performs: that skill's `LEARNINGS.md` (`evergreen-learn`). Not here.
 4. A research finding about a subject with its own evergreen skill: that skill's `RESEARCH.md`; only the project's conclusion comes here.
@@ -61,7 +61,7 @@ User-tier profile and environment facts are edits in place to `user/PROFILE.md` 
 
 Finished work with nothing pending: leave HANDOFF as it is, or reset it if it describes work now done. Then `EVERLAST lint <repo> --all` and fix what it reports.
 
-Writing rules: one entry per problem or decision, not per session. Title is what a future agent would search for. Absolute dates. Paths in backticks. Commands copy-pasteable with the output that proved them. Plain markdown, no tool-specific syntax, because the next reader may be Copilot or Codex.
+Writing rules: one entry per problem or decision, not per session. Title is what a future agent would search for. Absolute dates. Paths in backticks. Commands copy-pasteable with the output that proved them. Put the fix in the first five lines of `## Fix` and name the files, directories or identifiers it applies to: in the one neutral benchmark, the records that helped were four or five lines with an explicit fix and an anchor, and most failures were a fix buried in narrative. Plain markdown, no tool-specific syntax, because the next reader may be Copilot or Codex.
 
 ## Step 5b: promote to a skill, conservatively and without asking
 
@@ -73,7 +73,7 @@ Two or three lines: entries added, updated or superseded (paths, with tier), whe
 
 ## Prod mechanism (why this fires without being asked)
 
-Cheapest first: the repo's AGENTS.md pointer block names this skill; this description matches end-of-task phrasing; the plugin's Stop hook blocks once per session when the tree changed and no doc was written in eight hours (`[everlast]` line); the SessionEnd hook commits and pushes the vault and, in mode `repo`, the project's doc root (push when sure, pull request when not; `EVERLAST project sync <repo>` does it now, `--dry-run` shows what it would do).
+Cheapest first: the repo's AGENTS.md pointer block names this skill (Claude Code 2.1.277+ reads AGENTS.md itself only when no `CLAUDE.md` or `CLAUDE.local.md` exists; with one, that file must import it with an `@AGENTS.md` line, because a pointer written in prose loads nothing); this description matches end-of-task phrasing; the plugin's Stop hook blocks once per session when the tree changed and no doc was written in eight hours (`[everlast]` line); the SessionEnd hook commits and pushes the vault and, in mode `repo`, the project's doc root (push when sure, pull request when not; `EVERLAST project sync <repo>` does it now, `--dry-run` shows what it would do).
 
 ## While working: capture learnings
 

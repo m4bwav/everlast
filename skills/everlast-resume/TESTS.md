@@ -8,7 +8,7 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
-### T-20260906-1 · 2026-09-06 · evergreen-tester subagent (one run per case, not three) · home-pc Claude Code · 1/1
+### T-20260906-1 · 2026-09-06 · evergreen-tester subagent (one run per case, not three) · owner-pc Claude Code · 1/1
 - action-1 pass (Skill(everlast-resume) invoked; INDEX.md read before any entry; only the matching solutions/ entry opened; answer cited its verified command; no writes)
 - Not run: trigger-1, trigger-2, decoys, outcome-1 (prune). Subagent trigger results are a proxy for the main loop.
 - led to: none

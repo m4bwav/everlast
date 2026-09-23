@@ -2,17 +2,27 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20260913-1 · 2026-09-13 · Absorbed into the everlast-protocol plugin as `everlast-capture` (from `ai-docs-capture`)
-- because: user request (everlast protocol: two tiers, privacy split, excluded mode, cross-tool install); R-20260913-1 to R-20260913-8 in the plugin's RESEARCH.md
-- files: SKILL.md (rewritten for the vault, the private sidecar, the user tier and `everlast.py`), evals/evals.json (prompts renamed; capture gained trigger-3 and privacy-1), companions renamed in place
-- The skill's history before this entry belongs to `ai-docs-capture` (2026-09-06). `aidocs.py` became `scripts/everlast.py` at the plugin root; its `note`, `handoff`, `index`, `lint`, `log`, `promote-scan`, `skill-budget` and `hook` commands are unchanged in behaviour, with `--private` and `--user` added.
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
+### C-20260922-2 · 2026-09-22 · Refresh: rules become checks where a check can hold them, fixes lead with an anchor, AGENTS.md loading caveat; stale eval matchers fixed
+- because: R-20260922-1 to R-20260922-7
+- files: SKILL.md (Step 3 rule 1; Step 5 Writing rules; Prod mechanism), evals/evals.json (action-1 and promote-1 matchers; selectivity-1 added, not yet run), TESTS.md (note on the new case), RESEARCH.md (header; Current understanding; Open questions; refresh notes; R-20260922-1..7)
+- Two cases could only pass through their alternative branch because they still matched `aidocs.py`. The AGENTS.md finding also contradicts everlast-setup (flagged there, not changed here).
+
+### C-20260922-1 · 2026-09-22 · Changelog header repaired
+- because: evergreen L-021 (an insert before the first `### C-` landed inside the Entry shape template)
+- files: CHANGELOG.md (Entry shape line restored; a stray template heading removed; C-20260913-1 moved below C-20260918-1)
+- No content changed; the entries are newest first again.
 
 ### C-20260918-1 · 2026-09-18 · Prod mechanism names the project docs sync at session end
 - because: plugin C-20260918-2 (the SessionEnd hook now pushes a mode `repo` project's doc root, or opens a pull request)
 - files: SKILL.md section Prod mechanism
 - One sentence; `EVERLAST project sync <repo> --dry-run` shows what the hook would do.
 
-### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+### C-20260913-1 · 2026-09-13 · Absorbed into the everlast-protocol plugin as `everlast-capture` (from `ai-docs-capture`)
+- because: user request (everlast protocol: two tiers, privacy split, excluded mode, cross-tool install); R-20260913-1 to R-20260913-8 in the plugin's RESEARCH.md
+- files: SKILL.md (rewritten for the vault, the private sidecar, the user tier and `everlast.py`), evals/evals.json (prompts renamed; capture gained trigger-3 and privacy-1), companions renamed in place
+- The skill's history before this entry belongs to `ai-docs-capture` (2026-09-06). `aidocs.py` became `scripts/everlast.py` at the plugin root; its `note`, `handoff`, `index`, `lint`, `log`, `promote-scan`, `skill-budget` and `hook` commands are unchanged in behaviour, with `--private` and `--user` added.
 
 ### C-20260906-1 · 2026-09-06 · Created as an evergreen unit (pointer mode) with the shared format reference and everlast.py
 - because: user request; R-20260906-1, R-20260906-2, R-20260906-3, R-20260906-4

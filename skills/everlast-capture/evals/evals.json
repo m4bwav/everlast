@@ -62,7 +62,7 @@
         "or": {
           "type": "trace",
           "tool": "Bash|PowerShell",
-          "input_match": "aidocs\\.py\\s+note"
+          "input_match": "everlast\\.py.*\\bnote\\b"
         }
       },
       "baseline": "2026-09-06 (expected, not yet run): without the skill a fresh session writes a paragraph into the reply or appends to README/CLAUDE.md; no solutions/ file, no index line.",
@@ -89,7 +89,7 @@
       "evidence": {
         "type": "trace",
         "tool": "Bash|PowerShell",
-        "input_match": "aidocs\\.py\\s+promote-scan",
+        "input_match": "everlast\\.py.*\\bpromote-scan\\b",
         "or": {
           "type": "file",
           "path": "<repo>/.claude/skills/*/evergreen.json"
@@ -130,6 +130,18 @@
         "must_not_exist_in": "<repo>/ai-docs/**"
       },
       "baseline": "without the skill the agent writes the name and token into ai-docs/ or nowhere",
+      "runs": 3
+    },
+    {
+      "id": "selectivity-1",
+      "kind": "outcome",
+      "added": "2026-09-22",
+      "prompt": "Wrap up. Today we renamed a variable for clarity, fixed a typo in the README, found that the build fails when the SDK path has spaces and fixed it by quoting the path in build.ps1 (after two other attempts failed), chose SQLite over Postgres for the local cache because of the install footprint, and read the logging library's docs.",
+      "files": [],
+      "expectations": [
+        "at most two entries are written: a solution for the SDK-path failure (with both dead ends) and a decision for SQLite; the rename, the typo and the docs reading are not recorded"
+      ],
+      "baseline": "not yet run",
       "runs": 3
     }
   ]
