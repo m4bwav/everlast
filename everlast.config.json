@@ -3,5 +3,12 @@
   "vault": {
     "nt": "%USERPROFILE%\\everlast-vault",
     "posix": "~/everlast-vault"
+  },
+  "_comment_stale": "Check before use: days from an entry's `verified` date to its `stale_after` date, by kind. An entry past it shows (recheck due) in INDEX.md and at session start.",
+  "stale_after_days": {
+    "solution": 90,
+    "decision": 180,
+    "note": 120,
+    "plan": 30
   }
 }

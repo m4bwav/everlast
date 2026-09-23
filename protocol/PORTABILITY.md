@@ -25,7 +25,7 @@ The vault is private: `gh auth login` once per machine, or SSH keys. The plugin 
 
 ## The always-on pointer per tool
 
-- Claude Code: `CLAUDE.md` imports `@AGENTS.md`; in `excluded` mode use `CLAUDE.local.md` (gitignored) or `@~/.claude/<project>.md`. Claude Code's `--worktree` copies gitignored files listed in `.worktreeinclude`.
+- Claude Code: `CLAUDE.md` imports it with an `@AGENTS.md` line. Since 2.1.277 Claude Code reads `AGENTS.md` by itself only when no `CLAUDE.md` or `CLAUDE.local.md` exists, and a pointer written in prose loads nothing, so the import line is what makes the block load whenever a `CLAUDE.md` is present (and on older versions). In `excluded` mode the block goes into `CLAUDE.local.md` (gitignored), whose first line is `@AGENTS.md` when the repository has an `AGENTS.md` (creating a `CLAUDE.local.md` switches the native reading off), or into `~/.claude/<project>.md` imported from there. Claude Code's `--worktree` copies gitignored files listed in `.worktreeinclude`.
 - Copilot: `AGENTS.md` is read natively; `.github/copilot-instructions.md` may hold the same block.
 - Codex: `AGENTS.md` (32 KiB cap) plus `~/.codex/AGENTS.md` (keep under 5 KiB).
 - Gemini: `GEMINI.md`, or `.gemini/settings.json` with `{"context": {"fileName": "AGENTS.md"}}`.
@@ -43,4 +43,4 @@ Claude Code hook stdin: `session_id`, `transcript_path`, `cwd`, `hook_event_name
 
 ## A machine with no Python
 
-Every command in this protocol can be done by hand: the layout is folders and markdown, the index is one line per file, the exclusion is one line in `.git/info/exclude`, the sync is `git add -A && git commit && git pull --rebase && git push` in the vault and `git add ai-docs && git commit -- ai-docs && git push` in a mode `repo` project. The script is a convenience.
+Every command in this protocol can be done by hand: the layout is folders and markdown, the index is one line per file, the exclusion is one line in `.git/info/exclude`, the sync is `git add -A && git commit && git pull --rebase && git push` in the vault and `git add ai-docs && git commit -- ai-docs && git push` in a mode `repo` project. A recheck is reading the entry's `## Verified by`, `git log --since=<verified> -- <each backticked path>`, re-running the command when it is safe, then editing `verified` and `stale_after` (or adding a `Recheck failed YYYY-MM-DD:` line) and appending a `verify` line to `log.md`; search is `grep -ril` over the entries, aliases included. The script is a convenience.

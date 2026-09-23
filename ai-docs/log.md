@@ -15,3 +15,8 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-17] add | solution: Cross-platform audit and research pass before the public release
 ## [2026-09-18] add | decision: Project docs: push when sure, pull request when not; vault remote asked once
 ## [2026-09-18] handoff | 18 lines
+## [2026-09-20] add | solution: Console windows flash at session end on Windows: detached git needs CREATE_NO_WINDOW
+## [2026-09-23] add | decision: Search is lexical (BM25 plus aliases) first; embeddings deferred
+## [2026-09-23] add | solution: Vault resolved under the working directory on Windows: %USERPROFILE% was never expanded
+## [2026-09-23] index | rebuilt (12 entries)
+## [2026-09-23] handoff | 21 lines

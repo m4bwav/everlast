@@ -6,4 +6,10 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
-(none yet)
+### L-20260918-1 · 2026-09-18 · Register in `excluded` mode nested an existing `ai-docs/plans/` as `plans/plans/`
+- Trigger: registering a project whose `ai-docs/` already had `plans/` and `decisions/` (2026-09-18); the store was scaffolded first, so `shutil.move` put each folder inside its namesake.
+- Hypothesis: `shutil.move(src_dir, existing_dir)` moves into, not onto; the loop did not check for an existing target folder.
+- Rule: when a source folder and a store folder share a name, merge the files (fixed in `everlast.py`, plugin C-20260918-5); after any register of a folder that already had docs, list the store and look for `x/x` nesting.
+- Evidence: the nested folders in the vault store on 2026-09-18, flattened by hand; scripts/test_everlast.py "register --mode excluded merges an existing ai-docs/ into the store instead of nesting plans/plans" (fails without the merge).
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-09-23

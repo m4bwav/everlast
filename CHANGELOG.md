@@ -4,10 +4,80 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260923-12 · 2026-09-23 · `note` keeps a body's own H1; the lint checks backticked paths in active entries only
+- because: T-20260923-3; L-005
+- files: scripts/everlast.py (`cmd_note`: no second `# title` when the body starts with an H1; `lint_root`: the dead-path check skips superseded, done and abandoned entries), scripts/test_everlast.py (two checks)
+- History may name files that are gone; flagging them pushed an agent to reword a correct path in a new entry. Links between documents are still checked in every entry.
+
+### C-20260923-11 · 2026-09-23 · Eval cases for check before use (`recheck`) and search; resume trigger cases for the new phrasing
+- because: the owner's request (prove the agent checks a stale fix before editing); R-20260923-2; T-20260923-2
+- files: evals/recheck/ (case.yaml, prompt.md, scaffold.sh, graders: ran-recheck, check-before-edit, no-stale-fix, recorded, not-blind, skill-fired), evals/search/ (case.yaml, prompt.md, scaffold.sh, graders: ran-search, answer, skill-fired), skills/everlast-resume/evals/evals.json (trigger-3, trigger-4, decoy-3, action-2)
+- The recheck case seeds a stale solution whose cited file moved on after it was verified; graders pass only on a `recheck` or Verified-by call in the trace before the first `Edit`. Both new cases need Bash, which `claude plugin eval` grants only under an OS sandbox (none on native Windows), so their first proof is recorded as described in T-20260923-2.
+
+### C-20260923-10 · 2026-09-23 · Plugin 0.4.0, protocol 1.5: README, research and version
+- because: the owner's request ("update and improve everlast with everything learned"); R-20260923-1 to R-20260923-8; T-20260923-1
+- files: README (intro bullets, What you get, Releases and contribution: comparable tools, Using the script, Design notes, new Benchmark subsection), RESEARCH.md (Current understanding edited in place, Open questions: external score plan, R-20260923-1..8), protocol/PROTOCOL.md header (1.5, 2026-09-23), .claude-plugin/plugin.json (0.4.0 and description; `VERSION` in scripts/everlast.py reads it)
+- R-20260917-1 keeps its SkillsBench v1 numbers as logged; R-20260923-6 carries v4's.
+
+### C-20260923-9 · 2026-09-23 · CLAUDE.md and excluded mode's CLAUDE.local.md import AGENTS.md with an `@AGENTS.md` line
+- because: everlast-capture R-20260922-3 (Claude Code 2.1.277+ reads AGENTS.md itself only when no CLAUDE.md or CLAUDE.local.md exists; a prose pointer loads nothing); the contradiction flagged on everlast-setup 2026-09-22
+- files: templates/CLAUDE.md.snippet (why the import stays first; excluded-mode note), protocol/PORTABILITY.md (The always-on pointer per tool), skills/everlast-setup (SKILL.md Step 5, its C-20260923-1)
+- No script writes these files; the skill does, following Step 5.
+
+### C-20260923-8 · 2026-09-23 · A benchmark: `bench/` and `scripts/bench_everlast.py`, held as a floor by the self-test
+- because: the owner's request (no benchmark score); R-20260923-3; T-20260923-1
+- files: bench/README.md, bench/queries.json (41 typed queries), bench/fixture/ai-docs/ (44 synthetic entries, their INDEX.md, a HANDOFF.md and log.md), scripts/bench_everlast.py, scripts/test_everlast.py (`BENCH_FLOOR_R3` 0.90)
+- Compares an index scan with `search` on Recall@1, Recall@3, MRR by query type and two staleness measures; the query types are checked before scoring. Written by the same team as the method: a regression floor, not evidence against RAG.
+
+### C-20260923-7 · 2026-09-23 · SessionStart line ends with `recheck due: N (titles) · maintain: M` when something is due
+- because: the owner's request (upkeep that does not depend on the agent); R-20260923-2, R-20260923-8
+- files: scripts/everlast.py (`cmd_hook_run` SessionStart), adapters/copilot/hooks.json unchanged (it runs the same script)
+- Read-only (no git call, nothing written), at most three titles, silent when nothing is due. No new hook event. About 0.2 s on the 44-entry fixture and 1.3 s on 528 near-duplicate entries (T-20260923-1).
+
+### C-20260923-6 · 2026-09-23 · `everlast.py maintain`: an upkeep report; `--apply` archives and relinks, nothing else
+- because: the owner's request (upkeep depends on the agent); R-20260923-8
+- files: scripts/everlast.py (`maintenance`, `duplicate_pairs`, `archive_entries`, `rewrite_links`, `rewrite_frontmatter_paths`, `cmd_maintain`; `entries(root, archive=True)`; the index lists archive/ entries under an Archive heading; lint findings carry a category), protocol/PROTOCOL.md §3 (Upkeep), protocol/DOC-TYPES.md (Prune pass), skills/everlast-resume (Step 5)
+- The report: entries due for a recheck, done/abandoned/superseded entries older than 90 days, active entries more than a window past `stale_after` (proposed only), near-duplicate titles (difflib 0.85 within a kind, or 0.7 with the same tags), open contradictions, dead links and other lint findings. `--apply` moves the first group to `archive/` in the same layout, rewrites every relative link to and inside them (and frontmatter `supersedes` paths), rebuilds the index, logs `prune`; it never merges, deletes or edits content.
+
+### C-20260923-5 · 2026-09-23 · Typed `Related:` links and per-fact stamps, checked by the lint
+- because: the owner's request (coarse tracking of time and links); R-20260923-7; the Evergreen Protocol's parallel update (same grammar)
+- files: scripts/everlast.py (`related_links`, `LINK_RE`, `split_outside_links`; lint: every relative link resolves, a `supersedes` target is superseded, unknown labels, open `contradicts` pairs, frontmatter `supersedes` targets, `(verified YYYY-MM-DD)` stamps older than the window; `note --supersedes` writes `Related: supersedes [title](path)` when the body has no Related line; search flags `(stale facts)`), protocol/PROTOCOL.md §8, protocol/DOC-TYPES.md (rules, Check before use), templates/AGENTS.md.snippet
+- Labels: `supersedes`, `superseded by`, `contradicts`, `builds on`, `see also`; an unlabelled link counts as `see also`, so every existing Related line stays valid.
+
+### C-20260923-4 · 2026-09-23 · `everlast.py search`: BM25 over title, aliases, tags, summary and body; `aliases` frontmatter
+- because: the owner's request (no meaning-based search); R-20260923-3; decision "Search is lexical (BM25 plus aliases) first" in ai-docs/decisions
+- files: scripts/everlast.py (`tokenize`, `stem`, `bm25_corpus`, `bm25_scores`, `search_entries`, `search_roots`, `cmd_search`; `note --aliases a,b` and `--alias "text"`; the frontmatter parser reads quoted values and the writer quotes what YAML would misread, `set_fields` edits keys in place), protocol/PROTOCOL.md §8 and principle 4, protocol/DOC-TYPES.md (Finding entries, frontmatter, rules), skills/everlast-resume (Step 2), skills/everlast-capture (Step 5)
+- Weights title and aliases x3, tags and summary x2, body x1; light stemming; identifiers and dotted names count whole and in parts; a superseded entry x0.5, done or abandoned x0.8, recheck due x0.9, so the current entry ranks first. Scope: the project root, `--private`, `--user`, or `--all` registered roots.
+
+### C-20260923-3 · 2026-09-23 · Protocol 1.5: check before use (`stale_after`, `recheck`, `verify`, the index flag)
+- because: the owner's request (the check-before-use info for everlast solutions); R-20260923-2, R-20260923-4
+- files: scripts/everlast.py (`stale_due`, `is_stale`, `stale_stamps`, `find_entry`, `cited_paths`, `git_changes_since`, `cmd_recheck`, `cmd_verify`, `add_to_section`; `note --stale-after DATE|never`; `index_text` puts `(recheck due)` in the status slot; INDEX header; `EVERLAST_TODAY` for tests; lint staleness by kind, `--stale-days` now an explicit override), everlast.config.json (`stale_after_days`), protocol/PROTOCOL.md (principle 6, §3 Start and During), protocol/DOC-TYPES.md (evidence rows, frontmatter, Check before use), protocol/PORTABILITY.md (the check by hand), templates/AGENTS.md.snippet, AGENTS.md (the everlast block), skills/everlast-resume (Step 3), skills/everlast-capture (Step 5)
+- Windows by kind: solution 90 days, decision 180, note 120, plan 30. An entry without `stale_after` falls back to its window, so existing doc sets join unedited; `--stale-after never` writes the literal `never` (omitting the field would make the entry fall back to the window). `recheck` is read-only; `verify` renews, `verify --failed` records what broke and marks the entry due now. Behaviour change for existing users: `lint` now reports entries past their kind's window (a plan after 30 days) instead of after a flat 120 days.
+
+### C-20260923-2 · 2026-09-23 · A private machine path removed from the install prompt
+- because: the repository rule (no machine paths beyond everlast.config.json); found in this release's privacy scrub
+- files: templates/INSTALL-PROMPT.txt (step 1)
+- The example marketplace folder named the owner's own directory; it now reads "an existing local marketplace folder if this machine has one". The git history still carries the old string.
+
+### C-20260923-1 · 2026-09-23 · Vault paths expand environment variables, so the shipped Windows default works
+- because: L-004
+- files: scripts/everlast.py (`vault_path`: `os.path.expandvars` for `EVERLAST_VAULT` and the config value), scripts/test_everlast.py
+- The public `everlast.config.json` names `%USERPROFILE%\everlast-vault` on Windows, which was never expanded, so the vault resolved to a literal `%USERPROFILE%` folder under the current directory.
+
 ### C-20260922-1 · 2026-09-22 · Machine and project labels generalised in the published files
 - because: the repository rule (no personal data, machine names only in a fork's state files); found while refreshing everlast-capture
 - files: TESTS.md (T-20260913-1, T-20260913-2 env), ai-docs/plans/2026-09-13-everlast-rollout.md (log line), skills/everlast-capture/LEARNINGS.md (a Scope and an Evidence line), skills/everlast-capture/TESTS.md, skills/everlast-resume/TESTS.md, skills/everlast-setup/TESTS.md (T- env labels), skills/everlast-setup/evergreen.json (tests env)
 - The development machine's nickname became `owner-pc` (the label the public state files already use) and a private project and skill name became generic descriptions. The git history still carries the old strings.
+
+### C-20260920-1 · 2026-09-20 · No console windows from the detached SessionEnd sync on Windows (fork 0.3.4; official 0.4.0)
+- because: L-003 (the owner saw a burst of console windows open and close when closing VS Code; each was a `git.exe` spawned by the detached vault or project sync)
+- files: scripts/everlast.py (`NO_WINDOW` constant beside `run()`; `run()`, `status_lines()` and both `--detach` Popen calls pass it)
+- `CREATE_NO_WINDOW` (0x08000000) on every subprocess call, the same flag evergreen_sync.py already uses. Made in the owner's fork first and brought here unchanged in code. General fix, worth a pull request to the official repository.
+
+### C-20260918-5 · 2026-09-18 · `project register --mode excluded` merges an existing `ai-docs/` into the scaffolded store instead of nesting it (fork 0.3.3; official 0.4.0)
+- because: L-20260918-1 in everlast-setup (registering a project whose `ai-docs/` already had `plans/` and `decisions/` moved them to `<store>/plans/plans/` because the store had been scaffolded first)
+- files: scripts/everlast.py (`cmd_project_register`, the move loop)
+- When both the source and the store hold a folder of the same name, the folder's files are moved into the store's folder and the empty source folder removed; files and folders with no counterpart move as before. General fix, worth a pull request to the official repository.
 
 ### C-20260918-4 · 2026-09-18 · Protocol 1.4: the index first, with a `summary` clause per entry and no back-link requirement; plugin 0.3.2
 - because: the owner's request (indexes that link most docs as a net positive for agents and people, without costing agent performance; back-links only where useful); R-20260918-1
