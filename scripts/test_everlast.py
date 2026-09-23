@@ -362,11 +362,12 @@ def check_040(tmp, env):
     write_file(d1, "---\ntitle: Nightly builds\nkind: decision\nstatus: active\ndate: 2026-09-01\nverified: 2026-09-01\ntags: [release]\n---\n\n# Nightly builds\n\n"
                    "## Context\nx\n\n## Decision\ny\n\n## Reasons\nThe store allows it (verified 2026-01-02).\n\nRelated: contradicts [Tagged builds only](2026-09-02-tagged-builds-only.md); fixes [a](2026-09-02-tagged-builds-only.md)\n")
     write_file(d2, "---\ntitle: Tagged builds only\nkind: decision\nstatus: active\ndate: 2026-09-02\nverified: 2026-09-02\ntags: [release]\n---\n\n# Tagged builds only\n\n"
-                   "## Context\nx\n\n## Decision\ny\n\n## Reasons\nz\n\nRelated: contradicts [Nightly builds](2026-09-01-nightly-builds.md); supersedes [Use JSON saves](2026-05-02-use-json-saves.md); see also [gone](../notes/missing.md)\n")
+                   "## Context\nIndex lines look like `[title](path): when to read it`.\n\n```\n[an example in a block](nowhere.md)\n```\n\n## Decision\ny\n\n## Reasons\nz\n\nRelated: contradicts [Nightly builds](2026-09-01-nightly-builds.md); supersedes [Use JSON saves](2026-05-02-use-json-saves.md); see also [gone](../notes/missing.md)\n")
     run("index", r3, env=e_sep)
     rc, out = run("lint", r3, env=e_sep)
     check("unknown Related label 'fixes'" in out, "lint reports an unknown Related label", out)
     check("dead link [gone](../notes/missing.md)" in out, "lint reports a Related target that does not exist", out)
+    check("(path)" not in out and "nowhere.md" not in out, "lint ignores example links inside inline code and fenced blocks", out)
     check("supersedes 2026-05-02-use-json-saves.md, whose status is active" in out, "lint reports a supersedes target that is not superseded", out)
     check(out.count("open contradiction") == 1, "lint reports an active contradicts pair once", out)
     check("fact stamped (verified 2026-01-02)" in out, "lint reports a per-fact stamp older than the window", out)
