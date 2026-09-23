@@ -1171,6 +1171,14 @@ def cmd_verify(a):
 # Labels shared with the Evergreen Protocol; an unlabelled link counts as `see also`, so older Related lines stay valid.
 
 LINK_RE = re.compile(r"(!?)\[([^\]\n]*)\]\(([^)\s]+)((?:\s+\"[^\"\n]*\")?)\)")
+CODE_RE = re.compile(r"```.*?```|~~~.*?~~~|`[^`\n]*`", re.S)  # fenced blocks and inline code spans
+
+
+def without_code(text):
+    """The text with code blanked out, so an example link such as `[title](path)` is not checked as a link (L-006)."""
+    return CODE_RE.sub(" ", text)
+
+
 RELATED_RE = re.compile(r"^[ \t>*-]*(?:\*\*)?Related(?:\*\*)?[ \t]*:(?:\*\*)?[ \t]*(.*)$", re.M | re.I)
 
 
@@ -1284,7 +1292,7 @@ def lint_root(root, repo, stale_days, problems, scan=True, on=None):
             if ("/" in ref or "\\" in ref) and not any(os.path.exists(c) for c in cand):
                 warn("path", f"{rel}: references `{ref}` which does not exist (dead path)")
         entry_dir = os.path.dirname(os.path.join(root, rel))
-        for lm in LINK_RE.finditer(body):
+        for lm in LINK_RE.finditer(without_code(body)):
             target = lm.group(3).split("#", 1)[0]
             if is_relative_target(target) and not os.path.exists(os.path.normpath(os.path.join(entry_dir, unquote(target)))):
                 warn("link", f"{rel}: dead link [{lm.group(2)[:40]}]({lm.group(3)})")

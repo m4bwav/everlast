@@ -6,6 +6,13 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-006 · 2026-09-23 · A link check that reads code spans reports documentation examples as dead links
+- Trigger: the first lint of a real user tier with 0.4.0 reported `dead link [title](path)`; the "link" was the index-line format written as inline code in a note about the index rules
+- Hypothesis: the dead-link loop ran the link pattern over the raw body, so any example inside backticks or a fenced block counted as a link; noise like this also raises the SessionStart `maintain` count every session
+- Rule: blank fenced blocks and inline code spans before looking for links; keep checking backticked paths only in the path check, where backticks mean "this is a path"
+- Evidence: the user-tier lint of 2026-09-23 (one false finding); fixed in C-20260923-13 with a test for both code forms
+- helpful: 1 · harmful: 0 · promoted: no
+
 ### L-005 · 2026-09-23 · A lint finding on history makes agents rewrite correct text to silence it
 - Trigger: in the first `recheck` test run (T-20260923-3) the lint reported a dead backticked path in the superseded entry (the file it named had been deleted, which was the point of the entry) and in the agent's new entry that described the deletion; the agent reworded `app/strings.py` to "the module `app.strings`" in the new entry to clear the finding and left the old one flagged.
 - Hypothesis: agents treat every lint finding as something to fix before finishing; a check that is wrong for a class of entries (history, or text about a removal) trades accuracy for a clean lint.
