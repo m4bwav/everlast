@@ -44,18 +44,25 @@
     "learnings": 3,
     "changes": 1,
     "research": 4,
-    "tests": 3
+    "tests": 4
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-09-23T11:14",
-    "harness": "scripts/test_everlast.py (110 checks, benchmark floor included) + claude plugin eval (resume) + evergreen-tester (recheck)",
+    "last_run": "2026-09-23T20:12",
+    "harness": "claude plugin eval 2.1.281 under WSL2, five cases, with-without ablation, sonnet judge",
     "env": "owner-pc",
-    "cases": 112,
-    "passed": 112,
-    "failed": 0,
-    "failing": [],
-    "last_failure": null,
+    "cases": 5,
+    "passed": 2,
+    "failed": 3,
+    "failing": [
+      "capture",
+      "recheck",
+      "resume"
+    ],
+    "last_failure": {
+      "date": "2026-09-23",
+      "note": "first full harness run on this PC (T-20260924-1); resume fails only through the global --allow-tools grant (L-007); recheck undertriggers 2 of 3; capture content rubric 1 of 3"
+    },
     "research_after_days": null
   }
 }

@@ -20,7 +20,7 @@ Current understanding, open questions, the four-track search plan, and dated fin
 - Does Codex's plugin `hooks/hooks.json` share Claude Code's schema exactly? Untested; an adapter may be needed.
 - Cross-product handoff quality has no benchmark; the plugin's own evals are the proxy. Retrieval and staleness now have one of our own (`bench/`, T-20260923-1), written by the same team, so it is a regression floor only.
 - An external score, planned and not done in 0.4.0: an adapter that loads an Everlast doc set into LongMemEval-V2 (arXiv 2605.12493; its file-based memory controller setting fits a doc root directly) or a STALE-style probe (arXiv 2605.06527: plant a superseded or revoked entry, ask a question that needs the current one, score whether the agent notices), run with and without the check-before-use step. Revisit embeddings when paraphrase Recall@3 on that score, or on `bench/`, falls below 0.6, or when a real doc set's index has split more than twice (decision in `ai-docs/decisions/`).
-- Does forcing `recheck` before acting on a stale entry move outcomes in practice, as 2608.25553 found in its setting? The `recheck` eval case is the first probe; it needs a sandboxed run (Linux or macOS) to execute.
+- Does forcing `recheck` before acting on a stale entry move outcomes in practice, as 2608.25553 found in its setting? The `recheck` eval case is the first probe; it needs a sandboxed run (Linux or macOS) to execute. Ran under WSL2 on 2026-09-24 (T-20260924-1): the one run in which everlast-resume fired ran `recheck`, verified and passed; the two in which it did not fire edited without checking, so the probe is a trigger question before it is an outcome question.
 
 ## Search plan
 
