@@ -6,11 +6,11 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
-### L-007 · 2026-09-24 · `--allow-tools` is a global grant: a case's `allowed_tools` does not narrow it, so a read-only case run alongside shell cases gets a shell and takes another route
-- Trigger: T-20260924-1 ran all five cases in one invocation with `--allow-tools Bash Write Edit`; `resume`, whose prompt lists only Read, Glob, Grep and Skill, scored 0/3 with the plugin because the agent ran `everlast.py recheck` and `dotnet --version` (its answers say so) instead of reading `ai-docs/INDEX.md` and the solution with Read, which its `tool_used: Read` graders require. Without the grant, on Windows, the same case passed 3/3 (T-20260923-2).
+### L-007 · 2026-09-23 · `--allow-tools` is a global grant: a case's `allowed_tools` does not narrow it, so a read-only case run alongside shell cases gets a shell and takes another route
+- Trigger: T-20260923-4 ran all five cases in one invocation with `--allow-tools Bash Write Edit`; `resume`, whose prompt lists only Read, Glob, Grep and Skill, scored 0/3 with the plugin because the agent ran `everlast.py recheck` and `dotnet --version` (its answers say so) instead of reading `ai-docs/INDEX.md` and the solution with Read, which its `tool_used: Read` graders require. Without the grant, on Windows, the same case passed 3/3 (T-20260923-2).
 - Hypothesis: the operator grant applies to the whole invocation and a case's `allowed_tools` is the floor it needs, not a ceiling; given a shell, the skill's own steps (recheck, search) come before reading files.
 - Rule: run read-only cases (`resume`) in their own invocation without `--allow-tools`, and the shell cases in another; when one invocation must cover both, grade file reading with a rubric on the trace instead of `tool_used: Read`.
-- Evidence: T-20260924-1 (`evals/results/2026-09-24T00-57-52-611Z`, gitignored); T-20260923-2.
+- Evidence: T-20260923-4 (`evals/results/2026-09-24T00-57-52-611Z`, gitignored); T-20260923-2.
 - helpful: 0 · harmful: 0 · promoted: no
 
 ### L-006 · 2026-09-23 · A link check that reads code spans reports documentation examples as dead links
@@ -52,7 +52,7 @@ Write an entry the moment a real signal happens: a user correction, the same err
 ### L-001 · 2026-09-13 · `claude plugin eval` refuses cases that grant Bash on this Windows PC (no sandbox backend)
 - Trigger: first eval run; every run with `--allow-tools Bash` exited 1: "sandbox required but unavailable: the Windows sandbox is not active on this session (feature gate off); sandbox.failIfUnavailable is set".
 - Hypothesis: plugin eval confines shell tools with an OS sandbox; Windows has none here, so any case whose agent must run `everlast.py` cannot be graded by that harness on this machine.
-- Rule: keep `claude plugin eval` cases read-only on Windows (Read, Glob, Grep, Skill; the `resume` case) and prove action cases (capture, privacy) with the evergreen-tester subagent or on a Linux/macOS machine with the sandbox backend installed. Since 2026-09-24 WSL2 on this PC is that machine: the full suite ran there with no refusal (T-20260924-1), so prefer `wsl -d Ubuntu` over the subagent route, in two invocations (L-007).
+- Rule: keep `claude plugin eval` cases read-only on Windows (Read, Glob, Grep, Skill; the `resume` case) and prove action cases (capture, privacy) with the evergreen-tester subagent or on a Linux/macOS machine with the sandbox backend installed. Since the evening of 2026-09-23 WSL2 on this PC is that machine: the full suite ran there with no refusal (T-20260923-4), so prefer `wsl -d Ubuntu` over the subagent route, in two invocations (L-007).
 - Evidence: evals/results/first-run.json (2026-09-13, cost $0.002, 4 s, error text above).
 - helpful: 0 · harmful: 0 · promoted: no
 

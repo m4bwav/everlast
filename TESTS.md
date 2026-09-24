@@ -8,7 +8,7 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
-### T-20260924-1 · 2026-09-24 · claude plugin eval 2.1.281 under WSL2 (Ubuntu 26.04.1, bubblewrap sandbox; all five cases, three runs per arm with the no-plugin baseline, sonnet judge, `--scaffold --allow-tools Bash Write Edit`) · owner-pc · 2/5 cases at threshold, 9/15 with-plugin runs perfect
+### T-20260923-4 · 2026-09-23 · claude plugin eval 2.1.281 under WSL2 (Ubuntu 26.04.1, bubblewrap sandbox; all five cases, three runs per arm with the no-plugin baseline, sonnet judge, `--scaffold --allow-tools Bash Write Edit`) · owner-pc · 2/5 cases at threshold, 9/15 with-plugin runs perfect
 - First full run of the suite on this PC: 30 runs, 7 m 46 s, $7.95, no sandbox refusal (the Windows refusal of T-20260923-2 does not occur under WSL2). Suite score with the plugin 82.7 percent against 59.1 without, delta +23.5 points; 4 of 5 cases improved, 1 regressed. Results: `evals/results/2026-09-24T00-57-52-611Z` (gitignored).
 - privacy · 3/3 with the plugin (baseline 0/3: no private file, one leak). search · 3/3 (baseline 0/3: `everlast.py search` never run).
 - capture · outcome · wrong-outcome · with 2/3: run 2 failed only the `content` rubric (three FAIL votes) while the solution file existed, `everlast.py note` ran and the skill fired; the judge's reasoning is not in the JSON and the trace was not kept (`--keep-temp` next time). Baseline 0/3.
