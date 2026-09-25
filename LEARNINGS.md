@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-20260925-1 · 2026-09-25 · Lint false positives on npm scopes, workflow permission lines, TypeScript generics and planned paths
+- Trigger: writing a modernization plan for an npm package into a repo-mode doc set (get-title-at-url, 2026-09-24/25); `note`, `handoff` and `lint` rejected or flagged the same four things repeatedly: npm scope names such as the arethetypeswrong and tsconfig scopes read as personal handles, the GitHub Actions `id-token` permission line read as a credential assignment, `Promise<GetTitleResult>` read as leftover template text, and every backticked path with a slash that names a file the plan will create read as a dead path (56 in one plan).
+- Hypothesis: the privacy and placeholder scans are regexes with no allow-list for package scopes, CI permission syntax or TypeScript generics, and the dead-path rule has no notion of a planned file.
+- Rule: in a repo-mode doc set write npm scopes without the leading at-sign (`attw`, "the tsconfig node20 base package"), write CI permissions as "`id-token` set to `write`", avoid template-like generics in prose, and leave planned paths unformatted until the files exist; consider an allow-list (scope names, `id-token`, generics) and a `(planned)` marker for paths in a later plugin version.
+- Evidence: the everlast lint output for D:\m4bwa\Claude\Projects\Ai\get-title-at-url on 2026-09-25 (72 findings before the rephrasing, 1 after: the generic in the API block, left as is).
+- Scope: plugin (`everlast.py note`, `handoff`, `lint`)
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-09-25
+
 ### L-007 · 2026-09-23 · `--allow-tools` is a global grant: a case's `allowed_tools` does not narrow it, so a read-only case run alongside shell cases gets a shell and takes another route
 - Trigger: T-20260923-4 ran all five cases in one invocation with `--allow-tools Bash Write Edit`; `resume`, whose prompt lists only Read, Glob, Grep and Skill, scored 0/3 with the plugin because the agent ran `everlast.py recheck` and `dotnet --version` (its answers say so) instead of reading `ai-docs/INDEX.md` and the solution with Read, which its `tool_used: Read` graders require. Without the grant, on Windows, the same case passed 3/3 (T-20260923-2).
 - Hypothesis: the operator grant applies to the whole invocation and a case's `allowed_tools` is the floor it needs, not a ceiling; given a shell, the skill's own steps (recheck, search) come before reading files.
