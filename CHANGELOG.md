@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-1 · 2026-09-26 · Research refresh: vendor project memory, handoff comparables, how to tune the failing triggers
+- because: R-20260926-1, R-20260926-2
+- files: RESEARCH.md (Current understanding: vendor memory list, packaging and plugin eval; Open questions; R-20260926-1, R-20260926-2), README.md (comparable tools), TESTS.md (harness notes)
+- Cursor and Claude Code both regained a project-scoped memory store, still product-local; the most-installed handoff skill writes to a temp directory; the recheck undertrigger must be tuned with plugin eval, not skill-creator's trigger rate, and plugin eval now needs git 2.31.
+
 ### C-20260923-13 · 2026-09-23 · Plugin 0.4.1: the lint's link check skips inline code and fenced blocks
 - because: L-006 (the first 0.4.0 lint of a real user tier reported the format example `[title](path)` inside inline code as a dead link)
 - files: scripts/everlast.py (`CODE_RE`, `without_code`, the dead-link loop in `lint`), scripts/test_everlast.py (typed Related lint block), .claude-plugin/plugin.json (0.4.1)

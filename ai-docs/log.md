@@ -20,3 +20,4 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-23] add | solution: Vault resolved under the working directory on Windows: %USERPROFILE% was never expanded
 ## [2026-09-23] index | rebuilt (12 entries)
 ## [2026-09-23] handoff | 21 lines
+## [2026-09-26] update | research refresh C-20260926-1 (R-20260926-1, -2): Claude Code Projects and Cursor Projects memory, handoff comparables (mattpocock handoff 872K installs, temp-dir only), skill-creator's trigger eval does not measure routing (#6253) so recheck tuning uses plugin eval; plugin eval 2.1.283 needs git 2.31 (WSL2 has 2.53.0)

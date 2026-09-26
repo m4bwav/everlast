@@ -13,16 +13,16 @@
   "source": null,
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
-  "interval_days": 3.5,
-  "last_checked": "2026-09-23",
-  "next_due": "2026-09-26",
+  "interval_days": 3,
+  "last_checked": "2026-09-26",
+  "next_due": "2026-09-29",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 0,
+    "pinned_min": 1,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -38,12 +38,18 @@
       "m": 0.6,
       "interval_after": 3.5,
       "note": "0.4.0: check before use (Copilot Memory; forced source checks +61 to 74 points), lexical BM25 search with aliases, typed links, maintain, bench; SkillsBench v4"
+    },
+    {
+      "date": "2026-09-26",
+      "m": 0.45,
+      "interval_after": 3,
+      "note": "vendor project memory (Claude Code Projects, Cursor Projects), handoff comparables, #6253 trigger-eval caveat, plugin eval git 2.31; cost: searches 15 · fetches 16 · tool calls 41"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 4,
+    "research": 5,
     "tests": 4
   },
   "consolidate_every": 25,

@@ -6,6 +6,8 @@ A test passes on evidence (a tool call in the trace, a file, a marker, a log lin
 
 Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then one line per failing case (`id · kind · class · what the evidence showed`), then `led to:` (L-, C-, R- ids or none). Newest first. Budget 150 lines; archive older runs to `TESTS-ARCHIVE.md`.
 
+Harness notes (2026-09-26, R-20260926-2): `claude plugin eval` 2.1.283+ needs git 2.31 or later in the environment that runs it (WSL2 on the owner PC has git 2.53.0, checked 2026-09-26). Tune trigger failures (recheck undertriggers) against `claude plugin eval --case <id>` with a `tool_used: Skill` grader or `claude -p --plugin-dir`, never skill-creator's `run_eval.py`, which does not measure routing. Re-run the suite after a model change (Opus 5.5 shipped 2026-09-22) before tuning on older results.
+
 ## Runs
 
 ### T-20260923-4 · 2026-09-23 · claude plugin eval 2.1.281 under WSL2 (Ubuntu 26.04.1, bubblewrap sandbox; all five cases, three runs per arm with the no-plugin baseline, sonnet judge, `--scaffold --allow-tools Bash Write Edit`) · owner-pc · 2/5 cases at threshold, 9/15 with-plugin runs perfect
