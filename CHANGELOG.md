@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-2 · 2026-09-26 · Plugin 0.4.2: the vault lookup honours the repo a command names; recheck triggers on recurring errors; graders that measure the property
+- because: T-20260926-1, L-007, L-009, L-010, L-011, R-20260926-2
+- files: scripts/everlast.py (`REPO_HINT`, `vault_path`, `main`), scripts/test_everlast.py (note --private from another directory), skills/everlast-resume/SKILL.md (description: recurring-error phrasing and the stale-fix clause), evals/capture/graders (content.md removed; dead-ends.md, fix.md, verified-by.md, index-updated.md), evals/recheck/graders/check-before-edit.md (tool_order replaced by a trace regex), evals/privacy/graders/private-file.md (any private entry kind), scripts/eval-wsl.sh, scripts/eval_summary.py, scripts/eval_trace.py (new), TESTS.md (harness notes, T-20260926-1), LEARNINGS.md (L-008 to L-011), .claude-plugin/plugin.json (0.4.2)
+- A private note written from outside the repo went to an unset-up ~/everlast-vault; the resume skill fired one time in three on "we fixed this before, it fails again"; three graders failed correct runs (an elided trace, an Edit-only order check, a solutions-only path). The suite is 5/5 at 3/3 with the plugin, every case ahead of the baseline except resume, which the model now does unaided.
+
 ### C-20260926-1 · 2026-09-26 · Research refresh: vendor project memory, handoff comparables, how to tune the failing triggers
 - because: R-20260926-1, R-20260926-2
 - files: RESEARCH.md (Current understanding: vendor memory list, packaging and plugin eval; Open questions; R-20260926-1, R-20260926-2), README.md (comparable tools), TESTS.md (harness notes)

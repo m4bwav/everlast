@@ -50,21 +50,17 @@
     "learnings": 3,
     "changes": 1,
     "research": 5,
-    "tests": 4
+    "tests": 5
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-09-23T20:12",
-    "harness": "claude plugin eval 2.1.281 under WSL2, five cases, with-without ablation, sonnet judge",
-    "env": "owner-pc",
+    "last_run": "2026-09-26T11:55",
+    "harness": "claude plugin eval 2.1.281 under WSL2 via scripts/eval-wsl.sh, 3 runs per arm with the no-plugin baseline, sonnet judge",
+    "env": "dev-machine",
     "cases": 5,
-    "passed": 2,
-    "failed": 3,
-    "failing": [
-      "capture",
-      "recheck",
-      "resume"
-    ],
+    "passed": 5,
+    "failed": 0,
+    "failing": [],
     "last_failure": {
       "date": "2026-09-23",
       "note": "first full harness run on this PC (T-20260923-4); resume fails only through the global --allow-tools grant (L-007); recheck undertriggers 2 of 3; capture content rubric 1 of 3"

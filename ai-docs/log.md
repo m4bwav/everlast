@@ -21,3 +21,4 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-23] index | rebuilt (12 entries)
 ## [2026-09-23] handoff | 21 lines
 ## [2026-09-26] update | research refresh C-20260926-1 (R-20260926-1, -2): Claude Code Projects and Cursor Projects memory, handoff comparables (mattpocock handoff 872K installs, temp-dir only), skill-creator's trigger eval does not measure routing (#6253) so recheck tuning uses plugin eval; plugin eval 2.1.283 needs git 2.31 (WSL2 has 2.53.0)
+## [2026-09-26] update | tune T-20260926-1 / C-20260926-2 (plugin 0.4.2): suite 5/5 at 3/3 under WSL2; fixes: vault lookup honours the repo argument (L-011, regression test), everlast-resume description for recurring errors, capture/recheck/privacy graders measure the property (L-009, L-010), scripts/eval-wsl.sh + eval_summary.py + eval_trace.py (L-008)

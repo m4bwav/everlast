@@ -4,7 +4,7 @@
 Plugin 0.4.0, protocol 1.5 on the local branch `release/0.4.0` (2026-09-23): not pushed, not tagged, not merged. New: check before use (`stale_after` by kind, `recheck`, `verify`, `(recheck due)` in the index, protocol principle 6), `search` (BM25 with `aliases`), typed `Related:` links and per-fact stamps in the lint, `maintain` (report; `--apply` archives and relinks), a SessionStart suffix (`recheck due: N (titles) · maintain: M`), `bench/` with `scripts/bench_everlast.py`. Ported from the owner's fork: C-20260918-5 (register merge) and C-20260920-1 (CREATE_NO_WINDOW). Fixed: the Windows default vault path (C-20260923-1, L-004). `python scripts/test_everlast.py` passes 110 checks on Python 3.14 and 3.9 (T-20260923-1).
 
 ## In progress
-- The `recheck` and `search` eval cases need Bash, which `claude plugin eval` refuses on native Windows (no sandbox backend); run them on Linux or macOS: `claude plugin eval <clone> --case recheck --scaffold --allow-tools Bash Edit Write` (T-20260923-2). The recheck case passed once through the evergreen-tester agent (T-20260923-3).
+- The eval suite runs under WSL2 with `scripts/eval-wsl.sh` (from PowerShell), summarized by `scripts/eval_summary.py`; 5/5 cases at 3/3 on 2026-09-26 (T-20260926-1). Native Windows cannot run the Bash cases (no sandbox backend).
 - The external score (LongMemEval-V2 or a STALE-style probe) is planned, not built (RESEARCH.md Open questions).
 
 ## Decisions made this session

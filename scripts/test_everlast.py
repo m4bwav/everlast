@@ -444,6 +444,25 @@ def check_040(tmp, env):
     rc, out = run("vault", "where", env=dict(env, EVERLAST_VAULT=os.path.join("$EVERLAST_TEST_BASE", "v2"), EVERLAST_TEST_BASE=tmp))
     check(os.path.join(tmp, "v2") in out, "vault paths expand environment variables", out)
 
+    # a workspace-local vault in the repo a command names is found even when the working directory is elsewhere (L-011):
+    # before the fix, a private note from another directory went to ~/everlast-vault
+    r5 = os.path.join(tmp, "repo5")
+    os.makedirs(r5)
+    subprocess.run(["git", "init", "-q"], cwd=r5, check=True)
+    fake_home = os.path.join(tmp, "home5")
+    os.makedirs(fake_home)
+    env5 = {k: v for k, v in env.items() if k not in ("EVERLAST_VAULT", "EVAL_EVERLAST_VAULT")}
+    env5.update(HOME=fake_home, USERPROFILE=fake_home)
+    local_vault = os.path.join(r5, ".everlast-vault")
+    run("vault", "init", "--owner", "Tester", env=dict(env5, EVERLAST_VAULT=local_vault))
+    run("project", "register", r5, "--mode", "repo", env=dict(env5, EVERLAST_VAULT=local_vault))
+    p = subprocess.run([PY, SCRIPT, "note", r5, "--private", "--kind", "solution", "--title", "Private fact from another directory", "--stdin"],
+                       cwd=tmp, env=env5, input="## Problem\nx\n\n## Fix\ny\n\n## Verified by\n- `true` printed nothing\n",
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
+    private = os.path.join(local_vault, "projects", "repo5", "private", "solutions")
+    check(os.path.isdir(private) and any(f.endswith(".md") for f in os.listdir(private)) and not os.path.exists(os.path.join(fake_home, "everlast-vault")),
+          "note --private from another directory uses the named repo's .everlast-vault, not ~/everlast-vault", p.stdout[-400:] + p.stderr[-400:])
+
     # the benchmark floor: search at least matches the index scan and stays above the first run's level
     p = subprocess.run([PY, os.path.join(HERE, "bench_everlast.py"), "--json"], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     try:

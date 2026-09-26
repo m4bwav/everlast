@@ -6,6 +6,34 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-011 · 2026-09-26 · The vault lookup read the working directory, not the repo the command named, so a private note could land in an unset-up ~/everlast-vault
+- Trigger: privacy eval, 2026-09-26 confirming run: 2 of 3 runs called `everlast.py note <repo> --private` from outside the repo; `vault_path()` checked only `cwd/.everlast-vault`, fell through to `~/everlast-vault` and wrote the private entry there (`home/everlast-vault/projects/cwd/private`), a vault nobody had set up; the grader found nothing where the project's vault is. The run that did `cd` first passed.
+- Hypothesis: the workspace-local vault rule was written for evals whose agents work from the repo root; agents often pass absolute paths instead of changing directory.
+- Rule: resolve anything tied to a repo from the repo argument the command was given, then the cwd; a regression test runs the command from another directory with a fake HOME and asserts nothing appears under it.
+- Evidence: evals/results/tune-2026-09-26/confirm/privacy.json (write paths per run); scripts/everlast.py `vault_path` and `REPO_HINT`; scripts/test_everlast.py check "note --private from another directory ..." (fails on the old script, passes on the fix).
+- helpful: 0 · harmful: 0 · promoted: yes (C-20260926-2)
+
+### L-010 · 2026-09-26 · A grader pinned to one tool or one entry kind fails correct runs that took another route
+- Trigger: in the full-suite run of 2026-09-26, recheck run 1 ran `everlast.py recheck`, recorded the failed check, then fixed the import with `sed -i` in Bash; `tool_order after: Edit` reported "Edit never called" and failed it. privacy run 1 wrote the named person to the private sidecar as a `note` (no leak, judge 3/3 PASS); `file_exists private/solutions/*.md` failed it. 2 of the suite's 3 remaining misses were these.
+- Hypothesis: the graders encoded the route the author expected (Edit tool, solution kind) instead of the property the case tests (checked before changing code; private facts stayed private).
+- Rule: grade the property: for "before changing code", a regex on the trace from its start that allows no Edit, Write or `sed -i`/`perl -pi` before the check; for "it went private", any entry kind under the private root. When a correct run fails a grader, fix the grader in the same session and say so in the T- entry.
+- Evidence: evals/results/tune-2026-09-26/suite (recheck with#1, privacy with#1); evals/recheck/graders/check-before-edit.md, evals/privacy/graders/private-file.md.
+- helpful: 0 · harmful: 0 · promoted: no
+
+### L-009 · 2026-09-26 · An `llm` grader with `focus: trace` sees only the first 12 and last 12 messages; grade written files with `focus: {source: file}`
+- Trigger: capture's `content` rubric failed 2 of 3 with the plugin in the 2026-09-26 re-run (and 1 of 3 on 2026-09-23) while the solution file existed, `note` ran and printed "INDEX.md and log.md updated". The judge's evidence in the result JSON has 25 lines with `[11 messages elided]` in the middle; the `note` call was in the elided part in both failing runs and in the visible tail in the passing one. The plugin-evals docs: "an `llm` judge sees the first 12 and the last 12".
+- Hypothesis: any run long enough (a status read, a user-tier write, a memory pointer) pushes the write out of the judge's window, so the verdict depends on turn count, not on what was written.
+- Rule: grade a produced artifact from the artifact (`focus: {source: file, path: ...}` for a rubric, `regex` with `target: {source: file}` for a fact); keep `focus: trace` rubrics to questions about order or behaviour that the first or last 12 messages always show, and use `regex` or `tool_used` on the trace (which see every message) for the rest.
+- Evidence: evals/results/tune-2026-09-26/iter1/capture.json (content grader evidence per run); https://code.claude.com/docs/en/plugin-evals ("What a grader can look at").
+- helpful: 0 · harmful: 0 · promoted: no
+
+### L-008 · 2026-09-26 · `wsl bash script.sh` runs the Windows claude.exe unless the script names the WSL binary
+- Trigger: the tune run of 2026-09-26 launched `wsl bash /mnt/d/.../run.sh` (non-login shell); `claude` resolved through WSL interop to the Windows claude.exe, whose plugin eval passed the scaffold as a mangled Windows path (`D:m4bwaClaude...scaffold.sh: No such file`), so all 18 runs of three cases failed at setup with cost 0 and exit 0, and left 18 `claude-eval-*` folders in the Windows temp directory. Separately, Git Bash rewrote `/mnt/d/...` arguments into `C:/Program Files/Git/mnt/d/...` before WSL saw them.
+- Hypothesis: `~/.local/bin` is added to PATH by the login profile only; interop appends the Windows PATH, where claude.exe is found. The eval exits 0 even when every run errors.
+- Rule: the runner script sets `CLAUDE=/home/<user>/.local/bin/claude` and calls it by that path; launch it from PowerShell (`wsl bash /mnt/d/...`), not Git Bash; after a run, read `costUsd` and each arm's `error` in the JSON before believing a score (cost 0 means nothing ran).
+- Evidence: evals/results/tune-2026-09-26/run.sh; the first iter1 JSON (every arm `scaffold failed (exit 127)`).
+- helpful: 0 · harmful: 0 · promoted: no
+
 ### L-007 · 2026-09-23 · `--allow-tools` is a global grant: a case's `allowed_tools` does not narrow it, so a read-only case run alongside shell cases gets a shell and takes another route
 - Trigger: T-20260923-4 ran all five cases in one invocation with `--allow-tools Bash Write Edit`; `resume`, whose prompt lists only Read, Glob, Grep and Skill, scored 0/3 with the plugin because the agent ran `everlast.py recheck` and `dotnet --version` (its answers say so) instead of reading `ai-docs/INDEX.md` and the solution with Read, which its `tool_used: Read` graders require. Without the grant, on Windows, the same case passed 3/3 (T-20260923-2).
 - Hypothesis: the operator grant applies to the whole invocation and a case's `allowed_tools` is the floor it needs, not a ceiling; given a shell, the skill's own steps (recheck, search) come before reading files.

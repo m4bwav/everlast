@@ -70,6 +70,7 @@ from urllib.parse import unquote
 KINDS = ("decision", "solution", "plan", "note")
 DIRS = {"decision": "decisions", "solution": "solutions", "plan": "plans", "note": "notes"}
 STRICT = False
+REPO_HINT = None   # the repo a command was given; its workspace-local vault counts even when the cwd is elsewhere
 PLUGIN_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VERSION = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".claude-plugin", "plugin.json"), encoding="utf-8")).get("version", "0.0.0")  # one source of truth: plugin.json
 
@@ -298,9 +299,12 @@ def vault_path():
     env = os.environ.get("EVERLAST_VAULT") or os.environ.get("EVAL_EVERLAST_VAULT")
     if env:
         return os.path.abspath(os.path.expanduser(os.path.expandvars(env)))
-    local = os.path.join(os.getcwd(), ".everlast-vault")   # a workspace-local vault (evals, sandboxes)
-    if os.path.isdir(local):
-        return local
+    # A workspace-local vault (evals, sandboxes): in the repo the command was given, else in the working directory.
+    # Checking only the cwd sent a note run from another directory to ~/everlast-vault (T-20260926-1, L-011).
+    for base in ([REPO_HINT] if REPO_HINT else []) + [os.getcwd()]:
+        local = os.path.join(os.path.abspath(os.path.expanduser(base)), ".everlast-vault")
+        if os.path.isdir(local):
+            return local
     v = config().get("vault")
     if isinstance(v, dict):
         v = v.get(os.name) or v.get("posix" if os.name != "nt" else "nt")
@@ -2646,6 +2650,9 @@ def main():
 
     a = ap.parse_args()
     STRICT = a.strict
+    global REPO_HINT
+    repo = getattr(a, "repo", None)
+    REPO_HINT = repo if isinstance(repo, str) and os.path.isdir(repo) else None
     try:
         a.fn(a)
     except SystemExit:
