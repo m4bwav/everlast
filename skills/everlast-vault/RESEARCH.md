@@ -18,6 +18,7 @@ Topic: cross-tool installation of agent skills and plugins, private git-backed k
 
 ## Open questions
 
+- Observed 2026-09-27 on the owner PC, against R-20260927-3: `everlast-protocol@mark-local` (local-directory marketplace, relative source `./everlast-protocol`, installed 2026-09-19) still runs from `cache/mark-local/everlast-protocol/0.4.3` while the source is at 0.5.1, so it did not load in place. Either in-place loading applies only to installs made on a newer Claude Code, or it needs a reinstall once. Test: uninstall and reinstall, then check `installPath` in `claude plugin list --json`; until then SKILL.md step 2 may be wrong for older installs.
 - Do Cowork's hooks run the SessionEnd `sync` in Cowork's environment, and can it reach the vault path? Needs a live Cowork session.
 - Does an old `~/.cursor/skills` or `~/.gemini/skills` link beside the `~/.agents/skills` export list the skills twice in Cursor or Gemini CLI? Check on the next machine that has both.
 - Should `vault remote` scan the vault's `git log -p` before its first push to a new remote, as `/pii-check` does for history? SKILL.md now says to run the scan before the first push; it scans the tree, not history.
