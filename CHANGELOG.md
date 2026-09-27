@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-4 · 2026-09-26 · Plugin 0.5.0: entities, time-range search, evidence with proof counts, merge candidates
+- because: the owner's request (bring over the cheap, no-dependency ideas from Hindsight, vectorize-io/hindsight); comparison in ai-docs/notes/2026-09-26-hindsight-comparison.md
+- files: scripts/everlast.py (`note --entities/--evidence`, `canonical_entities`, `proof_count`, `search --since/--until/--entity` and filter-only listing, `entities` subcommand, `verify` increments proof_count, `merge_pairs` in `maintain`), scripts/test_everlast.py (`check_050`, 10 checks), protocol/PROTOCOL.md §8, README (Using the script), skills/everlast-capture and everlast-resume (one bullet each)
+- Stays stdlib and plain markdown: entities are a frontmatter list, not an extracted graph; the time filter reads `date` and `verified`; merging stays a judgment call. Embeddings and an external benchmark remain the open items.
+
 ### C-20260926-3 · 2026-09-26 · Plugin 0.4.3: the four skill descriptions tidied with skill-tidy (all under the 1,024-character spec limit, at most 12 quoted phrases)
 - because: the owner's request (clean up the descriptions without losing function or trigger coverage); skill-tidy lint ST005 (capture 1,196, resume 1,420, vault 1,313 characters), ST007 and ST013 (resume and vault, 17 quoted phrases each), ST011 (capture, setup); T-20260926-2
 - files: skills/everlast-capture, everlast-resume, everlast-vault, everlast-setup (SKILL.md description; CHANGELOG.md C-20260926-1 each), .claude-plugin/plugin.json (0.4.3), TESTS.md (T-20260926-2)

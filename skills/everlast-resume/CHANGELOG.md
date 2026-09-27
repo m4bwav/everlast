@@ -4,6 +4,10 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-2 · 2026-09-26 · Step 3 adds time-range and entity lookups (plugin 0.5.0)
+- because: plugin C-20260926-4
+- files: SKILL.md (step 3: `--since`/`--until`, `--entity`, `entities --show`)
+
 ### C-20260926-1 · 2026-09-26 · Description under 1,024 characters with 12 quoted phrases (1,420 to 1,018)
 - because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST007, ST013; plugin C-20260926-3
 - files: SKILL.md (description)

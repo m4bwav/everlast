@@ -193,6 +193,7 @@ def main():
         rc, out = run("hook", "run", env=env, stdin=payload)
         check("local only" not in out, "SessionStart stops asking once the vault has a remote", out)
         check_040(tmp, env)
+        check_050(tmp, env)
         print("all checks passed")
     finally:
         # junctions must be removed as links, not trees
@@ -223,6 +224,51 @@ def git_at(cwd, env, date, *args):
     """git with the author and committer date pinned (recheck dates changes by commit)."""
     e = dict(env, GIT_AUTHOR_DATE=date + "T10:00:00", GIT_COMMITTER_DATE=date + "T10:00:00")
     return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace", env=e).stdout
+
+
+def check_050(tmp, env):
+    """0.5.0: entities (note --entities, search --entity, the entities command), time-range search (--since/--until),
+    evidence and proof_count (note --evidence, verify increments), and merge candidates in maintain."""
+    r6 = os.path.join(tmp, "repo6")
+    os.makedirs(r6)
+    subprocess.run(["git", "init", "-q"], cwd=r6, check=True)
+    run("project", "register", r6, "--mode", "repo", "--sync", "off", env=env)
+    body = ("## Problem\nThe Steam overlay stays black after the Proton update on the test rig.\n\n## Fix\n"
+            "Set PROTON_NO_ESYNC and restart the Steam client.\n\n## Verified by\n`true` printed nothing\n")
+    e_aug = dict(env, EVERLAST_TODAY="2026-08-10")
+    e_sep = dict(env, EVERLAST_TODAY="2026-09-20")
+    rc, out = run("note", r6, "--kind", "solution", "--title", "Black Steam overlay", "--entities", "Steam, Proton,  steam",
+                  "--evidence", "log.md 2026-08-10", "--evidence", "issue 42", "--stdin", env=e_aug, stdin=body)
+    p1 = out.strip().splitlines()[-1]
+    t1 = read_file(p1)
+    check("entities: [Steam, Proton]" in t1 and "proof_count: 2" in t1 and "evidence: [log.md 2026-08-10, issue 42]" in t1,
+          "note writes canonical entities (deduped case-insensitively), evidence and proof_count", t1[:500])
+    rc, out = run("note", r6, "--kind", "solution", "--title", "Overlay black again after Proton", "--entities", "steam",
+                  "--stdin", env=e_sep, stdin=body.replace("test rig", "laptop"))
+    p2 = out.strip().splitlines()[-1]
+    rc, out = run("note", r6, "--kind", "note", "--title", "Controller layout", "--stdin", env=e_sep, stdin="## Summary\nx\n\n## Details\ny\n")
+    rc, out = run("search", "overlay", r6, "--since", "2026-09-01", "--json", env=e_sep)
+    h = json.loads(out)["hits"]
+    check(len(h) == 1 and h[0]["title"] == "Overlay black again after Proton", "search --since keeps only entries written or verified in range", out[:400])
+    rc, out = run("search", "overlay", r6, "--until", "2026-08-31", "--json", env=e_sep)
+    h = json.loads(out)["hits"]
+    check(len(h) == 1 and h[0]["title"] == "Black Steam overlay" and h[0]["proof_count"] == 2, "search --until and proof_count in JSON", out[:400])
+    rc, out = run("search", "", r6, "--entity", "STEAM", "--json", env=e_sep)
+    h = json.loads(out)["hits"]
+    check([x["title"] for x in h] == ["Overlay black again after Proton", "Black Steam overlay"],
+          "search \"\" --entity lists that entity's entries newest first, case-insensitive", out[:400])
+    rc, out = run("search", "", r6, env=e_sep)
+    check("give a query" in out, "an empty query with no filter is refused", out)
+    rc, out = run("search", "overlay", r6, "--since", "sept", env=e_sep)
+    check("YYYY-MM-DD" in out, "a bad --since date is refused", out)
+    rc, out = run("entities", r6, env=e_sep)
+    check("2  Steam" in out and "1  Proton" in out, "entities lists canonical names with counts", out)
+    rc, out = run("entities", r6, "--show", "proton", env=e_sep)
+    check("Proton: 1 entry" in out and "black-steam-overlay" in out, "entities --show lists one entity's entries", out)
+    rc, out = run("verify", "Black Steam overlay", r6, env=e_sep)
+    check("proof_count 3" in out and "proof_count: 3" in read_file(p1), "verify increments proof_count", out)
+    rc, out = run("maintain", r6, env=e_sep)
+    check("merge candidates (1)" in out and "word overlap" in out, "maintain reports same-entity entries with mostly the same words as merge candidates", out)
 
 
 def check_040(tmp, env):

@@ -648,6 +648,25 @@ def as_list(v):
     return [str(v)] if v and str(v).strip() else []
 
 
+def canonical_entities(v):
+    """Entity names from a comma string or list, whitespace collapsed, first spelling kept, case-insensitive dedupe."""
+    items = v.split(",") if isinstance(v, str) else as_list(v)
+    out, seen = [], set()
+    for x in items:
+        x = re.sub(r"\s+", " ", str(x)).strip()
+        if x and x.lower() not in seen:
+            seen.add(x.lower())
+            out.append(x)
+    return out
+
+
+def proof_count(meta):
+    try:
+        return max(0, int(str(meta.get("proof_count") or "0").strip()))
+    except ValueError:
+        return 0
+
+
 def entries(root, archive=False):
     """(relpath, meta, body) for every entry under root, or under root/archive with archive=True."""
     base = os.path.join(root, "archive") if archive else root
@@ -844,6 +863,13 @@ def cmd_note(a):
     meta = {"title": a.title, "kind": a.kind, "status": "active", "date": d, "verified": d, "stale_after": stale_after, "tags": tags}
     if aliases:
         meta["aliases"] = aliases   # other names: the exact error text, synonyms; search reads them, Obsidian shows them
+    ents = canonical_entities(a.entities)
+    if ents:
+        meta["entities"] = ents   # what the entry is about, one canonical name each; search --entity and `entities` read them
+    evidence = [x.strip() for x in (a.evidence or []) if x.strip()]
+    if evidence:
+        meta["evidence"] = evidence   # what backs a derived entry, kept apart from the conclusion in the body
+        meta["proof_count"] = len(evidence)   # grows with each successful verify: the belief strengthens, never overwritten
     if getattr(a, "summary", None):
         meta["summary"] = a.summary.strip()   # one line, when to read it; shown in INDEX.md so the entry is not a bare link
     agent = a.agent or os.environ.get("EVERLAST_AGENT") or ""
@@ -1161,13 +1187,13 @@ def cmd_verify(a):
               "(the old entry becomes superseded and the new one links it); until then do not act on the old fix")
         return
     never = str(meta.get("stale_after") or "").strip().lower() == "never"
-    updates = {"verified": d}
+    updates = {"verified": d, "proof_count": str(proof_count(meta) + 1)}
     if not never:
         updates["stale_after"] = (on + dt.timedelta(days=window_for(kind))).isoformat()
     write(path, set_fields(text, updates))
     append(logp, f"## [{d}] verify | {title}" + (f": {a.note.strip()}" if a.note else "") + "\n")
     build_index(root)
-    print(f"verified {rel}: verified {d}, stale_after {updates.get('stale_after', 'never')}; log.md and INDEX.md updated")
+    print(f"verified {rel}: verified {d}, stale_after {updates.get('stale_after', 'never')}, proof_count {updates['proof_count']}; log.md and INDEX.md updated")
 
 
 # ---------------------------------------------------------------- typed links
@@ -1397,7 +1423,7 @@ STOPWORDS = frozenset("a about after all also an and any are as at be been but b
                       "some such than that the their them then there these they this those through to too until up very was we were what "
                       "when where which while who whom why will with would you your".split())
 WORD_RE = re.compile(r"[^\W_]+(?:[._\-][^\W_]+)*")
-FIELD_WEIGHTS = (("title", 3.0), ("aliases", 3.0), ("tags", 2.0), ("summary", 2.0), ("body", 1.0))
+FIELD_WEIGHTS = (("title", 3.0), ("aliases", 3.0), ("entities", 3.0), ("tags", 2.0), ("summary", 2.0), ("body", 1.0))
 
 
 def stem(w):
@@ -1448,6 +1474,7 @@ def search_fields(meta, body):
     b = re.sub(r"\A\s*#[ \t]+[^\n]*\n", "", body)   # the H1 repeats the title
     b = LINK_RE.sub(lambda m: m.group(2), b)          # keep link text, drop paths
     return {"title": str(meta.get("title") or ""), "aliases": " ; ".join(as_list(meta.get("aliases"))),
+            "entities": " ; ".join(as_list(meta.get("entities"))),
             "tags": " ".join(as_list(meta.get("tags"))), "summary": str(meta.get("summary") or ""), "body": b}
 
 
@@ -1481,20 +1508,40 @@ def bm25_scores(corpus, query, k1=1.2, b=0.75):
     return out
 
 
-def search_entries(roots, query, on=None):
+def entry_dates(meta):
+    """The dates an entry was written or last verified: the ones a time-range filter matches."""
+    return [d for d in (parse_date(meta.get("date")), parse_date(meta.get("verified"))) if d]
+
+
+def in_range(meta, since=None, until=None):
+    """True when the entry was written or verified inside [since, until] (either end open)."""
+    if not (since or until):
+        return True
+    return any((not since or d >= since) and (not until or d <= until) for d in entry_dates(meta))
+
+
+def has_entity(meta, name):
+    want = re.sub(r"\s+", " ", name).strip().lower()
+    return any(e.lower() == want for e in canonical_entities(meta.get("entities")))
+
+
+def search_entries(roots, query, on=None, since=None, until=None, entity=None):
     """Rank every entry (archive included) under roots, a list of (root, display) where display(path) is what a hit
     prints. A superseded entry keeps its place in the results but ranks below its successor (x0.5); done, abandoned
-    and promoted x0.8; recheck due x0.9. Returns (hits best first, entries searched)."""
+    and promoted x0.8; recheck due x0.9. since/until keep entries written or verified in that range; entity keeps
+    entries naming it. An empty query with a filter lists every entry that passes, newest first.
+    Returns (hits best first, entries searched)."""
     on = on or today_date()
     docs = []
     for root, display in roots:
         for archived in (False, True):
             for rel, meta, body in entries(root, archive=archived):
                 docs.append((root, display, rel, meta, body))
-    scores = bm25_scores(bm25_corpus([(m, b) for _, _, _, m, b in docs]), query)
+    browse = not tokenize(query or "") and bool(since or until or entity)
+    scores = [1.0] * len(docs) if browse else bm25_scores(bm25_corpus([(m, b) for _, _, _, m, b in docs]), query)
     hits = []
     for (root, display, rel, meta, body), s in zip(docs, scores):
-        if s <= 0:
+        if s <= 0 or not in_range(meta, since, until) or (entity and not has_entity(meta, entity)):
             continue
         status, stale = meta.get("status") or "active", is_stale(meta, on)
         s *= 0.5 if status == "superseded" else 0.8 if status != "active" else 0.9 if stale else 1.0
@@ -1505,8 +1552,12 @@ def search_entries(roots, query, on=None):
             flags.append("archived")
         path = os.path.join(root, rel)
         hits.append({"score": round(s, 3), "kind": meta.get("kind"), "date": str(meta.get("date") or ""), "title": str(meta.get("title") or rel),
-                     "summary": str(meta.get("summary") or ""), "status": status, "flags": flags, "path": display(path), "file": os.path.abspath(path)})
-    hits.sort(key=lambda h: (-h["score"], h["path"]))
+                     "summary": str(meta.get("summary") or ""), "status": status, "flags": flags, "path": display(path), "file": os.path.abspath(path),
+                     "entities": canonical_entities(meta.get("entities")), "proof_count": proof_count(meta)})
+    if browse:
+        hits.sort(key=lambda h: (h["date"], h["path"]), reverse=True)
+    else:
+        hits.sort(key=lambda h: (-h["score"], h["path"]))
     return hits, len(docs)
 
 
@@ -1558,20 +1609,62 @@ def cmd_search(a):
     roots = search_roots(a)
     if not roots:
         fail(f"no docs root to search from {os.path.abspath(a.repo)} (everlast-setup creates one)")
-    hits, n = search_entries(roots, a.query)
+    since, until = (parse_date(a.since) if a.since else None), (parse_date(a.until) if a.until else None)
+    if (a.since and not since) or (a.until and not until):
+        fail("--since and --until take YYYY-MM-DD")
+    if not tokenize(a.query or "") and not (since or until or a.entity):
+        fail("give a query, or --since/--until/--entity to list entries without one")
+    hits, n = search_entries(roots, a.query or "", since=since, until=until, entity=a.entity)
     top = hits[:max(1, a.n)]
+    scope = "".join([f" since {since}" if since else "", f" until {until}" if until else "", f" about {a.entity}" if a.entity else ""])
     if a.json:
-        print(json.dumps({"query": a.query, "entries": n, "matches": len(hits), "hits": top}, indent=2))
+        print(json.dumps({"query": a.query, "since": a.since, "until": a.until, "entity": a.entity, "entries": n, "matches": len(hits), "hits": top}, indent=2))
         return
     if not hits:
-        print(f"search: nothing matches \"{a.query}\" in {n} entries; try the exact error text, a file or tool name, or conclude it was not recorded")
+        print(f"search: nothing matches \"{a.query}\"{scope} in {n} entries; try the exact error text, a file or tool name, a wider range, or conclude it was not recorded")
         return
-    print(f"search \"{a.query}\": {len(hits)} of {n} entries match; best {len(top)}:")
+    print(f"search \"{a.query}\"{scope}: {len(hits)} of {n} entries match; best {len(top)}:")
     for h in top:
         flags = "".join(f" ({f})" for f in h["flags"])
         print(f"  {h['score']:6.2f}  {h['kind'] or 'note':<8} {h['date'] or 'undated':<10}{flags}  {h['path']}: {h['summary'] or h['title']}")
     if any(h["path"].startswith("vault:") for h in top):
         print(f"  (vault: is {vault_path()})")
+
+
+def cmd_entities(a):
+    """The entity view: every canonical name in entities: fields with its entry count, or one name's entries."""
+    roots = search_roots(a)
+    if not roots:
+        fail(f"no docs root under {os.path.abspath(a.repo)} (everlast-setup creates one)")
+    names, spelled = {}, {}
+    for root, display in roots:
+        for rel, meta, _ in entries(root):
+            for e in canonical_entities(meta.get("entities")):
+                spelled.setdefault(e.lower(), e)
+                names.setdefault(e.lower(), []).append({"path": display(os.path.join(root, rel)), "title": str(meta.get("title") or rel),
+                                                        "status": meta.get("status") or "active", "date": str(meta.get("date") or "")})
+    if a.show:
+        key = re.sub(r"\s+", " ", a.show).strip().lower()
+        got = names.get(key, [])
+        got.sort(key=lambda h: h["date"], reverse=True)
+        if a.json:
+            print(json.dumps({"entity": a.show, "entries": got}, indent=2))
+        elif not got:
+            print(f"entities: no entry names \"{a.show}\"; `everlast.py entities` lists the names in use, `search` finds it in text")
+        else:
+            print(f"{spelled[key]}: {len(got)} entr{'y' if len(got) == 1 else 'ies'}, newest first")
+            for h in got:
+                print(f"  {h['date'] or 'undated':<10} {'(' + h['status'] + ') ' if h['status'] != 'active' else ''}{h['path']}: {h['title']}")
+        return
+    rows = sorted(((spelled[k], len(v)) for k, v in names.items()), key=lambda r: (-r[1], r[0].lower()))
+    if a.json:
+        print(json.dumps([{"entity": n, "entries": c} for n, c in rows], indent=2))
+    elif not rows:
+        print("entities: no entry has an entities: field yet (`note --entities` sets it)")
+    else:
+        print(f"entities: {len(rows)} name(s); `entities --show NAME` lists one's entries")
+        for n, c in rows:
+            print(f"  {c:>3}  {n}")
 
 
 # ---------------------------------------------------------------- maintain (deterministic upkeep; judgment stays with a person or agent)
@@ -1600,11 +1693,36 @@ def duplicate_pairs(items):
     return out
 
 
+def merge_pairs(items, dupes=()):
+    """Active entries that share an entity and most of their words (Jaccard >= 0.5 over body tokens): candidates to
+    merge into one entry whose evidence: lists both. Pairs already reported as title duplicates are left out."""
+    skip = {frozenset((x, y)) for x, y, _ in dupes}
+    by_entity = {}
+    for rel, meta, body in items:
+        if (meta.get("status") or "active") == "active":
+            words = set(tokenize(search_fields(meta, body)["body"]))
+            for e in canonical_entities(meta.get("entities")):
+                by_entity.setdefault(e.lower(), []).append((rel, words))
+    out, seen = [], set()
+    for group in by_entity.values():
+        for j in range(1, len(group)):
+            for i in range(j):
+                (ra, wa), (rb, wb) = group[i], group[j]
+                key = frozenset((ra, rb))
+                if key in seen or key in skip or not (wa and wb):
+                    continue
+                seen.add(key)
+                r = len(wa & wb) / len(wa | wb)
+                if r >= 0.5:
+                    out.append((ra, rb, round(r, 2)))
+    return out
+
+
 def maintenance(root, repo, on=None, scan=True):
     """What `maintain` reports for one docs root, read-only (no git, no writes), so the SessionStart hook can count it."""
     on = on or today_date()
     items = list(entries(root))
-    rep = {"recheck": [], "archive": [], "propose": [], "duplicates": [], "contradictions": [], "lint": []}
+    rep = {"recheck": [], "archive": [], "propose": [], "duplicates": [], "merge": [], "contradictions": [], "lint": []}
     for rel, meta, _ in items:
         status = meta.get("status") or "active"
         base = max([d for d in (parse_date(meta.get("date")), parse_date(meta.get("verified"))) if d], default=None)
@@ -1617,6 +1735,7 @@ def maintenance(root, repo, on=None, scan=True):
                 rep["propose"].append(rel)
     rep["recheck"].sort(key=lambda r: r[2])
     rep["duplicates"] = duplicate_pairs([(rel, meta) for rel, meta, _ in items])
+    rep["merge"] = merge_pairs(items, rep["duplicates"])
     problems = []
     lint_root(root, repo, None, problems, scan=scan, on=on)
     for cat, msg in problems:
@@ -1628,7 +1747,7 @@ def maintenance(root, repo, on=None, scan=True):
 
 
 def maintenance_count(rep):
-    return sum(len(rep[k]) for k in ("archive", "propose", "duplicates", "contradictions", "lint"))
+    return sum(len(rep.get(k, [])) for k in ("archive", "propose", "duplicates", "merge", "contradictions", "lint"))
 
 
 def rewrite_frontmatter_paths(text, moved):
@@ -1716,6 +1835,11 @@ def cmd_maintain(a):
         print(f"  duplicate candidates ({len(rep['duplicates'])}): merge by hand, or supersede one")
         for x, y, r in rep["duplicates"]:
             print(f"    - {x} ~ {y} (title similarity {r})")
+    if rep["merge"]:
+        print(f"  merge candidates ({len(rep['merge'])}): same entity, mostly the same words; merge by hand into one entry "
+              "(`note --supersedes` the older, `--evidence` for each source) or leave both")
+        for x, y, r in rep["merge"]:
+            print(f"    - {x} ~ {y} (word overlap {r})")
     if rep["contradictions"]:
         print(f"  open contradictions ({len(rep['contradictions'])}):")
         for msg in rep["contradictions"]:
@@ -2584,6 +2708,8 @@ def main():
     p.add_argument("--tags"); p.add_argument("--summary", help="one line: when to read this entry (shown in INDEX.md)"); p.add_argument("--body-file"); p.add_argument("--stdin", action="store_true")
     p.add_argument("--aliases", help="other names, comma-separated: synonyms, the tool's own words (search reads them)")
     p.add_argument("--alias", action="append", help="one alias taken verbatim, commas included (the exact error text); repeatable")
+    p.add_argument("--entities", help="canonical names this entry is about (a tool, service, file, library), comma-separated; `search --entity` and `entities` read them")
+    p.add_argument("--evidence", action="append", help="one source backing a merged or derived entry (a path, a link, an entry, a log line); repeatable; each adds to proof_count")
     p.add_argument("--stale-after", help="YYYY-MM-DD when a recheck falls due, or never; default today + the kind's window")
     p.add_argument("--supersedes"); p.add_argument("--force", action="store_true")
     p.add_argument("--agent", help="provenance: the tool that wrote this (default EVERLAST_AGENT)"); p.add_argument("--model", help="provenance: the model (default EVERLAST_MODEL)")
@@ -2595,10 +2721,16 @@ def main():
     p = sub.add_parser("lint"); common(p); p.add_argument("--stale-days", type=int, default=None, help="one window for every kind (default: each kind's stale_after window)")
     p.add_argument("--all", action="store_true", help="also lint the private sidecar"); p.set_defaults(fn=cmd_lint)
     p = sub.add_parser("search", help="rank entries against a query (BM25 over title, aliases, tags, summary, body)")
-    p.add_argument("query"); p.add_argument("repo", nargs="?", default="."); p.add_argument("--root", default="ai-docs")
+    p.add_argument("query", help='words to rank by; "" with a filter lists what passes, newest first'); p.add_argument("repo", nargs="?", default="."); p.add_argument("--root", default="ai-docs")
     p.add_argument("--private", action="store_true", help="also the project's private sidecar"); p.add_argument("--user", action="store_true", help="also the user tier")
     p.add_argument("--all", action="store_true", help="every registered project, its sidecar, and the user tier")
+    p.add_argument("--since", help="YYYY-MM-DD: only entries written or verified on or after it"); p.add_argument("--until", help="YYYY-MM-DD: on or before it")
+    p.add_argument("--entity", help="only entries whose entities: field names it (case-insensitive)")
     p.add_argument("-n", type=int, default=5, help="hits to print (default 5)"); p.add_argument("--json", action="store_true"); p.set_defaults(fn=cmd_search)
+    p = sub.add_parser("entities", help="list the canonical entities across entries, with counts; --show NAME lists that entity's entries")
+    p.add_argument("repo", nargs="?", default="."); p.add_argument("--root", default="ai-docs")
+    p.add_argument("--private", action="store_true"); p.add_argument("--user", action="store_true"); p.add_argument("--all", action="store_true")
+    p.add_argument("--show", metavar="NAME"); p.add_argument("--json", action="store_true"); p.set_defaults(fn=cmd_entities)
     for name, fn, hlp in (("recheck", cmd_recheck, "read-only: is the entry stale, which cited files changed since it was verified, what proves it"),
                           ("verify", cmd_verify, "record a recheck: renew verified and stale_after, or --failed with what broke")):
         p = sub.add_parser(name, help=hlp); p.add_argument("entry", help="a path, a file name, or part of the title")

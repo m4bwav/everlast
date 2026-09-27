@@ -57,9 +57,10 @@ python scripts/everlast.py vault remote [<url> | --create [name]]   # back the v
 python scripts/everlast.py project register <repo> --mode repo|excluded [--sync push|pr|off] [--no-link]
 python scripts/everlast.py project status <repo> | list
 python scripts/everlast.py project sync <repo> [--dry-run] [--pr]    # mode repo: commit the doc root only, push when sure, pull request when not
-python scripts/everlast.py note <repo> --kind solution|decision|plan|note --title "..." --tags a,b [--aliases a,b] [--alias "exact error"] [--summary "when to read it"] [--stale-after YYYY-MM-DD|never] --body-file f [--private | --user]
+python scripts/everlast.py note <repo> --kind solution|decision|plan|note --title "..." --tags a,b [--aliases a,b] [--alias "exact error"] [--summary "when to read it"] [--entities a,b] [--evidence src]... [--stale-after YYYY-MM-DD|never] --body-file f [--private | --user]
 python scripts/everlast.py handoff <repo> --body-file f
-python scripts/everlast.py search "<query>" [<repo>] [--private] [--user] [--all] [-n 5] [--json]   # BM25: title and aliases x3, tags and summary x2, body x1
+python scripts/everlast.py search "<query>" [<repo>] [--private] [--user] [--all] [--since YYYY-MM-DD] [--until YYYY-MM-DD] [--entity NAME] [-n 5] [--json]   # BM25: title, aliases and entities x3, tags and summary x2, body x1; "" with a filter lists entries newest first
+python scripts/everlast.py entities [<repo>] [--show NAME] [--json]   # canonical entities with counts, or one entity's entries
 python scripts/everlast.py recheck <entry> [<repo>] [--private | --user]   # read-only: stale?, cited files changed in git since verified, the Verified-by text
 python scripts/everlast.py verify <entry> [<repo>] [--failed "what broke"] [--note "..."]   # renew verified and stale_after, or record a failed recheck
 python scripts/everlast.py maintain [<repo>] [--private | --user] [--apply]   # upkeep report; --apply archives old done/abandoned/superseded entries and relinks
