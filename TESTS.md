@@ -10,6 +10,10 @@ Harness notes (2026-09-26, R-20260926-2, T-20260926-1): run the suite with `scri
 
 ## Runs
 
+### T-20260926-2 · 2026-09-26 · claude plugin eval 2.1.281: native Windows on a scratch copy with 21 trigger and decoy cases (one run each, no ablation, prompt.md plus a `tool_used: Skill` grader, cases built from each skill's evals.json plus one recurring-error prompt); scripts/eval-wsl.sh `recheck resume` under WSL2 (three runs per arm with the no-plugin baseline) · dev-machine · 21/21 and 2/2 cases at 3/3
+- After the 0.4.3 description rewrites (C-20260926-3). Routing: every trigger fired its own skill and every decoy stayed away, including 'Set up everlast here' on a new laptop (vault, not setup) and the handoff decoy for resume; 78 s, $2.38. recheck 3/3 with the plugin, 0/3 without (+0.30); resume 3/3 both arms; $3.21. `python scripts/test_everlast.py`: 112 checks pass.
+- led to: none
+
 ### T-20260926-1 · 2026-09-26 · claude plugin eval 2.1.281 under WSL2 (scripts/eval-wsl.sh; three runs per arm with the no-plugin baseline, sonnet judge; resume without the grant) · dev-machine · 5/5 cases at 3/3
 - Tune of the three failing cases of T-20260923-4, three iterations, then the whole suite, then two confirming runs; about $26 in all. Final per case (with the plugin, without, delta): resume 3/3, 3/3, 0.00 (suite run); search 3/3, 0/3, +0.50 (suite run); capture 3/3, 0/3, +0.22 (suite run); recheck 3/3, 0/3, +0.30 (confirm); privacy 3/3, 0/3, +0.50 (confirm2). Results: `evals/results/tune-2026-09-26/` (gitignored).
 - resume · harness: 3/3 once run in its own invocation without `--allow-tools` (iteration 1), as L-007 predicted.

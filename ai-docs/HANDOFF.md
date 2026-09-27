@@ -1,7 +1,7 @@
 # Handoff
 
 ## Current state
-Plugin 0.4.0, protocol 1.5 on the local branch `release/0.4.0` (2026-09-23): not pushed, not tagged, not merged. New: check before use (`stale_after` by kind, `recheck`, `verify`, `(recheck due)` in the index, protocol principle 6), `search` (BM25 with `aliases`), typed `Related:` links and per-fact stamps in the lint, `maintain` (report; `--apply` archives and relinks), a SessionStart suffix (`recheck due: N (titles) · maintain: M`), `bench/` with `scripts/bench_everlast.py`. Ported from the owner's fork: C-20260918-5 (register merge) and C-20260920-1 (CREATE_NO_WINDOW). Fixed: the Windows default vault path (C-20260923-1, L-004). `python scripts/test_everlast.py` passes 110 checks on Python 3.14 and 3.9 (T-20260923-1).
+Plugin 0.4.3, protocol 1.5 on `master` (2026-09-26). 0.4.3 tidied the four skill descriptions with skill-tidy (all under the 1,024-character spec limit, at most 12 quoted phrases; C-20260926-3); 0.4.2 fixed the vault lookup for a named repo and the recheck undertrigger (C-20260926-2). `python scripts/test_everlast.py` passes 112 checks. Trigger routing for all four skills: 21/21 in a native Windows `claude plugin eval` run on a scratch copy with trigger and decoy cases built from each skill's evals.json (T-20260926-2). 0.4.0 and 0.4.1 went out through pull requests and tags; 0.4.2 was committed straight to master without a tag.
 
 ## In progress
 - The eval suite runs under WSL2 with `scripts/eval-wsl.sh` (from PowerShell), summarized by `scripts/eval_summary.py`; 5/5 cases at 3/3 on 2026-09-26 (T-20260926-1). Native Windows cannot run the Bash cases (no sandbox backend).
@@ -18,4 +18,4 @@ Plugin 0.4.0, protocol 1.5 on the local branch `release/0.4.0` (2026-09-23): not
 - Shell heredocs through the agent's Bash tool collapsed `\\` in Python patch scripts once (a `\b` became a backspace in evals.json); edit files with the editor, not heredoc-built Python.
 
 ## Next single action
-Review `git diff master..release/0.4.0`, merge to `master`, tag `v0.4.0`; then pull it into the private fork (union merge will duplicate C-20260920-1, C-20260918-5, L-003 and L-20260918-1: keep one copy of each) and reinstall the plugin.
+Consider adding the trigger and decoy cases of T-20260926-2 to `evals/` (prompt.md plus a `tool_used: Skill` grader, no scaffold) so routing can be re-checked natively on Windows without the WSL runner; then the external score (RESEARCH.md Open questions).

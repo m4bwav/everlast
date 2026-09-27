@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-1 · 2026-09-26 · Description under the 1,024-character spec limit (1,196 to 1,015)
+- because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST011; plugin C-20260926-3
+- files: SKILL.md (description)
+- The doc-type labels and 'each as a small file' went; 'remember that' and 'note that for next time' became 'remember that for next time'; 'anything naming' became the list it meant. Every trigger phrase's words survive (`tidy.py check`: OK, closest sibling 0.27 to 0.22).
+
 ### C-20260923-1 · 2026-09-23 · Step 5 writes for check before use (a runnable proof, `stale_after`, aliases, typed links, fact stamps) and searches before writing a duplicate; Auto Dream corrected
 - because: R-20260923-1, R-20260923-2; plugin C-20260923-3 to C-20260923-5
 - files: SKILL.md (Outcome; Step 5: search when no index line matches, `verify` on an updated entry, the `note` flags `--aliases`, `--alias`, `--summary`, `--stale-after`, new Check-before-use rules), RESEARCH.md (header; Current understanding: Dreams sentence corrected, a check-before-use bullet; Open questions: Auto Dream and the excluded-mode import resolved; R-20260923-1, R-20260923-2)

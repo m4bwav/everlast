@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-1 · 2026-09-26 · Description: 'anything naming' became 'notes naming'
+- because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST011; plugin C-20260926-3
+- files: SKILL.md (description)
+- The only change. The lint still reports 'things' inside the quoted user phrase 'stop the AI from relearning things', which is kept as the user says it.
+
 ### C-20260923-2 · 2026-09-23 · Changelog header repaired
 - because: evergreen L-021 (an insert before the first `### C-` landed inside the Entry shape template); everlast-capture C-20260922-1 fixed the same fault
 - files: CHANGELOG.md (Entry shape line restored; the stray template heading removed; C-20260913-1 moved below C-20260918-1)

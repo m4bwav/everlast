@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-3 · 2026-09-26 · Plugin 0.4.3: the four skill descriptions tidied with skill-tidy (all under the 1,024-character spec limit, at most 12 quoted phrases)
+- because: the owner's request (clean up the descriptions without losing function or trigger coverage); skill-tidy lint ST005 (capture 1,196, resume 1,420, vault 1,313 characters), ST007 and ST013 (resume and vault, 17 quoted phrases each), ST011 (capture, setup); T-20260926-2
+- files: skills/everlast-capture, everlast-resume, everlast-vault, everlast-setup (SKILL.md description; CHANGELOG.md C-20260926-1 each), .claude-plugin/plugin.json (0.4.3), TESTS.md (T-20260926-2)
+- One rewrite per skill, each passed `tidy.py check` (no lint error, no lost trigger, closest sibling no higher) before `tidy.py apply`: capture 1,015 characters (closest sibling 0.27 to 0.22), resume 1,018 (0.31 to 0.30), vault 1,015 (0.36 to 0.28), setup 985 (0.36 unchanged). Phrases that shared an intent were merged; the rest moved into the prose. Some hosts drop a description over 1,024 characters, so three of the four skills could have been invisible there.
+
 ### C-20260926-2 · 2026-09-26 · Plugin 0.4.2: the vault lookup honours the repo a command names; recheck triggers on recurring errors; graders that measure the property
 - because: T-20260926-1, L-007, L-009, L-010, L-011, R-20260926-2
 - files: scripts/everlast.py (`REPO_HINT`, `vault_path`, `main`), scripts/test_everlast.py (note --private from another directory), skills/everlast-resume/SKILL.md (description: recurring-error phrasing and the stale-fix clause), evals/capture/graders (content.md removed; dead-ends.md, fix.md, verified-by.md, index-updated.md), evals/recheck/graders/check-before-edit.md (tool_order replaced by a trace regex), evals/privacy/graders/private-file.md (any private entry kind), scripts/eval-wsl.sh, scripts/eval_summary.py, scripts/eval_trace.py (new), TESTS.md (harness notes, T-20260926-1), LEARNINGS.md (L-008 to L-011), .claude-plugin/plugin.json (0.4.2)
