@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260927-2 · 2026-09-27 · Step 2 corrected: a local-clone install may still be a cached copy; check installPath
+- because: L-001 (Claude Code 2.1.281 copied the plugin into the cache on a fresh install, against R-20260927-3)
+- files: SKILL.md (A new machine or a new agent product, step 2), RESEARCH.md (Current understanding, Open questions, R-20260927-3), LEARNINGS.md (L-001); plugin protocol/PORTABILITY.md (Claude Code row)
+- C-20260927-1 had said no reinstall is needed after a source edit; that holds only where the binary loads in place. The step now says how to tell and what to run.
+
 ### C-20260927-1 · 2026-09-27 · First research refresh: Cowork runs hooks, one export covers six tools, local installs load in place, scanner and encryption facts corrected
 - because: R-20260927-1, R-20260927-2, R-20260927-3, R-20260927-4, R-20260927-6, R-20260927-7
 - files: SKILL.md (A new machine or a new agent product, steps 2, 3 and 4; Privacy scan; Later: encryption and other backups), RESEARCH.md (written from the template: Current understanding, Open questions, Search plan, R-20260927-1 to 7)
