@@ -10,6 +10,10 @@ Harness notes (2026-09-26, R-20260926-2, T-20260926-1): run the suite with `scri
 
 ## Runs
 
+### T-20260927-1 · 2026-09-27 · claude plugin eval 2.1.281 under WSL2 (scripts/eval-wsl.sh `capture privacy`; three runs per arm with the no-plugin baseline, sonnet judge) · dev-machine · 2/2 cases at 3/3
+- After the everlast-capture and everlast-vault research refresh and the 0.5.1 scan patterns (C-20260927-1). capture 3/3 with the plugin, 0/3 without (+0.22; the baseline fails `used-script`); privacy 3/3, 0/3 (+0.50; the baseline fails `private-file`); $2.98. `python scripts/test_everlast.py`: 123 checks pass. Results: `evals/results/refresh-20260927/` (gitignored). No everlast-vault case exists in the plugin suite, so the vault skill's edits are covered only by the scan test.
+- led to: none
+
 ### T-20260926-2 · 2026-09-26 · claude plugin eval 2.1.281: native Windows on a scratch copy with 21 trigger and decoy cases (one run each, no ablation, prompt.md plus a `tool_used: Skill` grader, cases built from each skill's evals.json plus one recurring-error prompt); scripts/eval-wsl.sh `recheck resume` under WSL2 (three runs per arm with the no-plugin baseline) · dev-machine · 21/21 and 2/2 cases at 3/3
 - After the 0.4.3 description rewrites (C-20260926-3). Routing: every trigger fired its own skill and every decoy stayed away, including 'Set up everlast here' on a new laptop (vault, not setup) and the handoff decoy for resume; 78 s, $2.38. recheck 3/3 with the plugin, 0/3 without (+0.30); resume 3/3 both arms; $3.21. `python scripts/test_everlast.py`: 112 checks pass.
 - led to: none

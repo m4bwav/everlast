@@ -10,6 +10,10 @@ Case added 2026-09-22 and not yet run: selectivity-1 (at most two entries from a
 
 ## Runs
 
+### T-20260927-1 · 2026-09-27 · claude plugin eval under WSL2 (the plugin suite's `capture` and `privacy` cases, three runs per arm) · owner-pc · 2/2
+- After C-20260927-1. Both cases 3/3 with the plugin and 0/3 without; details in the plugin's TESTS.md T-20260927-1. This skill's own evals.json cases were not run.
+- led to: none
+
 ### T-20260906-2 · 2026-09-06 · evergreen-tester subagent (one run per case) · owner-pc Claude Code · 2/2
 - promote-1 pass (promote-scan verdict `eligible` on a three-date entry; repo-scoped `.claude/skills/rotate-save-fixtures/` created via `evergreen.py init --pointer` with `trial: true`; entry marked `status: promoted`; log has a `promote` line; no question asked)
 - promote-decoy-1 pass (promote-scan found no candidate; nothing created; "nothing worth recording")

@@ -54,7 +54,7 @@ Classification happens before the write, by the rules in PRIVACY.md, and the scr
 
 ## 6. Portability
 
-The plugin is one git repository. Claude Code installs it as a plugin (hooks included); Cowork takes the packed `.plugin`; Copilot, Codex, OpenCode and Windsurf read the four skills from `~/.agents/skills/` after `everlast.py export`; Cursor and Gemini need one more link. The vault is a second repository cloned beside it. Details and the one-paste install prompt: PORTABILITY.md and `templates/INSTALL-PROMPT.txt`.
+The plugin is one git repository. Claude Code installs it as a plugin (hooks included); Cowork takes the packed `.plugin`; Copilot, Codex, OpenCode, Windsurf, Cursor and Gemini CLI read the four skills from `~/.agents/skills/` after `everlast.py export`. The vault is a second repository cloned beside it. Details and the one-paste install prompt: PORTABILITY.md and `templates/INSTALL-PROMPT.txt`.
 
 ## 7. Maintenance and contribution
 

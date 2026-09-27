@@ -194,6 +194,7 @@ def main():
         check("local only" not in out, "SessionStart stops asking once the vault has a remote", out)
         check_040(tmp, env)
         check_050(tmp, env)
+        check_scan_key_shapes(tmp, env)
         print("all checks passed")
     finally:
         # junctions must be removed as links, not trees
@@ -224,6 +225,27 @@ def git_at(cwd, env, date, *args):
     """git with the author and committer date pinned (recheck dates changes by commit)."""
     e = dict(env, GIT_AUTHOR_DATE=date + "T10:00:00", GIT_COMMITTER_DATE=date + "T10:00:00")
     return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace", env=e).stdout
+
+
+def check_scan_key_shapes(tmp, env):
+    """The privacy scan catches key shapes the first patterns missed (GitHub fine-grained, npm, Google) and keys at token
+    boundaries (a trailing hyphen, inside backticks or a link), the blind spots arXiv 2609.02983 found in pattern scanners."""
+    d = os.path.join(tmp, "scan-shapes")
+    os.makedirs(d)
+    samples = {
+        "fine-grained.md": "pat github_pat_11ABCDEFG0123456789_abcdefghijklmnopqrstuvwxyz\n",
+        "npm.md": "npm_abcdefghijklmnopqrstuvwxyz0123456789 in .npmrc\n",
+        "google.md": "key AIzaSyA1234567890abcdefghijklmnopqrstuv\n",
+        "hyphen.md": "token ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef012-\n",
+        "backticks.md": "use `ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef0123` here\n",
+        "link.md": "[x](https://x.io/?t=ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef0123)\n",
+        "npm-env.md": "set npm_config_cache_folder_location_for_ci before install\n",
+    }
+    for name, text in samples.items():
+        write_file(os.path.join(d, name), text)
+    rc, out = run("scan", d, "--json", env=env)
+    hits = {h["file"] for h in json.loads(out[out.index("["):])}
+    check(hits == set(samples) - {"npm-env.md"}, "scan catches new key shapes and boundary cases, not npm config names", out)
 
 
 def check_050(tmp, env):

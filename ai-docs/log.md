@@ -26,3 +26,5 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-26] ingest | Hindsight comparison; plugin 0.5.0 entities, time range, evidence, merge candidates
 ## [2026-09-26] index | rebuilt (13 entries)
 ## [2026-09-26] index | rebuilt (13 entries)
+## [2026-09-27] handoff | 20 lines
+## [2026-09-27] update | 0.5.1: capture and vault research refresh, three scan patterns, install docs corrected (Cowork hooks, ~/.agents/skills, in-place loading)

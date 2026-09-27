@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260927-1 · 2026-09-27 · Plugin 0.5.1: the privacy scan catches GitHub fine-grained, npm and Google keys; install docs follow the vault and capture research refresh
+- because: everlast-vault R-20260927-1, R-20260927-2, R-20260927-3, R-20260927-5; everlast-capture R-20260927-1 to 3 (skills C-20260927-1)
+- files: scripts/everlast.py (`PRIVACY_PATTERNS`: `github_pat_`, `npm_` plus 36, `AIza` plus 35), scripts/test_everlast.py (`check_scan_key_shapes`: the three shapes, a trailing hyphen, backticks, a link URL, and an npm config name that must not match; 123 checks), protocol/PORTABILITY.md (Per tool: Claude Code, Cowork, Cursor and Gemini CLI rows), protocol/PROTOCOL.md §6 (one sentence, no version change), templates/INSTALL-PROMPT.txt (step 4), README.md (Cross-tool line), .claude-plugin/plugin.json (0.5.1), skills/everlast-vault and skills/everlast-capture (SKILL.md, RESEARCH.md, CHANGELOG.md)
+- Cowork loads plugin hooks and uploads a zip through Add > Upload plugin; Cursor and Gemini CLI read `~/.agents/skills`, so `export` alone covers six tools; a local-clone install loads in place, so a source edit needs no reinstall. The new patterns found nothing new in the plugin's docs or the owner's vault.
+
 ### C-20260926-4 · 2026-09-26 · Plugin 0.5.0: entities, time-range search, evidence with proof counts, merge candidates
 - because: the owner's request (bring over the cheap, no-dependency ideas from Hindsight, vectorize-io/hindsight); comparison in ai-docs/notes/2026-09-26-hindsight-comparison.md
 - files: scripts/everlast.py (`note --entities/--evidence`, `canonical_entities`, `proof_count`, `search --since/--until/--entity` and filter-only listing, `entities` subcommand, `verify` increments proof_count, `merge_pairs` in `maintain`), scripts/test_everlast.py (`check_050`, 10 checks), protocol/PROTOCOL.md §8, README (Using the script), skills/everlast-capture and everlast-resume (one bullet each)

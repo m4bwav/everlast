@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260927-1 · 2026-09-27 · First research refresh: Cowork runs hooks, one export covers six tools, local installs load in place, scanner and encryption facts corrected
+- because: R-20260927-1, R-20260927-2, R-20260927-3, R-20260927-4, R-20260927-6, R-20260927-7
+- files: SKILL.md (A new machine or a new agent product, steps 2, 3 and 4; Privacy scan; Later: encryption and other backups), RESEARCH.md (written from the template: Current understanding, Open questions, Search plan, R-20260927-1 to 7)
+- Step 2: a plugin installed from the local clone loads in place, so a source edit needs no reinstall; git-URL installs update with `claude plugin update`. Step 3: Cowork loads hooks and the upload path is Customize > Plugins > Add > Upload plugin; `sync` by hand stays until SessionEnd is proven in Cowork. Step 4: Cursor and Gemini CLI read `~/.agents/skills`, so the extra links are dropped (except Cursor Cloud Agents). Privacy scan: run before the vault's first push; Betterleaks named as an optional credential pass; boundary blind spots named. Encryption: git-crypt is not stagnant, sops cannot diff markdown, gocryptfs is quiet and not native on Windows.
+
 ### C-20260926-1 · 2026-09-26 · Description under 1,024 characters with 12 quoted phrases (1,313 to 1,015)
 - because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST007, ST013; plugin C-20260926-3
 - files: SKILL.md (description)

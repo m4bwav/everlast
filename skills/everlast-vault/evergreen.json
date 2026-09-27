@@ -13,9 +13,9 @@
   "source": null,
   "topic": "cross-tool installation of agent skills and plugins, private git-backed knowledge stores, redaction and encryption at rest for agent notes",
   "tier": "fast",
-  "interval_days": 14,
-  "last_checked": "2026-09-13",
-  "next_due": "2026-09-27",
+  "interval_days": 7.0,
+  "last_checked": "2026-09-27",
+  "next_due": "2026-10-05",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -32,12 +32,18 @@
       "m": null,
       "interval_after": 14,
       "note": "created"
+    },
+    {
+      "date": "2026-09-27",
+      "m": 0.65,
+      "interval_after": 7.0,
+      "note": "first real pass: Cowork loads hooks, ~/.agents/skills covers Cursor and Gemini, local-clone installs load in place, Betterleaks, scanner boundary gaps (3 key shapes added), encryption facts; cost: searches 17 · fetches 11 · tool calls 34"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 0,
-    "research": 0,
+    "research": 1,
     "tests": 0
   },
   "consolidate_every": 25,

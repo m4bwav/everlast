@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260927-1 · 2026-09-27 · Research refresh: Codex pointer moves to AGENTS.md, workarounds name what retires them, `/doctor prompt-audit` for the always-on files
+- because: R-20260927-1, R-20260927-2, R-20260927-3
+- files: SKILL.md (Step 5: the user-tier pointer paragraph, the lint paragraph, Check-before-use rules `stale_after` bullet), RESEARCH.md (Current understanding, Open questions, Search plan refresh notes, R-20260927-1 to 5)
+- Codex memories are generated state its consolidation rewrites, so the Codex pointer goes in `~/.codex/AGENTS.md`; a workaround for an outside bug or version gets a `Retire when:` line with a check (compound-engineering's `retire_when`); Claude Code 2.1.283's `/doctor prompt-audit` is suggested when CLAUDE.md or AGENTS.md changed.
+
 ### C-20260926-2 · 2026-09-26 · Step 5 names entities and evidence (plugin 0.5.0)
 - because: plugin C-20260926-4 (entities, evidence and proof_count from the Hindsight comparison)
 - files: SKILL.md (write options; one bullet on `--entities` and `--evidence`)

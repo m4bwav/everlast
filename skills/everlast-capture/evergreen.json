@@ -13,16 +13,16 @@
   "source": null,
   "topic": "how AI coding agents capture session knowledge in modular, on-demand repo documentation",
   "tier": "fast",
-  "interval_days": 3.5,
-  "last_checked": "2026-09-23",
-  "next_due": "2026-09-27",
+  "interval_days": 3,
+  "last_checked": "2026-09-27",
+  "next_due": "2026-09-30",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 0,
+    "pinned_min": 1,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -44,21 +44,27 @@
       "m": 0.45,
       "interval_after": 3.5,
       "note": "check-before-use writing rules (runnable Verified-by, stale_after, aliases, typed links, fact stamps); Auto Dream corrected"
+    },
+    {
+      "date": "2026-09-27",
+      "m": 0.4,
+      "interval_after": 3,
+      "note": "Codex memories generated (pointer to ~/.codex/AGENTS.md), compound-engineering retire_when, /doctor prompt-audit, plugin-evals grader for edits; cost: searches 11 · fetches 23 · tool calls 43"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 4,
-    "research": 9,
-    "tests": 5
+    "research": 10,
+    "tests": 6
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-09-13T10:47",
-    "harness": "evergreen-tester",
+    "last_run": "2026-09-27T18:02",
+    "harness": "claude plugin eval (WSL2)",
     "env": "owner-pc",
-    "cases": 1,
-    "passed": 1,
+    "cases": 2,
+    "passed": 2,
     "failed": 0,
     "failing": [],
     "last_failure": null,
