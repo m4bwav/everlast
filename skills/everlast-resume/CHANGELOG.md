@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260926-1 · 2026-09-26 · Description under 1,024 characters with 12 quoted phrases (1,420 to 1,018)
+- because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST007, ST013; plugin C-20260926-3
+- files: SKILL.md (description)
+- 'continue' and 'resume' moved into the prose ('continue or resume work from HANDOFF.md'); 'check the notes first' and 'search the notes' became 'search the notes first'; 'we fixed this before' and 'it fails again' became one phrase; 'this error is back' is carried by 'an error the user says is back after an earlier fix', kept near the front because 0.4.2 tuned for it. `tidy.py check`: OK, closest sibling 0.31 to 0.30.
+
 ### C-20260923-2 · 2026-09-23 · Changelog header repaired
 - because: evergreen L-021 (an insert before the first `### C-` landed inside the Entry shape template); everlast-capture C-20260922-1 fixed the same fault
 - files: CHANGELOG.md (Entry shape line restored; the stray template heading removed; C-20260913-1 kept in date order)
