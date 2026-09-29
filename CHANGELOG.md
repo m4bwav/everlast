@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260929-2 · 2026-09-29 · Plugin 0.6.0: hidden text never reaches a doc set or a model's context (`hidden-text-check`)
+- because: R-20260929-2 (Claude Code 2.1.284 neutralises invisible characters and markup-imitating tags in MEMORY.md; arXiv 2607.14611; the owner approved the check 2026-09-29)
+- files: scripts/everlast.py (hidden text section: `neutralize`, `hidden_hits`, `clean`; `note`, `handoff`, `verify`, `log` clean on write; `lint` and `scan` report; the SessionStart hook warns; agent-read output neutralised; `search` and `entities` JSON cleaned before serialising), scripts/test_everlast.py (`check_hidden`, 21 checks), protocol/PRIVACY.md (Hidden text), README.md (commands), skills/everlast-vault/SKILL.md (Privacy scan), .claude-plugin/plugin.json (0.6.0), RESEARCH.md (R-20260929-2 applied; Open questions)
+- Zero-width, bidi-control, invisible-operator and Unicode tag characters are dropped and tags imitating an agent harness's markup are broken with a backslash, on every write and in everything the hook, search, recheck, entities, maintain and lint print; lint and scan name file and line; `clean` fixes files in place. Emoji joiners, subdivision flags, a leading byte order mark and look-alikes such as C# generics are left alone. The new checks fail against 0.5.1 and pass here (146 checks); a dry-run `clean` over the owner's vault and 20 registered doc sets (about 600 files) found nothing to change, and the SessionStart hook's time and output on a clean doc set are unchanged.
+
 ### C-20260929-1 · 2026-09-29 · Research refresh: a local-clone install loads in place; `installPath` is not the test
 - because: R-20260929-3 (and R-20260929-1, 2, 4 recorded as notes and open questions)
 - files: protocol/PORTABILITY.md (Claude Code row), RESEARCH.md (Open questions; R-20260929-1 to 4); everlast-vault SKILL.md (A new machine, step 2), LEARNINGS.md (L-001), RESEARCH.md, CHANGELOG.md (C-20260929-1)

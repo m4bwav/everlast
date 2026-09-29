@@ -10,6 +10,10 @@ Harness notes (2026-09-26, R-20260926-2, T-20260926-1): run the suite with `scri
 
 ## Runs
 
+### T-20260929-1 · 2026-09-29 · `python scripts/test_everlast.py` (the self-test; no model) · dev-machine · 146/146 checks
+- After the hidden-text check (C-20260929-2). `check_hidden` plants zero-width, right-to-left override and tag characters and harness-like tags (plain, closing, spaced, split by a zero-width space) through `note`, `handoff`, a hand-edited HANDOFF, entry and user-tier PROFILE, then checks writes, lint, scan, the SessionStart hook, search (text and JSON), recheck and clean; emoji sequences, an England flag, a leading BOM and look-alikes survive. The same checks fail against 0.5.1 (first failure: note reports nothing neutralised). A dry-run `clean` over the owner's vault and 20 registered doc sets changed nothing.
+- led to: none
+
 ### T-20260927-1 · 2026-09-27 · claude plugin eval 2.1.281 under WSL2 (scripts/eval-wsl.sh `capture privacy`; three runs per arm with the no-plugin baseline, sonnet judge) · dev-machine · 2/2 cases at 3/3
 - After the everlast-capture and everlast-vault research refresh and the 0.5.1 scan patterns (C-20260927-1). capture 3/3 with the plugin, 0/3 without (+0.22; the baseline fails `used-script`); privacy 3/3, 0/3 (+0.50; the baseline fails `private-file`); $2.98. `python scripts/test_everlast.py`: 123 checks pass. Results: `evals/results/refresh-20260927/` (gitignored). No everlast-vault case exists in the plugin suite, so the vault skill's edits are covered only by the scan test.
 - led to: none

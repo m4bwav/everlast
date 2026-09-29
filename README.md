@@ -20,7 +20,7 @@ The spec is [protocol/PROTOCOL.md](protocol/PROTOCOL.md); which documents pay an
 | `skills/everlast-capture` | End of task: harvest what was learned, route it (project, private sidecar, user tier, or elsewhere), classify for privacy, write with the script (a runnable proof in every solution, a recheck date, aliases, typed links), rewrite HANDOFF, lint. Promotes recurring procedures to skills, conservatively. |
 | `skills/everlast-resume` | Start of task: read the user tier once per new environment, then the index, search when no line matches, open only matching entries, check a stale one before acting on it (recheck, re-run its proof when safe, verify or supersede), take HANDOFF's next action, run the upkeep pass when due. |
 | `skills/everlast-vault` | The vault: init, remote (name a private repository or create one with gh), status, sync (commit, pull --rebase, push), privacy scan, new-machine install, export to other tools, pack for Cowork. |
-| `scripts/everlast.py` | Everything deterministic, stdlib only: docs roots, index, lint (typed links, per-fact stamps), search, recheck and verify, maintain, privacy scan, project registry, junction and git exclusion, vault remote and sync, project docs sync (push when sure, pull request when not), export, pack, hooks. `scripts/test_everlast.py` is the self-test. |
+| `scripts/everlast.py` | Everything deterministic, stdlib only: docs roots, index, lint (typed links, per-fact stamps), search, recheck and verify, maintain, privacy scan, hidden-text check and clean, project registry, junction and git exclusion, vault remote and sync, project docs sync (push when sure, pull request when not), export, pack, hooks. `scripts/test_everlast.py` is the self-test. |
 | `hooks/hooks.json` | Claude Code: SessionStart prints one orientation line (ending `recheck due: N (titles) · maintain: M` when something is due; nothing is written) and the project HANDOFF; Stop nudges once per session when the tree changed and nothing was written; SessionEnd syncs the vault and the project's doc root in detached processes. |
 | `bench/`, `scripts/bench_everlast.py` | A synthetic doc set (44 entries) and 41 typed queries; compares an index scan with `search` on Recall@1, Recall@3, MRR and two staleness measures. The self-test holds the floor. |
 | `adapters/copilot/hooks.json` | The same SessionStart and SessionEnd for Copilot's `.github/hooks/`. |
@@ -64,8 +64,9 @@ python scripts/everlast.py entities [<repo>] [--show NAME] [--json]   # canonica
 python scripts/everlast.py recheck <entry> [<repo>] [--private | --user]   # read-only: stale?, cited files changed in git since verified, the Verified-by text
 python scripts/everlast.py verify <entry> [<repo>] [--failed "what broke"] [--note "..."]   # renew verified and stale_after, or record a failed recheck
 python scripts/everlast.py maintain [<repo>] [--private | --user] [--apply]   # upkeep report; --apply archives old done/abandoned/superseded entries and relinks
-python scripts/everlast.py lint <repo> [--all]      # budgets, headings, dead paths and links, stale, typed Related, stamps, duplicates, privacy, exclusion
-python scripts/everlast.py scan <repo>              # privacy scan only
+python scripts/everlast.py lint <repo> [--all]      # budgets, headings, dead paths and links, stale, typed Related, stamps, duplicates, privacy, hidden text, exclusion
+python scripts/everlast.py scan <repo>              # privacy scan and hidden text only
+python scripts/everlast.py clean <file|folder> [--dry-run]   # drop hidden characters, break tags imitating agent markup (protocol/PRIVACY.md, Hidden text)
 python scripts/everlast.py export <target> | pack
 python scripts/everlast.py pull [--dry-run]         # update from the official repository; the SessionStart line says when this clone is behind
 python scripts/everlast.py contribute [yes|no]      # asked once at install; publish is a no-op until yes
