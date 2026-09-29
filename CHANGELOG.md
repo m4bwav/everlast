@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260929-1 · 2026-09-29 · Research refresh: a local-clone install loads in place; `installPath` is not the test
+- because: R-20260929-3 (and R-20260929-1, 2, 4 recorded as notes and open questions)
+- files: protocol/PORTABILITY.md (Claude Code row), RESEARCH.md (Open questions; R-20260929-1 to 4); everlast-vault SKILL.md (A new machine, step 2), LEARNINGS.md (L-001), RESEARCH.md, CHANGELOG.md (C-20260929-1)
+- The install docs told the reader to reinstall whenever `installPath` named the cache; a probe on the owner's PC and anthropics/claude-code#96223 show the CLI and VS Code load the clone regardless, so the check is now the loaded path (a skill's base directory or `CLAUDE_PLUGIN_ROOT`). The memory-injection check (R-20260929-2) is recommended, not built.
+
 ### C-20260927-1 · 2026-09-27 · Plugin 0.5.1: the privacy scan catches GitHub fine-grained, npm and Google keys; install docs follow the vault and capture research refresh
 - because: everlast-vault R-20260927-1, R-20260927-2, R-20260927-3, R-20260927-5; everlast-capture R-20260927-1 to 3 (skills C-20260927-1)
 - files: scripts/everlast.py (`PRIVACY_PATTERNS`: `github_pat_`, `npm_` plus 36, `AIza` plus 35), scripts/test_everlast.py (`check_scan_key_shapes`: the three shapes, a trailing hyphen, backticks, a link URL, and an npm config name that must not match; 123 checks), protocol/PORTABILITY.md (Per tool: Claude Code, Cowork, Cursor and Gemini CLI rows), protocol/PROTOCOL.md §6 (one sentence, no version change), templates/INSTALL-PROMPT.txt (step 4), README.md (Cross-tool line), .claude-plugin/plugin.json (0.5.1), skills/everlast-vault and skills/everlast-capture (SKILL.md, RESEARCH.md, CHANGELOG.md)

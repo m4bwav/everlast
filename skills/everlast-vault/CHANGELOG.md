@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20260929-1 · 2026-09-29 · Step 2: probe the loaded path, not `installPath`
+- because: L-001 updated (a live probe on 2.1.281 in VS Code loaded the clone while `installPath` named the cache), anthropics/claude-code#96223 (plugin R-20260929-3)
+- files: SKILL.md (A new machine or a new agent product, step 2), LEARNINGS.md (L-001), RESEARCH.md (Open questions); plugin protocol/PORTABILITY.md (Claude Code row)
+- C-20260927-2 had the owner's PC running a cached copy and told the reader to trust `installPath`; the field names the cache even when the CLI and the VS Code extension load in place, and only the Desktop app runs the cache copy. The step now checks the skill's base directory or `CLAUDE_PLUGIN_ROOT` and reinstalls only when that is under `cache/`.
+
 ### C-20260927-2 · 2026-09-27 · Step 2 corrected: a local-clone install may still be a cached copy; check installPath
 - because: L-001 (Claude Code 2.1.281 copied the plugin into the cache on a fresh install, against R-20260927-3)
 - files: SKILL.md (A new machine or a new agent product, step 2), RESEARCH.md (Current understanding, Open questions, R-20260927-3), LEARNINGS.md (L-001); plugin protocol/PORTABILITY.md (Claude Code row)

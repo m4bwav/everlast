@@ -18,7 +18,7 @@ Topic: cross-tool installation of agent skills and plugins, private git-backed k
 
 ## Open questions
 
-- Does in-place loading of local-directory marketplace plugins arrive after 2.1.281? After the next Claude Code update, reinstall once and check whether `installPath` points at the source (L-001).
+- (resolved 2026-09-29) In-place loading already works on 2.1.281 in the VS Code extension; `installPath` is the misleading part (L-001, anthropics/claude-code#96223). Still open: does the Desktop app's Code tab still run the cache copy after 2.1.284, and does a local git marketplace install the checked-out branch (#92280)?
 - Do Cowork's hooks run the SessionEnd `sync` in Cowork's environment, and can it reach the vault path? Needs a live Cowork session.
 - Does an old `~/.cursor/skills` or `~/.gemini/skills` link beside the `~/.agents/skills` export list the skills twice in Cursor or Gemini CLI? Check on the next machine that has both.
 - Should `vault remote` scan the vault's `git log -p` before its first push to a new remote, as `/pii-check` does for history? SKILL.md now says to run the scan before the first push; it scans the tree, not history.

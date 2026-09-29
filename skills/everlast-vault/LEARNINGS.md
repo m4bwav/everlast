@@ -6,13 +6,13 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
-### L-001 · 2026-09-27 · A local-marketplace plugin install is still a cached copy on Claude Code 2.1.281, whatever the docs say
-- Trigger: after R-20260927-3 (the loading docs: relative-path plugins in a local-directory marketplace load in place), `everlast-protocol@mark-local` was still running `cache/mark-local/everlast-protocol/0.4.3` while the source was at 0.5.1; a fresh uninstall and install on 2026-09-27 wrote `cache/.../0.5.1`, and a line appended to the source did not appear in that copy
-- Hypothesis: the docs describe a newer Claude Code (2.1.283 at the time) than the installed 2.1.281, or the behaviour needs a marketplace added after the change; docs read on the day are not proof of what the local binary does
-- Rule: after a source edit, check `installPath` in `claude plugin list --json`; if it is under `cache/`, marketplace update, uninstall with `--keep-data`, install. Verify a doc-derived install claim against the local binary before writing it into the skill
-- Evidence: C-20260927-2; `claude plugin list --json` before and after the reinstall
+### L-001 · 2026-09-27 · `installPath` says cache even when the plugin loads in place; probe what the session loaded
+- Trigger: after R-20260927-3 (the loading docs: relative-path plugins in a local-directory marketplace load in place), `everlast-protocol@mark-local` showed `installPath` `cache/mark-local/everlast-protocol/0.4.3` while the source was at 0.5.1; a fresh uninstall and install on 2026-09-27 wrote `cache/.../0.5.1`, and a line appended to the source did not appear in that copy, so the skill said the owner's PC ran a cached copy. On 2026-09-29, on the same PC (Claude Code 2.1.281, VS Code extension), `installPath` still said `cache/mark-local/everlast-protocol/0.5.1`, but the everlast-capture skill loaded with the base directory the clone's `skills/everlast-capture`, the clone; anthropics/claude-code#96223 (open, has repro, 2.1.278 CLI and 2.1.280 Desktop) reports the same split: the CLI loads in place, Desktop's Code tab keeps the cache copy, and `installPath` names the cache in both.
+- Hypothesis: the 2026-09-27 check read the cache copy's contents, not what the session loaded; the cache copy exists and goes stale, but the CLI and VS Code extension do not run it. Desktop does.
+- Rule: after a source edit, check the loaded path (a skill's "Base directory" line at load, or `CLAUDE_PLUGIN_ROOT` in a hook), never `installPath`; reinstall (marketplace update, uninstall with `--keep-data`, install) only when the loaded path is under `cache/`, which is expected in the Desktop app. Verify a doc-derived install claim against the local binary before writing it into the skill
+- Evidence: C-20260927-2, C-20260929-1; `claude plugin list --json` on 2026-09-29 (installPath under cache) against the skill's base directory the same session; anthropics/claude-code#96223
 - Scope: env:owner-pc
-- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-09-27
+- Status: active · helpful 1 · harmful 1 · last_confirmed 2026-09-29
 
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-09-13 · One-line lesson in plain words
