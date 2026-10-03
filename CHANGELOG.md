@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261003-1 · 2026-10-03 · Research refresh (minor) and three lint fixes in the plugin records
+- because: R-20261003-1 to 3 (notes only); evergreen audit lint (Search plan without labelled track blocks; TESTS.md defining T-20260913-1 twice)
+- files: RESEARCH.md (Search plan: four labelled tracks from the evergreen RESEARCH.md template, best and noisy sources; R-20261003-1 to 3), TESTS.md (the scaffold entry renumbered T-20260913-3; the eval run keeps T-20260913-1, which LEARNINGS.md and C-20260913-1 cite), LEARNINGS.md (the real L-001, the plugin-eval sandbox lesson, had sat inside the template's example comment, so lint saw it as undefined; moved out, comment kept below it)
+- No change to README.md, protocol/, scripts/ or the skills: Claude Code 2.1.285 to 2.1.288, the Memory Trust Gap study and the tooling baselines all agree with what the plugin already does.
+
 ### C-20260929-2 · 2026-09-29 · Plugin 0.6.0: hidden text never reaches a doc set or a model's context (`hidden-text-check`)
 - because: R-20260929-2 (Claude Code 2.1.284 neutralises invisible characters and markup-imitating tags in MEMORY.md; arXiv 2607.14611; the owner approved the check 2026-09-29)
 - files: scripts/everlast.py (hidden text section: `neutralize`, `hidden_hits`, `clean`; `note`, `handoff`, `verify`, `log` clean on write; `lint` and `scan` report; the SessionStart hook warns; agent-read output neutralised; `search` and `entities` JSON cleaned before serialising), scripts/test_everlast.py (`check_hidden`, 21 checks), protocol/PRIVACY.md (Hidden text), README.md (commands), skills/everlast-vault/SKILL.md (Privacy scan), .claude-plugin/plugin.json (0.6.0), RESEARCH.md (R-20260929-2 applied; Open questions)

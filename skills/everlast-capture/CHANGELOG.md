@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261003-1 · 2026-10-03 · Research refresh (quiet): install and star baselines updated
+- because: R-20261003-1
+- files: RESEARCH.md (header line; Current understanding: handoff installs, claude-mem; R-20261003-1)
+- SKILL.md unchanged.
+
 ### C-20260927-1 · 2026-09-27 · Research refresh: Codex pointer moves to AGENTS.md, workarounds name what retires them, `/doctor prompt-audit` for the always-on files
 - because: R-20260927-1, R-20260927-2, R-20260927-3
 - files: SKILL.md (Step 5: the user-tier pointer paragraph, the lint paragraph, Check-before-use rules `stale_after` bullet), RESEARCH.md (Current understanding, Open questions, Search plan refresh notes, R-20260927-1 to 5)

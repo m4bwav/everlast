@@ -14,15 +14,15 @@
   "topic": "how AI coding agents capture session knowledge in modular, on-demand repo documentation",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-09-27",
-  "next_due": "2026-09-30",
+  "last_checked": "2026-10-03",
+  "next_due": "2026-10-06",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 1,
+    "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -50,12 +50,18 @@
       "m": 0.4,
       "interval_after": 3,
       "note": "Codex memories generated (pointer to ~/.codex/AGENTS.md), compound-engineering retire_when, /doctor prompt-audit, plugin-evals grader for edits; cost: searches 11 · fetches 23 · tool calls 43"
+    },
+    {
+      "date": "2026-10-03",
+      "m": 0.15,
+      "interval_after": 3,
+      "note": "quiet four-track pass: install and star baselines, CC 2.1.288 rules on write, stale-memory over-trust supports existing rules; shared research with plugin; cost: searches 1 · fetches 0 · tool calls 2 (shared plugin pass)"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 4,
-    "research": 10,
+    "research": 11,
     "tests": 6
   },
   "consolidate_every": 25,

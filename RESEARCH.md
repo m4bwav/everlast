@@ -27,12 +27,52 @@ Current understanding, open questions, the four-track search plan, and dated fin
 
 ## Search plan
 
-- Subject: `arxiv.org cs.SE agent memory handoff 2026`; `code.claude.com/docs/en/memory`; Codex, Gemini, Copilot memory changelogs; "AGENTS.md study" follow-ups to 2602.11988.
-- Tooling: GitHub `path:SKILL.md memory handoff`; skills.sh top installs for "memory", "handoff"; `registry.modelcontextprotocol.io/v0/servers?search=memory`; claude-mem, compound-engineering, agentmemory releases.
-- Practice: hn.algolia.com "agent memory" by date; Simon Willison; Latent Space; vendor engineering blogs; GitHub issues on `.git/info/exclude`, `CLAUDE.local.md`, worktrees.
-- Testing: `code.claude.com/docs/en/plugin-evals`; agentskills.io evaluating-skills; agent-memory-doctor and agent-memory-inspector; promptfoo assertions for file outputs.
+Four tracks; every refresh runs at least one query on each (scope each to the period since the last refresh; add the year). Protocol §4 explains the tracks and how tooling, practice and testing findings are judged.
+
+Subject (the goal and the latest thinking on reaching it):
+
+- `arxiv.org cs.SE agent memory handoff <year>`; `stale memory OR "memory trust" agent arxiv <month>`; "AGENTS.md study" follow-ups to 2602.11988
+- `code.claude.com/docs/en/changelog` and `code.claude.com/docs/en/memory`; Codex (`learn.chatgpt.com/codex/changelog`), Gemini, Copilot memory changelogs
+
+Tooling (skills, plugins, MCP servers, scripts, knowledge graphs built for this subject):
+
+- GitHub `path:SKILL.md memory handoff`; `skills.sh/api/search?q=handoff` and `?q=memory` for install counts
+- `registry.modelcontextprotocol.io/v0/servers?search=memory`; claude-mem, compound-engineering, agentmemory, obsidian-second-brain releases
+
+Practice (how others use AI agents on this goal, and everything in between):
+
+- `hn.algolia.com/api/v1/search_by_date?query=agent%20memory&tags=story` (comment volume over points); Simon Willison; Latent Space; vendor engineering blogs
+- GitHub issues on `.git/info/exclude`, `CLAUDE.local.md`, worktrees, plugin cache and loading
+
+Testing (how work on this subject is verified, and how skills for it are tuned):
+
+- `code.claude.com/docs/en/plugin-evals`; agentskills.io evaluating-skills; `"plugin eval" OR "skill eval" trigger harness <year>`
+- agent-memory-doctor and agent-memory-inspector; promptfoo assertions for file outputs; external scores (LongMemEval-V2, STALE, DolphinBench)
+
+Best sources (primary first): code.claude.com/docs (changelog, memory, plugin-evals), arxiv.org, the GitHub release pages of the tools above, skills.sh API. Noisy: SEO "best memory tools" lists, scraped skill directories, HN Algolia without a date filter that works (`numericFilters` on `created_at_i` was ignored on 2026-10-03; read dates off the results).
 
 ## Findings (newest first)
+
+### R-20261003-3 · 2026-10-03 · Tooling and practice (quiet): install baselines, transcript-level session portability, a markdown memory format
+- Summary: claude-mem v13.29.0 (2026-10-03, 95.3k stars) adds a `work_state_write`/`work_state_read` to-do list; mattpocock `handoff` 908.5K installs, `claude-handoff` 340.6K, agentmemory `handoff` 12.5K; compound-engineering 3.30.0 to 3.30.3 (2026-09-29 to 10-01) changed nothing in `docs/solutions` or handoff. Skillsync (Launch HN 2026-09-17, YC W26, 68 points, 62 comments) moves whole session transcripts between ten agents, local-first: a transcript bridge, complementary to curated entries. "Agent memory as a file format" (calpaterson.com, 2026-08-31, 191 points, 96 comments): Memoryfield, a zip of markdown pages with YAML frontmatter (`title`, `created`, `updated`, `uuid`, `summary`) and an optional SQLite vector index, citations advised, no expiry field; the same substrate as Everlast, without a freshness check. Testing: sjnims/cc-plugin-eval generates positive and negative trigger scenarios through the Agent SDK; `claude plugin eval` stays the harness here. Tooling, practice and testing: nothing that changes a recommendation.
+- Track: tooling, practice, testing
+- Sources: https://github.com/thedotmack/claude-mem/releases, https://skills.sh/api/search?q=handoff, https://github.com/EveryInc/compound-engineering-plugin/releases, https://skillsync.com, https://calpaterson.com/memoryfields.html, https://github.com/sjnims/cc-plugin-eval
+- Magnitude: 0.15
+- Applied: note
+
+### R-20261003-2 · 2026-10-03 · Subject: stale memory is over-trusted; metadata helps large models, pre-resolved conflicts help small ones
+- Summary: "The Memory Trust Gap" (arXiv 2609.01852, 2026-09-01, Qwen3 0.6B to 8B): models answered with the stale stored value 92 to 100% of the time when it looked current, larger checkpoints collapsed most, and stale memory did worse than no memory; exposing metadata (dates, provenance) restored the larger models, and only resolving the conflict before retrieval restored the small ones. Support for `stale_after` and the `(recheck due)` flag in the index, and for `maintain` archiving superseded entries rather than leaving both versions in reach. "Measure Before You Manage" (arXiv 2608.31057, 55 coding-agent trajectories): equal token budgets do not mean equal delivered context; memory objects of different kinds behave differently.
+- Track: subject
+- Sources: https://arxiv.org/abs/2609.01852, https://arxiv.org/abs/2608.31057
+- Magnitude: 0.15
+- Applied: note
+
+### R-20261003-1 · 2026-10-03 · Subject: Claude Code 2.1.285 to 2.1.288 (minor): synced-plugin SessionStart in cloud sessions, rules load on write, duplicate CLAUDE.md fixes, Claude Mods
+- Summary: 2.1.288 (2026-10-02): `SessionStart` hooks from synced plugins now run in new cloud sessions (the Everlast hook can reach them); path-scoped `.claude/rules` and nested CLAUDE.md files load when Write or Edit touches their scope, not only Read; memory-markup neutralisation restated. 2.1.287 (10-01): Claude Mods let plugins change deeper behaviour; a built-in side-agent mod. 2.1.286 (09-30): a folder's CLAUDE.md is no longer attached twice after resume or compaction, and worktree subagents no longer load the project CLAUDE.md twice. 2.1.285 (09-29): plugin cache-miss after a moved home directory fixed; `installed_plugins.json` no longer loses records. None changes a claim in README.md or protocol/.
+- Track: subject
+- Sources: https://code.claude.com/docs/en/changelog
+- Magnitude: 0.2
+- Applied: note
 
 ### R-20260929-4 · 2026-09-29 · Tooling, subject, testing (minor): peers, instruction growth, shared Claude memory, DolphinBench
 - Summary: obsidian-second-brain (4.6k stars) v0.16.0 took up OKF v0.2 and v0.17.0 (2026-09-26) adds dual vault layouts; mattpocock `handoff` 887.4K installs (still writes to the OS temp dir), `claude-handoff` 326.9K, compound-engineering `ce-handoff` 529 (a managed temporary store); small markdown-memory MCP servers with drift audits have no adoption or evals. "Catastrophic Remembering" (arXiv 2608.11095): instruction files tripled across 247,694 instruction lifetimes, and a comment giving an instruction's reason removed 99.3% of the excess growth and improved following by up to 23.1%, support for "each rule with its reason" and `maintain`. Claude chat and Cowork share one memory since 2026-08-25, which does not reach Claude Code. DolphinBench (arXiv 2609.24971, Mem0 authors) checks each task succeeds with the history and fails without it and reports cost and latency: a candidate external score. Quiet: Codex 0.158/0.159, Gemini CLI 0.61, Cursor, Copilot, claude-mem 13.24.x, issue #6253.

@@ -14,15 +14,15 @@
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-09-29",
-  "next_due": "2026-10-02",
+  "last_checked": "2026-10-03",
+  "next_due": "2026-10-06",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 2,
+    "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -50,12 +50,18 @@
       "m": 0.5,
       "interval_after": 3,
       "note": "installPath is not the loaded path (probe + claude-code#96223), memory-injection check recommended, eval hillclimbing guide noted; cost: searches 15 · fetches 29 · tool calls 69"
+    },
+    {
+      "date": "2026-10-03",
+      "m": 0.2,
+      "interval_after": 3,
+      "note": "Claude Code 2.1.285-2.1.288 (synced-plugin SessionStart in cloud, rules load on write), Memory Trust Gap 2609.01852, install baselines, Skillsync, Memoryfield; lint: search plan tracks, T-20260913-1 dup, L-001 out of template comment; cost: searches 5 · fetches 10 · tool calls 34"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 6,
+    "research": 7,
     "tests": 5
   },
   "consolidate_every": 25,
