@@ -76,7 +76,6 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: scripts/test_everlast.py "the commit subject lists what was added" (fails on the old parse, passes on `status_lines`).
 - helpful: 1 · harmful: 0 · promoted: no
 
-<!-- Example (delete once you have a real entry):
 ### L-001 · 2026-09-13 · `claude plugin eval` refuses cases that grant Bash on this Windows PC (no sandbox backend)
 - Trigger: first eval run; every run with `--allow-tools Bash` exited 1: "sandbox required but unavailable: the Windows sandbox is not active on this session (feature gate off); sandbox.failIfUnavailable is set".
 - Hypothesis: plugin eval confines shell tools with an OS sandbox; Windows has none here, so any case whose agent must run `everlast.py` cannot be graded by that harness on this machine.
@@ -84,6 +83,7 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: evals/results/first-run.json (2026-09-13, cost $0.002, 4 s, error text above).
 - helpful: 0 · harmful: 0 · promoted: no
 
+<!-- Example (delete once you have a real entry):
 ### L-001 · 2026-09-13 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
 - Hypothesis: why

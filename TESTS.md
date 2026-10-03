@@ -71,6 +71,6 @@ Harness notes (2026-09-26, R-20260926-2, T-20260926-1): run the suite with `scri
 - capture and privacy cases could not run in this harness here: any Bash grant is refused without a sandbox backend on Windows (L-001); they were proven with the tester instead (T-20260913-2).
 - led to: L-001
 
-### T-20260913-1 · 2026-09-13 · not yet run · plugin · 0/0
+### T-20260913-3 · 2026-09-13 · not yet run · plugin · 0/0 (renumbered 2026-10-03 from a duplicate T-20260913-1; C-20261003-1)
 - Suite scaffolded; no run recorded. Write the cases in `evals/evals.json` (at least two trigger prompts, two decoys, one action case with evidence, one outcome case), run the baseline without the skill, then run with it (`evergreen-test`).
 - led to: none

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261003-1 · 2026-10-03 · Research refresh (minor): findings logged, SKILL.md unchanged
+- because: R-20261003-1
+- files: RESEARCH.md (header line; R-20261003-1)
+- The Memory Trust Gap and the consolidation study support Step 3 and the prune pass as written.
+
 ### C-20260926-2 · 2026-09-26 · Step 3 adds time-range and entity lookups (plugin 0.5.0)
 - because: plugin C-20260926-4
 - files: SKILL.md (step 3: `--since`/`--until`, `--entity`, `entities --show`)

@@ -2,7 +2,7 @@
 
 Findings that back [SKILL.md](SKILL.md). Changes they caused are logged in [CHANGELOG.md](CHANGELOG.md); procedural lessons live in [LEARNINGS.md](LEARNINGS.md); test runs and their evidence in [TESTS.md](TESTS.md); schedule and state in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Topic: how agents retrieve and consolidate prior session knowledge from repo docs (progressive disclosure, index-first loading, memory consolidation passes). Tier `fast` (moderate until the 2026-09-23 check moved it). Last refresh 2026-09-23 (a correction, check before use and search, from the research behind plugin 0.4.0); next due per `evergreen.json`. The suite's shared findings live in `../everlast-capture/RESEARCH.md`; this file keeps what this skill's own claims depend on.
+Topic: how agents retrieve and consolidate prior session knowledge from repo docs (progressive disclosure, index-first loading, memory consolidation passes). Tier `fast` (moderate until the 2026-09-23 check moved it). Last refresh 2026-10-03 (minor: stale-memory over-trust, Claude Code resume fixes, consolidation literature); next due per `evergreen.json`. The suite's shared findings live in `../everlast-capture/RESEARCH.md`; this file keeps what this skill's own claims depend on.
 
 ## Current understanding
 
@@ -50,6 +50,13 @@ Best sources (primary first): code.claude.com/docs, platform.claude.com (Dreams)
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20261003-1 · 2026-10-03 · Subject, testing (minor): stale memory is over-trusted unless flagged or pre-resolved; resume no longer double-loads CLAUDE.md
+- Summary: The Memory Trust Gap (arXiv 2609.01852, 2026-09-01, Qwen3 0.6B to 8B): the stale stored value was used 92 to 100% of the time when it looked current and did worse than no memory; exposing metadata restored the larger models, and only resolving the conflict before retrieval restored the small ones. That backs Step 3 as written (the index's `(recheck due)` flag is the metadata; `maintain` archiving superseded entries is the pre-resolution) and adds nothing to do. Human-inspired memory architecture (arXiv 2605.08538, Microsoft Research): deduplication-based consolidation drove most of the quality gain (97.2% retention precision, 58% smaller store), support for merge candidates first in the prune pass. Claude Code 2.1.286 (2026-09-30) no longer attaches a folder's CLAUDE.md a second time after resume or compaction; 2.1.288 SessionStart hooks from synced plugins now run in cloud sessions, so the HANDOFF injection reaches them. Since 2026-09-23 the plugin also recorded the installPath probe, hidden-text neutralisation and the eval hillclimbing guide (plugin R-20260929-1 to 3): none changes this skill's steps. Tooling and practice: no resume or consolidation skill with adoption or evals appeared (claude-mem v13.29.0 adds a work-state list; compound-engineering 3.30.x unchanged in recall). Testing: nothing new; the `recheck` trigger question stays open.
+- Track: subject, testing
+- Sources: https://arxiv.org/abs/2609.01852, https://arxiv.org/abs/2605.08538, https://code.claude.com/docs/en/changelog, https://github.com/thedotmack/claude-mem/releases
+- Magnitude: 0.2
+- Applied: note (C-20261003-1)
 
 ### R-20260923-2 · 2026-09-23 · Subject: check before use and search change how a task starts
 - Summary: From the plugin's R-20260923-2 and R-20260923-3. GitHub Copilot Memory re-validates every memory against the current code before use and expires unused ones (pull-request merge rate 90% with memory, 83% without). Agents checked a memory's source about one episode in five and acted on a superseded constraint 74.7 to 77.3% of the time; forcing the check added 61 to 74 points (2608.25553). Probing the environment with read-only tools to re-check stored memories lifted a pass rate from 39% to 73% (2609.11060); the best system in STALE recognised 55.2% of invalid memories (2605.06527). On retrieval, grep beat vector search in 8 of 8 harness and model pairs when results came back inline (2605.15184), and semantic search helps most added on top of grep (Cursor, +12.5%). Applied: Step 2 runs `search` before concluding nothing was recorded; Step 3 checks a stale entry before acting on it, re-running its proof only when that is safe; Step 4 records with `verify`; Step 5 starts with `maintain`.
