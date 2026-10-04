@@ -21,7 +21,7 @@ The vault is private: `gh auth login` once per machine, or SSH keys. The plugin 
 | Cursor | reads `.cursor/skills`, `~/.cursor/skills` and `~/.agents/skills`; Agent Skills native since 2.4 | `~/.cursor/hooks.json` (`sessionStart`, `stop`) | `everlast.py export ~`; link into `~/.cursor/skills` only for Cloud Agents, which sync that folder alone |
 | Gemini CLI | reads `.gemini/skills`, `~/.gemini/skills`, with `~/.agents/skills` as an alias that wins within a tier | `settings.json` hooks or an extension's `hooks/hooks.json` | `everlast.py export ~`; a second link into `~/.gemini/skills` would list the skills twice |
 
-`npx skills add m4bwav/everlast -g -a codex -a github-copilot -a cursor -a gemini-cli -a opencode` is the community installer (vercel-labs/skills); it symlinks from `~/.agents/skills`. Verify the Claude Code link afterwards (open issue #851 sometimes skips it); the plugin install covers Claude Code anyway.
+`npx skills@1.7.0 add m4bwav/everlast -g -a codex -a github-copilot -a cursor -a gemini-cli -a opencode` is the community installer (vercel-labs/skills); it symlinks from `~/.agents/skills`. Verify the Claude Code link afterwards (open issue #851 sometimes skips it); the plugin install covers Claude Code anyway.
 
 ## The always-on pointer per tool
 

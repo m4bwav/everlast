@@ -464,7 +464,7 @@ def cmd_publish(a):
         return
     if not shutil.which("git"):
         print("" if unattended else "git is not installed; nothing published"); return
-    if not os.path.isdir(os.path.join(PLUGIN_ROOT, ".git")):
+    if not os.path.exists(os.path.join(PLUGIN_ROOT, ".git")):  # a file in a worktree or submodule
         if not unattended: print(f"{PLUGIN_ROOT} is not a git clone; nothing published")
         return
     paths = shareable_changes()
