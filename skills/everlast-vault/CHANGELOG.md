@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261003-1 · 2026-10-03 · Step 4: the community installer is pinned (`npx skills@1.7.0`)
+- because: plugin C-20261003-2 (Claude plugin directory checklist: every package a launcher runs is pinned to an exact version)
+- files: SKILL.md (A new machine or a new agent product, step 4)
+- 1.7.0 was the current release on 2026-10-03 and its `--help` lists the `add`, `-g` and `-a` options the step uses.
+
 ### C-20260929-1 · 2026-09-29 · Step 2: probe the loaded path, not `installPath`
 - because: L-001 updated (a live probe on 2.1.281 in VS Code loaded the clone while `installPath` named the cache), anthropics/claude-code#96223 (plugin R-20260929-3)
 - files: SKILL.md (A new machine or a new agent product, step 2), LEARNINGS.md (L-001), RESEARCH.md (Open questions); plugin protocol/PORTABILITY.md (Claude Code row)

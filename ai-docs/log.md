@@ -28,3 +28,4 @@ Append-only. One line per operation: `## [YYYY-MM-DD] op | title` where op is on
 ## [2026-09-26] index | rebuilt (13 entries)
 ## [2026-09-27] handoff | 20 lines
 ## [2026-09-27] update | 0.5.1: capture and vault research refresh, three scan patterns, install docs corrected (Cowork hooks, ~/.agents/skills, in-place loading)
+## [2026-10-03] update | 0.6.1: prepared for the Claude plugin directory (README Hooks/git/files and Privacy sections, plugin.json documentation, support and privacy links, npx skills pinned 1.7.0, publish works from a worktree); C-20261003-2

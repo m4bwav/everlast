@@ -11,7 +11,7 @@ Part of the [Everlast Protocol](PROTOCOL.md). Which documents an agent should ke
 | Setup and bootstrap procedures, distilled | measurably helps: higher success, lower cost than rediscovery | BootstrapAgent 2605.15815; Codified Context 2602.20478 (283 sessions, on-demand retrieval) |
 | Solutions: problem, dead ends, fix, verified command | helps; the most adopted concrete convention | compound-engineering `docs/solutions/` (25k stars); Codified Context; auto-memory explicitly skips these, which is why a file is needed |
 | Decisions with reasons and rejected alternatives | helps; the core of every cross-agent handoff design | ESAA 2606.23752 (`decisions.md` projected from an event log); ADR practice |
-| HANDOFF: state, in progress, decisions, dead ends, next single action | helps; the one file every handoff tool produces | ESAA; session-handoff skills on skills.sh; `npx continues` |
+| HANDOFF: state, in progress, decisions, dead ends, next single action | helps; the one file every handoff tool produces | ESAA; session-handoff skills on skills.sh; the `continues` npm CLI |
 | Index of one line per entry, loaded first | helps when kept within budget and linted | agent-kept indexes decay without a lint (2606.19121); memory-doctor tools check size, provenance, staleness |
 | Append-only log | cheap; history and blame the entries do not carry | ESAA event sourcing; evergreen's union-merge logs |
 | User profile and environment facts, portable | helps; every vendor converged on a user-level store, none of them portable | Claude auto-memory, Codex `~/.codex/memory`, Copilot Memory, Gemini auto-memory (all 2026) |
