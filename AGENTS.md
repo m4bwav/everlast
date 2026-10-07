@@ -13,6 +13,7 @@ A Claude Code plugin (also exported to other agents) whose skills keep what AI s
 - No personal data in this repository: no vault content, no machine paths beyond `everlast.config.json`, no names. The vault is a separate private repository.
 - Bump `version` in `.claude-plugin/plugin.json` and `VERSION` in `scripts/everlast.py` together. After a change to skills, hooks or scripts, Claude Code needs a marketplace update, uninstall and install to see it.
 - Run `python scripts/test_everlast.py` (`python3` on macOS and Linux) before committing a script change; CI repeats it on Linux, macOS and Windows.
+- Skills link `references/protocol/X.md`, never `../../protocol/`: edit `protocol/`, then run `python scripts/sync-skill-refs.py`. The copies under `skills/*/references/protocol/` are generated (Agent Skills linters reject links that leave the skill folder); CI fails when one drifts.
 - Commit messages name the entries added (`everlast: C-20260913-2, L-003`).
 
 ## everlast (session knowledge, load on demand)

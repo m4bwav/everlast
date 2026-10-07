@@ -11,7 +11,7 @@ Outcome: the non-derivable knowledge from this session exists as small files in 
 
 Read `evergreen.json` next to this file. If `verify_at_use` is true, re-check the listed `volatile_claims` first. If `contradiction` is set or today is on or after `next_due`, say so in one line, do the task, then run `evergreen-refresh` in the same session. If `tests.failing` is non-empty, say so and run `evergreen-tune` after the task.
 
-`EVERLAST` means `python "<plugin>/scripts/everlast.py"` with an absolute path (`python` on Windows, `python3` on macOS and Linux; stdlib, 3.9+) (`${CLAUDE_PLUGIN_ROOT}/scripts/everlast.py`; from a skill, `${CLAUDE_SKILL_DIR}/../../scripts/everlast.py`). Formats: [../../protocol/DOC-TYPES.md](../../protocol/DOC-TYPES.md). Privacy rules: [../../protocol/PRIVACY.md](../../protocol/PRIVACY.md).
+`EVERLAST` means `python "<plugin>/scripts/everlast.py"` with an absolute path (`python` on Windows, `python3` on macOS and Linux; stdlib, 3.9+) (`${CLAUDE_PLUGIN_ROOT}/scripts/everlast.py`; from a skill, `${CLAUDE_SKILL_DIR}/../../scripts/everlast.py`). Formats: [references/protocol/DOC-TYPES.md](references/protocol/DOC-TYPES.md). Privacy rules: [references/protocol/PRIVACY.md](references/protocol/PRIVACY.md).
 
 ## Step 1: where does this project write?
 
@@ -46,7 +46,7 @@ The derivable gate: if a fresh session could get it by reading one file or runni
 
 ## Step 4: classify for privacy before writing
 
-Apply [PRIVACY.md](../../protocol/PRIVACY.md) to each candidate. Private by default: any named person other than the user; opinions about people, teams or management; anything from a private conversation; credentials, tokens, internal hostnames, codenames, customer names; salary, HR, legal, health. Repo-safe: technical facts about the code, tools and commands, decisions and their technical reasons, plans. Borderline: ask once, in one line, listing the entries in question; default to private while waiting. The script runs the same scan and refuses a repo-safe write that trips it; `--allow-private` records that a human reviewed it. Never rewrite a sensitive entry into a vague public one; write the full version privately and, if useful, a technical-only public one that names no one.
+Apply [PRIVACY.md](references/protocol/PRIVACY.md) to each candidate. Private by default: any named person other than the user; opinions about people, teams or management; anything from a private conversation; credentials, tokens, internal hostnames, codenames, customer names; salary, HR, legal, health. Repo-safe: technical facts about the code, tools and commands, decisions and their technical reasons, plans. Borderline: ask once, in one line, listing the entries in question; default to private while waiting. The script runs the same scan and refuses a repo-safe write that trips it; `--allow-private` records that a human reviewed it. Never rewrite a sensitive entry into a vague public one; write the full version privately and, if useful, a technical-only public one that names no one.
 
 ## Step 5: write it (the action, with evidence)
 
@@ -63,7 +63,7 @@ Finished work with nothing pending: leave HANDOFF as it is, or reset it if it de
 
 Writing rules: one entry per problem or decision, not per session. Title is what a future agent would search for. Absolute dates. Paths in backticks. Commands copy-pasteable with the output that proved them. Put the fix in the first five lines of `## Fix` and name the files, directories or identifiers it applies to: in the one neutral benchmark, the records that helped were four or five lines with an explicit fix and an anchor, and most failures were a fix buried in narrative. Plain markdown, no tool-specific syntax, because the next reader may be Copilot or Codex.
 
-Check-before-use rules (detail: [../../protocol/DOC-TYPES.md](../../protocol/DOC-TYPES.md), Check before use), because the next session re-checks a stale entry instead of trusting it:
+Check-before-use rules (detail: [references/protocol/DOC-TYPES.md](references/protocol/DOC-TYPES.md), Check before use), because the next session re-checks a stale entry instead of trusting it:
 
 - A solution's `## Verified by` is runnable: the command, copy-pasteable, and the output that proved it (`dotnet --list-sdks` printed `9.0.317`). `everlast.py recheck` prints it for the next session to re-run when it is safe; a proof that says only "it worked" cannot be rechecked.
 - `stale_after` defaults to verified plus the kind's window (solution 90 days, decision 180, note 120, plan 30). Pass an earlier `--stale-after` for a fix tied to a fast-moving tool or a pinned version, and `--stale-after never` for an invariant such as a naming convention. A workaround for something outside the repo (an open upstream bug, a tool version) also names what retires it and how to check that without touching the repo, as a `Retire when:` line under `## Fix` (`Retire when: oven-sh/bun#34069 closed; gh issue view 34069 -R oven-sh/bun`), the same idea as compound-engineering's `retire_when`; a date alone cannot tell the next session the bug was fixed.
