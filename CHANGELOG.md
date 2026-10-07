@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261006-1 · 2026-10-06 · Plugin 0.6.2: ready for GitHub Copilot CLI and awesome-copilot (root plugin.json, skills link their own copies of the protocol docs)
+- because: user request (list everlast in awesome-copilot; `vally lint` rejects SKILL.md links that leave the skill folder, and the intake reads only a root or `.github/plugin/` manifest)
+- files: plugin.json (new, Agent Plugins 1.0, keywords cut to 10), .claude-plugin/plugin.json (0.6.2), scripts/sync-skill-refs.py (new), skills/*/SKILL.md (links), skills/*/references/protocol/ (generated), .github/workflows/tests.yml (check step), AGENTS.md (Rules)
+- Each skill links `references/protocol/X.md`, a generated copy of `protocol/X.md`; links in a copy to files the skill does not carry become GitHub URLs. `protocol/` stays the one to edit; `python scripts/sync-skill-refs.py` rewrites the copies and `--check` fails CI when one drifts.
+
 ### C-20261003-2 · 2026-10-03 · Plugin 0.6.1: ready for the Claude plugin directory (privacy and hooks disclosure, manifest links, pinned launcher text, worktree publish fix)
 - because: user request (submit everlast to the Claude plugin directory; claude.com/docs/plugins/pre-submission-checklist, read 2026-10-03)
 - files: README.md (new sections Hooks, git and files outside the project; Privacy), .claude-plugin/plugin.json (0.6.1; documentationUrl, supportUrl, privacyPolicyUrl), scripts/everlast.py (`cmd_publish`), protocol/PORTABILITY.md (Per tool), protocol/DOC-TYPES.md (HANDOFF row), skills/everlast-vault/SKILL.md (A new machine, step 4)

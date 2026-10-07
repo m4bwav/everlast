@@ -35,7 +35,7 @@ A stored fix is a claim with a date. Agents check a memory's source about one ti
 3. Record the result. It holds: `EVERLAST verify <entry> <repo>` (renews `verified` and `stale_after`, logs `verify`, rebuilds the index). It does not: `EVERLAST verify <entry> <repo> --failed "what broke"` (dated line in Verified by, due now, logs `verify-failed`), then find the fix that holds and hand it to `everlast-capture` with `--supersedes`. Do not apply the old fix in the meantime.
 4. Say which entry you relied on and what the check showed: fresh, rechecked and verified, or failed and superseded.
 
-A fresh entry needs no check. The detail is in [../../protocol/DOC-TYPES.md](../../protocol/DOC-TYPES.md) (Check before use).
+A fresh entry needs no check. The detail is in [references/protocol/DOC-TYPES.md](references/protocol/DOC-TYPES.md) (Check before use).
 
 ## Step 4: use, then feed back
 
@@ -43,7 +43,7 @@ When an entry's fix or command works again during the task, record it with `EVER
 
 ## Step 5: prune when due
 
-Run `EVERLAST maintain <repo>` when starting substantial work: a read-only report of entries due for a recheck, archive candidates, near-duplicate titles, open contradictions, dead links and other lint findings (the SessionStart `maintain: M`). More than five items, or `log.md` past 25 entries since the last `prune` line, or the user asks: run `EVERLAST maintain <repo> --apply`, which does only the deterministic part (moves `done`/`abandoned`/`superseded` entries older than 90 days to `archive/`, rewrites every link to them, rebuilds the index, logs `prune`; it never merges, deletes or edits content). Then do the judgment items from the report by hand, per [../../protocol/DOC-TYPES.md](../../protocol/DOC-TYPES.md) (Prune pass): merge duplicate candidates, resolve open contradictions (supersede one, or relabel the link `see also` once both hold), decide each proposed archive (verify, supersede, or mark done or abandoned), absolute dates. The user tier gets the same pass (`--user`) when its index passes 120 lines. Edit entries individually; never regenerate a file.
+Run `EVERLAST maintain <repo>` when starting substantial work: a read-only report of entries due for a recheck, archive candidates, near-duplicate titles, open contradictions, dead links and other lint findings (the SessionStart `maintain: M`). More than five items, or `log.md` past 25 entries since the last `prune` line, or the user asks: run `EVERLAST maintain <repo> --apply`, which does only the deterministic part (moves `done`/`abandoned`/`superseded` entries older than 90 days to `archive/`, rewrites every link to them, rebuilds the index, logs `prune`; it never merges, deletes or edits content). Then do the judgment items from the report by hand, per [references/protocol/DOC-TYPES.md](references/protocol/DOC-TYPES.md) (Prune pass): merge duplicate candidates, resolve open contradictions (supersede one, or relabel the link `see also` once both hold), decide each proposed archive (verify, supersede, or mark done or abandoned), absolute dates. The user tier gets the same pass (`--user`) when its index passes 120 lines. Edit entries individually; never regenerate a file.
 
 Trial skills (promoted by `everlast-capture`, `trial: true` under `<repo>/.claude/skills/`): zero uses after ten sessions (`evergreen.py uses --skill <name> --days 30`, or `/skill-doctor`) means move the folder to `<repo>/.claude/skills-retired/`, set the source entry back to `status: active`, log `retire`. Passing suite and real uses: clear `trial`.
 

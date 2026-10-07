@@ -21,6 +21,8 @@ jobs:
         run: |
           git config --global user.name "everlast-ci"
           git config --global user.email "ci@example.com"
+      - name: skill references in sync with protocol/
+        run: python scripts/sync-skill-refs.py --check
       - name: self-test
         env:
           EVERLAST_VAULT: ${{ runner.temp }}/everlast-vault

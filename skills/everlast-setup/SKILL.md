@@ -11,7 +11,7 @@ Outcome: the project is registered in the vault in the right mode, its doc set e
 
 Read `evergreen.json` next to this file. If `verify_at_use` is true, re-check the listed `volatile_claims` with one or two searches before relying on them. If `contradiction` is set or today is on or after `next_due`, tell the user in one line, do the task with the current content, then run the refresh (`evergreen-refresh`) in the same session. If `tests.failing` is non-empty, say so in one line and run `evergreen-tune` after the task.
 
-`EVERLAST` below means `python "<plugin>/scripts/everlast.py"` with an absolute path (in Claude Code `${CLAUDE_PLUGIN_ROOT}/scripts/everlast.py`; from a skill, `${CLAUDE_SKILL_DIR}/../../scripts/everlast.py`). Protocol: [../../protocol/PROTOCOL.md](../../protocol/PROTOCOL.md).
+`EVERLAST` below means `python "<plugin>/scripts/everlast.py"` with an absolute path (in Claude Code `${CLAUDE_PLUGIN_ROOT}/scripts/everlast.py`; from a skill, `${CLAUDE_SKILL_DIR}/../../scripts/everlast.py`). Protocol: [references/protocol/PROTOCOL.md](references/protocol/PROTOCOL.md).
 
 ## Step 1: is there a vault?
 
