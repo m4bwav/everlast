@@ -1,5 +1,7 @@
 # Everlast Protocol
 
+![People reading journals and scrolls between tall shelves in a stone archive vault lit by a lantern](https://raw.githubusercontent.com/m4bwav/everlast/master/.github/images/banner.jpg)
+
 Nothing an AI session learned is lost when you change model, session, tool or vendor. Everlast keeps what agents learn in plain markdown you own, in two tiers, with a privacy split, installed as one plugin in every agent product you use.
 
 - Project tier: an `ai-docs/` doc set per project (solutions with dead ends and the verified command, decisions with reasons and rejected alternatives, living plans, a 50-line HANDOFF, a generated INDEX, an append-only log), committed with the repository, or, when the repository must not carry it, kept in the vault and junctioned into the project as an excluded folder.
