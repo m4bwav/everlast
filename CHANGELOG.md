@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261008-1 · 2026-10-08 · Plugin 0.6.3: everlast-capture's description names evergreen-wrapup for a full session wrap-up
+- because: user request (evergreen-protocol C-20261008-1 adds `evergreen-wrapup`, which also matches 'wrap up')
+- files: skills/everlast-capture/SKILL.md (description), skills/everlast-capture/CHANGELOG.md (C-20261008-1), .claude-plugin/plugin.json and plugin.json (0.6.3)
+- everlast alone is unchanged: 'wrap up' still triggers everlast-capture. With evergreen installed, the description says a whole-session wrap-up (skills, scripts and other stores too) is evergreen-wrapup, which runs everlast-capture for the project's docs.
+
 ### C-20261006-1 · 2026-10-06 · Plugin 0.6.2: ready for GitHub Copilot CLI and awesome-copilot (root plugin.json, skills link their own copies of the protocol docs)
 - because: user request (list everlast in awesome-copilot; `vally lint` rejects SKILL.md links that leave the skill folder, and the intake reads only a root or `.github/plugin/` manifest)
 - files: plugin.json (new, Agent Plugins 1.0, keywords cut to 10), .claude-plugin/plugin.json (0.6.2), scripts/sync-skill-refs.py (new), skills/*/SKILL.md (links), skills/*/references/protocol/ (generated), .github/workflows/tests.yml (check step), AGENTS.md (Rules)
