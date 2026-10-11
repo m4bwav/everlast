@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261011-1 · 2026-10-11 · Plugin 0.6.4: refresh of the plugin and its four skills; Agent Memory Repo named; eval harness can pin the model under test
+- because: R-20261011-1, R-20261011-2, R-20261011-3 (plugin); everlast-setup, everlast-capture, everlast-resume and everlast-vault R-20261011-1
+- files: README.md (comparable tools), scripts/eval-wsl.sh (`EVAL_MODEL`), TESTS.md (harness notes), RESEARCH.md (Current understanding, Open questions, three findings), skills/*/RESEARCH.md (one finding each; setup and vault Open questions), .claude-plugin/plugin.json and plugin.json (0.6.4)
+- No SKILL.md changed. The README names Cognition's Agent Memory Repo as the vendor-backed peer and claude-mem's read-only watcher; the eval script passes `--model` when `EVAL_MODEL` is set, as the plugin-evals docs now advise; the vault's `installPath` caveat waits for a re-probe on Claude Code 2.1.289+.
+
 ### C-20261008-1 · 2026-10-08 · Plugin 0.6.3: everlast-capture's description names evergreen-wrapup for a full session wrap-up
 - because: user request (evergreen-protocol C-20261008-1 adds `evergreen-wrapup`, which also matches 'wrap up')
 - files: skills/everlast-capture/SKILL.md (description), skills/everlast-capture/CHANGELOG.md (C-20261008-1), .claude-plugin/plugin.json and plugin.json (0.6.3)

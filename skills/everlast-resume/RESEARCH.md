@@ -51,6 +51,13 @@ Best sources (primary first): code.claude.com/docs, platform.claude.com (Dreams)
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261011-1 · 2026-10-11 · Quiet: resume-side fixes in Claude Code 2.1.293 and 2.1.295; reading docs goes with less testing
+- Summary: 2.1.295 stops an async SessionStart hook's unchanged context being re-added on every resume; 2.1.293 fixes Claude treating its own pre-compaction actions as done, and rules now load when a file is viewed with `cat` or `grep` in Bash; 2.1.290 attaches a subdirectory AGENTS.md when a file under it is @-mentioned. arXiv 2608.20195 (agent-facing files are 60.5% of agents' documentation reads; reading goes with less immediate testing, adjusted OR 0.39) supports forcing `recheck` and `verify` before acting. Tooling, practice and testing otherwise quiet (see the plugin's R-20261011-1 to 3).
+- Track: subject, testing
+- Sources: https://code.claude.com/docs/en/changelog, https://arxiv.org/abs/2608.20195
+- Magnitude: 0.15
+- Applied: none (RESEARCH.md only)
+
 ### R-20261003-1 · 2026-10-03 · Subject, testing (minor): stale memory is over-trusted unless flagged or pre-resolved; resume no longer double-loads CLAUDE.md
 - Summary: The Memory Trust Gap (arXiv 2609.01852, 2026-09-01, Qwen3 0.6B to 8B): the stale stored value was used 92 to 100% of the time when it looked current and did worse than no memory; exposing metadata restored the larger models, and only resolving the conflict before retrieval restored the small ones. That backs Step 3 as written (the index's `(recheck due)` flag is the metadata; `maintain` archiving superseded entries is the pre-resolution) and adds nothing to do. Human-inspired memory architecture (arXiv 2605.08538, Microsoft Research): deduplication-based consolidation drove most of the quality gain (97.2% retention precision, 58% smaller store), support for merge candidates first in the prune pass. Claude Code 2.1.286 (2026-09-30) no longer attaches a folder's CLAUDE.md a second time after resume or compaction; 2.1.288 SessionStart hooks from synced plugins now run in cloud sessions, so the HANDOFF injection reaches them. Since 2026-09-23 the plugin also recorded the installPath probe, hidden-text neutralisation and the eval hillclimbing guide (plugin R-20260929-1 to 3): none changes this skill's steps. Tooling and practice: no resume or consolidation skill with adoption or evals appeared (claude-mem v13.29.0 adds a work-state list; compound-engineering 3.30.x unchanged in recall). Testing: nothing new; the `recheck` trigger question stays open.
 - Track: subject, testing

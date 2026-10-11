@@ -18,6 +18,9 @@ mkdir -p "$O"
 # --no-publish: the HTML report stays local (the default publishes it to claude.ai); --keep-temp keeps each run's workspace
 # until WSL shuts down (/tmp is cleared then), for reading a failed run.
 common=(--scaffold --trust-plugin --no-publish --keep-temp --judge-model sonnet -j 3)
+# Pin the model under test so a model rollout is not read as a regression (plugin-evals docs, R-20261011-3):
+# EVAL_MODEL=opus scripts/eval-wsl.sh <run-name>. Record the model in the T- entry either way.
+if [ -n "${EVAL_MODEL:-}" ]; then common+=(--model "$EVAL_MODEL"); fi
 for c in $CASES; do
   grant=(--allow-tools Bash Write Edit)
   case "$READ_ONLY" in *" $c "*) grant=() ;; esac

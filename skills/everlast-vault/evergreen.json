@@ -13,9 +13,9 @@
   "source": null,
   "topic": "cross-tool installation of agent skills and plugins, private git-backed knowledge stores, redaction and encryption at rest for agent notes",
   "tier": "fast",
-  "interval_days": 7.0,
-  "last_checked": "2026-09-27",
-  "next_due": "2026-10-05",
+  "interval_days": 4.67,
+  "last_checked": "2026-10-11",
+  "next_due": "2026-10-16",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -38,12 +38,18 @@
       "m": 0.65,
       "interval_after": 7.0,
       "note": "first real pass: Cowork loads hooks, ~/.agents/skills covers Cursor and Gemini, local-clone installs load in place, Betterleaks, scanner boundary gaps (3 key shapes added), encryption facts; cost: searches 17 · fetches 11 · tool calls 34"
+    },
+    {
+      "date": "2026-10-11",
+      "m": 0.35,
+      "interval_after": 4.67,
+      "note": "refresh 2026-10-11: CC 2.1.289 local-plugin stale-copy fix needs re-probe of installPath caveat; skills 1.7.2, betterleaks 2.0 rc; cost shared with plugin pass"
     }
   ],
   "counts": {
     "learnings": 1,
     "changes": 0,
-    "research": 1,
+    "research": 2,
     "tests": 0
   },
   "consolidate_every": 25,

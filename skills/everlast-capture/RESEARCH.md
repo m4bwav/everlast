@@ -75,6 +75,13 @@ Refresh notes (2026-09-22): `skills.sh/api/search?q=` for install counts; the MC
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261011-1 · 2026-10-11 · Quiet: practitioners and papers back writing during the task, rewriting facts and keeping provenance
+- Summary: the period's most discussed post (Liao, "agents don't need memory, they need documentation", 311 HN comments) and Harbor's reply describe what capture already does: write notes during the task, rewrite facts rather than append, review in git, gate entries. arXiv 2609.30813 (gating admission on a claim's declared source type cuts false-claim adoption from 97-99% to 6-9%) backs the `(verified ...)` stamp and the source line. Cognition's Agent Memory Repo keeps per-bullet `[source; added]`, the same idea. The built-in AGENTS.md plugin is now `cc-plugin-agents-md@builtin` (old ID still read). Tooling: nothing new for capture; testing: nothing new.
+- Track: practice, subject
+- Sources: https://liao.gg/blog/agents-dont-need-memory, https://gethrbr.com/blog/do-agents-need-memory, https://arxiv.org/abs/2609.30813, https://github.com/AgentMemoryRepo/agentmemoryrepo, https://code.claude.com/docs/en/memory
+- Magnitude: 0.15
+- Applied: none (RESEARCH.md only)
+
 ### R-20261003-1 · 2026-10-03 · Quiet on all four tracks: install baselines, Claude Code 2.1.285 to 2.1.288, over-trusted stale memory
 - summary: Subject: Claude Code 2.1.288 loads path-scoped rules and nested CLAUDE.md on Write and Edit as well as Read, and runs synced plugins' SessionStart hooks in cloud sessions; 2.1.286 stops attaching a folder's CLAUDE.md twice after resume or compaction (plugin R-20261003-1). The Memory Trust Gap (arXiv 2609.01852) found stale stored values used 92 to 100% of the time when they looked current, and metadata such as dates restoring larger models: support for the `stale_after` and `Verified by:` rules, nothing new to write (plugin R-20261003-2). Tooling: mattpocock `handoff` 908.5K installs, `claude-handoff` 340.6K; claude-mem v13.29.0 (95.3k stars); compound-engineering 3.30.x changed nothing in `docs/solutions` (3.30.2 lists all knowledge-track problem types in the `ce-compound` template). Practice: lessons-learned and "capture the pattern as a skill" posts restate known patterns; Skillsync moves transcripts, not curated entries. Testing: nothing new (sjnims/cc-plugin-eval generates trigger scenarios; `claude plugin eval` stays). Nothing adopted.
 - track: subject, tooling, practice, testing

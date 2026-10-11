@@ -14,8 +14,8 @@
   "topic": "how agents retrieve and consolidate prior session knowledge from repo docs (progressive disclosure, index-first loading, memory consolidation passes)",
   "tier": "fast",
   "interval_days": 7.5,
-  "last_checked": "2026-10-03",
-  "next_due": "2026-10-11",
+  "last_checked": "2026-10-11",
+  "next_due": "2026-10-19",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -44,12 +44,18 @@
       "m": 0.2,
       "interval_after": 7.5,
       "note": "Memory Trust Gap backs Step 3, dedupe-led consolidation (2605.08538), CC 2.1.286 no double CLAUDE.md after resume; SKILL.md unchanged; cost: searches 1 · fetches 0 · tool calls 2 (shared plugin pass)"
+    },
+    {
+      "date": "2026-10-11",
+      "m": 0.15,
+      "interval_after": 7.5,
+      "note": "refresh 2026-10-11: quiet, CC 2.1.293/2.1.295 resume fixes; cost shared with plugin pass"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 2,
-    "research": 3,
+    "research": 4,
     "tests": 4
   },
   "consolidate_every": 25,

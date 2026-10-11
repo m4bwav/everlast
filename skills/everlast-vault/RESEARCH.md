@@ -18,6 +18,7 @@ Topic: cross-tool installation of agent skills and plugins, private git-backed k
 
 ## Open questions
 
+- Does `installPath` in `claude plugin list --json` point at the clone for a local-folder install on Claude Code 2.1.289+ (the stale-copy fix)? Re-probe on a current CLI and update "A new machine" step 2 and L-001 if so (R-20261011-1). Betterleaks 2.0 stable: re-check the scan flags when it ships.
 - (resolved 2026-09-29) In-place loading already works on 2.1.281 in the VS Code extension; `installPath` is the misleading part (L-001, anthropics/claude-code#96223). Still open: does the Desktop app's Code tab still run the cache copy after 2.1.284, and does a local git marketplace install the checked-out branch (#92280)?
 - Do Cowork's hooks run the SessionEnd `sync` in Cowork's environment, and can it reach the vault path? Needs a live Cowork session.
 - Does an old `~/.cursor/skills` or `~/.gemini/skills` link beside the `~/.agents/skills` export list the skills twice in Cursor or Gemini CLI? Check on the next machine that has both.
@@ -55,6 +56,13 @@ Best sources (primary first): code.claude.com plugin docs (loading, discover-plu
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20261011-1 · 2026-10-11 · Subject and tooling: plugin install fixes in Claude Code 2.1.289 to 2.1.296; installer and scanner versions
+- Summary: 2.1.289 fixed `plugin list`, `plugin eval` and `plugin update` showing a stale copy of a plugin installed from a local folder marketplace, which may change the `installPath` caveat in "A new machine" step 2 (L-001); not re-probed, since this machine's CLI on PATH is 2.1.281. anthropics/claude-code#96223 (the Desktop app runs the cache copy) is still open with no reply. Also 2.1.292 `claude plugin install --marketplace <source>` in one command, 2.1.295 Windows drive-letter casing for project-scope plugins, 2.1.296 HTTPS retry for `owner/repo` installs on Windows. Tooling: `npx skills` is at 1.7.2 (Codex global skills now go to `~/.agents/skills`; Pi counts as a universal agent; the skill pins 1.7.0); Betterleaks 1.9.0 is the latest stable, 2.0.0-rc.2 is breaking (`-v` means validate; CSV and SARIF removed), so keep `betterleaks dir` on 1.x; GitHub's AI secret-detection model (10-07) needs paid GHSP or GHAS for push protection. Practice and testing: nothing new.
+- Track: subject, tooling
+- Sources: https://code.claude.com/docs/en/changelog, https://github.com/anthropics/claude-code/issues/96223, https://github.com/vercel-labs/skills/releases, https://github.com/betterleaks/betterleaks/releases, https://github.blog/changelog/2026-10-07-purpose-built-model-for-leaked-secret-detection/
+- Magnitude: 0.35 (step 2's caveat may be outdated in the CLI; re-probe on 2.1.289+ before editing)
+- Applied: RESEARCH.md only (Open questions)
 
 ### R-20260927-7 · 2026-09-27 · Practice and minor tooling: `/pii-check`, small git-backed memory plugins, GitHub MCP secret scanning, Presidio
 - summary: `/pii-check` (clewisdev/skills, anthropics/skills discussion #1295, 2026-06-09) audits git history, handoff files, session notes, username paths and inferred PII before a repo goes public; it overlaps everlast `scan` and adds a history pass. Git-backed memory peers (sqs-agent-memory, claude-device-sync with ChaCha20-encrypted git, claude-memory-sync, receipts-wiki) have low stars and no evals. GitHub MCP secret scanning (public preview 2026-03-17) needs GitHub Secret Protection, paid on private repos. Presidio (2.2.364, 2026-07-22) finds person names with NER but needs spaCy models. None adopted; the first-push scan is now in SKILL.md.
