@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261011-1 · 2026-10-11 · claude plugin eval 2.1.281 `--ablation none` (trigger, decoy) · dev-machine, Windows 11 native · 4/4
+- Regression run after the plugin's 2026-10-11 refresh (0.6.4), from a worktree of origin/master. Cases exported from this skill's evals.json by `evergreen.py eval-export --out evals/everlast-setup` (plugin eval refuses an eval dir inside skills/), three runs per case, with-plugin arm only (no baseline arm, to hold cost).
+- trigger-1, trigger-2: invoked 6/6 ($0.62). decoy-1, decoy-2: invoked 0/6 ($0.36).
+- Action and outcome cases not run (they grant Bash; native Windows has no sandbox for them).
+- led to: none
+
 ### T-20260906-1 · 2026-09-06 · evergreen-tester subagent (one run per case, not three) · owner-pc Claude Code · 2/2
 - action-1 pass (Skill(everlast-setup) invoked; `everlast.py init` and `lint` in the trace; repo2/ai-docs/{INDEX,HANDOFF,log,README}.md and four folders exist; AGENTS.md block written; no hook, settings untouched)
 - decoy-2 pass (everlast-setup not invoked; everlast-capture handled the note)
