@@ -15,7 +15,7 @@ Topic: repository layouts, instruction-file conventions and hooks for AI-agent d
 ## Open questions
 
 - (resolved 2026-09-23) Copilot CLI #991 was closed on 2026-04-08 (everlast-capture R-20260922-2); `adapters/copilot/hooks.json` already carries `sessionStart` and `sessionEnd`, and the Stop-style nudge stays Claude Code only until someone asks for it there.
-- Does `.claude/rules/` with `paths:` make a better home for path-scoped ai-docs pointers in large monorepos than one AGENTS.md block? Try on the next monorepo.
+- Does `.claude/rules/` with `paths:` make a better home for path-scoped ai-docs pointers in large monorepos than one AGENTS.md block? Try on the next monorepo. Since Copilot CLI 1.0.89 also reads `.claude/rules` (R-20261011-1), one rules file would reach both tools.
 - Whether Claude Code's plugin path-traversal checks (2.1.251+) affect junctioned skill folders (evergreen:open question); this suite is junctioned.
 
 ## Search plan
@@ -48,6 +48,13 @@ Best sources (primary first): code.claude.com/docs, docs.github.com (Copilot CLI
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20261011-1 · 2026-10-11 · Subject: the AGENTS.md setting renamed; Copilot CLI reads `.claude/rules`; other tools quiet
+- Summary: Claude Code's built-in AGENTS.md plugin is now `cc-plugin-agents-md@builtin` (2.1.285; the old `agents-md@builtin` ID is still read), shown as "Project instructions" in `/config` with a new `managed-only` value; in Cowork a user-scope import that resolves outside the working directory, and a symlinked `~/.claude/CLAUDE.md`, are skipped. The `@AGENTS.md` bridge is unchanged, so Step 5 stands. Copilot CLI 1.0.89 reads `.claude/rules` files as custom instructions (1.0.92 fires one sessionEnd after Stop-hook continuations), which widens the open question on path-scoped pointers. Codex 0.162, Cursor (10-06), Gemini CLI 0.63 and the AGENTS.md spec: no memory or instruction changes. Tooling, practice, testing: nothing new for setup (see the plugin's R-20261011-1 to 3).
+- Track: subject
+- Sources: https://code.claude.com/docs/en/memory, https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md, https://github.com/openai/codex/releases, https://cursor.com/changelog, https://github.com/google-gemini/gemini-cli/releases
+- Magnitude: 0.25
+- Applied: RESEARCH.md only (Current understanding, Open questions)
 
 ### R-20260923-1 · 2026-09-23 · Subject: Claude Code 2.1.277+ loads AGENTS.md only without a CLAUDE.md or CLAUDE.local.md; an `@AGENTS.md` import is the bridge
 - Summary: The memory docs (read 2026-09-22 for everlast-capture R-20260922-3): with an AGENTS.md and a CLAUDE.md or CLAUDE.local.md in the working directory or above, only the CLAUDE.md files load (default `claude-md-or-agents-md`); a CLAUDE.md that imports `@AGENTS.md` includes it; a pointer written in prose loads nothing; adding a CLAUDE.local.md switches AGENTS.md reading off. Step 5 said CLAUDE.md "should only import or point at" AGENTS.md, and excluded mode wrote a bare CLAUDE.local.md, which silently stops a repository's own AGENTS.md from loading. Both now start with the import line.
