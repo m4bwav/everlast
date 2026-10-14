@@ -10,12 +10,12 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - `../../protocol/X.md` links became `references/protocol/X.md`. Wording and description unchanged. Plugin 0.6.2.
 
 ### C-20261003-1 · 2026-10-03 · Step 4: the community installer is pinned (`npx skills@1.7.0`)
-- because: plugin C-20261003-2 (Claude plugin directory checklist: every package a launcher runs is pinned to an exact version)
+- because: plugin everlast-protocol:C-20261003-2 (Claude plugin directory checklist: every package a launcher runs is pinned to an exact version)
 - files: SKILL.md (A new machine or a new agent product, step 4)
 - 1.7.0 was the current release on 2026-10-03 and its `--help` lists the `add`, `-g` and `-a` options the step uses.
 
 ### C-20260929-1 · 2026-09-29 · Step 2: probe the loaded path, not `installPath`
-- because: L-001 updated (a live probe on 2.1.281 in VS Code loaded the clone while `installPath` named the cache), anthropics/claude-code#96223 (plugin R-20260929-3)
+- because: L-001 updated (a live probe on 2.1.281 in VS Code loaded the clone while `installPath` named the cache), anthropics/claude-code#96223 (plugin everlast-protocol:R-20260929-3)
 - files: SKILL.md (A new machine or a new agent product, step 2), LEARNINGS.md (L-001), RESEARCH.md (Open questions); plugin protocol/PORTABILITY.md (Claude Code row)
 - C-20260927-2 had the owner's PC running a cached copy and told the reader to trust `installPath`; the field names the cache even when the CLI and the VS Code extension load in place, and only the Desktop app runs the cache copy. The step now checks the skill's base directory or `CLAUDE_PLUGIN_ROOT` and reinstalls only when that is under `cache/`.
 
@@ -30,12 +30,12 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - Step 2: a plugin installed from the local clone loads in place, so a source edit needs no reinstall; git-URL installs update with `claude plugin update`. Step 3: Cowork loads hooks and the upload path is Customize > Plugins > Add > Upload plugin; `sync` by hand stays until SessionEnd is proven in Cowork. Step 4: Cursor and Gemini CLI read `~/.agents/skills`, so the extra links are dropped (except Cursor Cloud Agents). Privacy scan: run before the vault's first push; Betterleaks named as an optional credential pass; boundary blind spots named. Encryption: git-crypt is not stagnant, sops cannot diff markdown, gocryptfs is quiet and not native on Windows.
 
 ### C-20260926-1 · 2026-09-26 · Description under 1,024 characters with 12 quoted phrases (1,313 to 1,015)
-- because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST007, ST013; plugin C-20260926-3
+- because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST007, ST013; plugin everlast-protocol:C-20260926-3
 - files: SKILL.md (description)
 - 'install everlast' and 'new machine' became 'install everlast on a new machine'; 'is the vault backed up' merged into 'back up the vault'; 'push the learnings', 'privacy check' and 'what projects are registered' moved into the prose; 'private' appears once in the summary instead of three times, which took the closest sibling (everlast-setup) from 0.36 to 0.28 in `tidy.py check` (OK).
 
 ### C-20260918-1 · 2026-09-18 · Back it up: `vault remote` (a private repository the user names, or one created with gh), asked once; project docs sync noted
-- because: the owner's request (ask for a repository or permission to create a private one; keep the notes backed up where the commits show what was added); plugin C-20260918-2
+- because: the owner's request (ask for a repository or permission to create a private one; keep the notes backed up where the commits show what was added); plugin everlast-protocol:C-20260918-2
 - files: SKILL.md description (remote, new trigger phrases), new section Back it up (ask once), section Keep it current (project sync, descriptive commit subjects), section A new machine step 5
 - The remote must be private; nothing is pushed until the user answers; a repository that comes out public is disconnected by the script.
 

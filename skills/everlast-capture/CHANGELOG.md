@@ -30,16 +30,16 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - Codex memories are generated state its consolidation rewrites, so the Codex pointer goes in `~/.codex/AGENTS.md`; a workaround for an outside bug or version gets a `Retire when:` line with a check (compound-engineering's `retire_when`); Claude Code 2.1.283's `/doctor prompt-audit` is suggested when CLAUDE.md or AGENTS.md changed.
 
 ### C-20260926-2 · 2026-09-26 · Step 5 names entities and evidence (plugin 0.5.0)
-- because: plugin C-20260926-4 (entities, evidence and proof_count from the Hindsight comparison)
+- because: plugin everlast-protocol:C-20260926-4 (entities, evidence and proof_count from the Hindsight comparison)
 - files: SKILL.md (write options; one bullet on `--entities` and `--evidence`)
 
 ### C-20260926-1 · 2026-09-26 · Description under the 1,024-character spec limit (1,196 to 1,015)
-- because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST011; plugin C-20260926-3
+- because: the owner's request (tidy the everlast skill descriptions with skill-tidy without losing function or trigger coverage); skill-tidy lint ST005, ST011; plugin everlast-protocol:C-20260926-3
 - files: SKILL.md (description)
 - The doc-type labels and 'each as a small file' went; 'remember that' and 'note that for next time' became 'remember that for next time'; 'anything naming' became the list it meant. Every trigger phrase's words survive (`tidy.py check`: OK, closest sibling 0.27 to 0.22).
 
 ### C-20260923-1 · 2026-09-23 · Step 5 writes for check before use (a runnable proof, `stale_after`, aliases, typed links, fact stamps) and searches before writing a duplicate; Auto Dream corrected
-- because: R-20260923-1, R-20260923-2; plugin C-20260923-3 to C-20260923-5
+- because: R-20260923-1, R-20260923-2; plugin everlast-protocol:C-20260923-3 to everlast-protocol:C-20260923-5
 - files: SKILL.md (Outcome; Step 5: search when no index line matches, `verify` on an updated entry, the `note` flags `--aliases`, `--alias`, `--summary`, `--stale-after`, new Check-before-use rules), RESEARCH.md (header; Current understanding: Dreams sentence corrected, a check-before-use bullet; Open questions: Auto Dream and the excluded-mode import resolved; R-20260923-1, R-20260923-2)
 - The detail lives in protocol/DOC-TYPES.md (Check before use) so the skill stays short; the description is unchanged, so the trigger cases stand.
 
@@ -49,17 +49,17 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - Two cases could only pass through their alternative branch because they still matched `aidocs.py`. The AGENTS.md finding also contradicts everlast-setup (flagged there, not changed here).
 
 ### C-20260922-1 · 2026-09-22 · Changelog header repaired
-- because: evergreen L-021 (an insert before the first `### C-` landed inside the Entry shape template)
+- because: evergreen:L-021 (an insert before the first `### C-` landed inside the Entry shape template)
 - files: CHANGELOG.md (Entry shape line restored; a stray template heading removed; C-20260913-1 moved below C-20260918-1)
 - No content changed; the entries are newest first again.
 
 ### C-20260918-1 · 2026-09-18 · Prod mechanism names the project docs sync at session end
-- because: plugin C-20260918-2 (the SessionEnd hook now pushes a mode `repo` project's doc root, or opens a pull request)
+- because: plugin everlast-protocol:C-20260918-2 (the SessionEnd hook now pushes a mode `repo` project's doc root, or opens a pull request)
 - files: SKILL.md section Prod mechanism
 - One sentence; `EVERLAST project sync <repo> --dry-run` shows what the hook would do.
 
 ### C-20260913-1 · 2026-09-13 · Absorbed into the everlast-protocol plugin as `everlast-capture` (from `ai-docs-capture`)
-- because: user request (everlast protocol: two tiers, privacy split, excluded mode, cross-tool install); R-20260913-1 to R-20260913-8 in the plugin's RESEARCH.md
+- because: user request (everlast protocol: two tiers, privacy split, excluded mode, cross-tool install); everlast-protocol:R-20260913-1 to everlast-protocol:R-20260913-8 in the plugin's RESEARCH.md
 - files: SKILL.md (rewritten for the vault, the private sidecar, the user tier and `everlast.py`), evals/evals.json (prompts renamed; capture gained trigger-3 and privacy-1), companions renamed in place
 - The skill's history before this entry belongs to `ai-docs-capture` (2026-09-06). `aidocs.py` became `scripts/everlast.py` at the plugin root; its `note`, `handoff`, `index`, `lint`, `log`, `promote-scan`, `skill-budget` and `hook` commands are unchanged in behaviour, with `--private` and `--user` added.
 
