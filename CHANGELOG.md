@@ -45,7 +45,7 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - The install docs told the reader to reinstall whenever `installPath` named the cache; a probe on the owner's PC and anthropics/claude-code#96223 show the CLI and VS Code load the clone regardless, so the check is now the loaded path (a skill's base directory or `CLAUDE_PLUGIN_ROOT`). The memory-injection check (R-20260929-2) is recommended, not built.
 
 ### C-20260927-1 · 2026-09-27 · Plugin 0.5.1: the privacy scan catches GitHub fine-grained, npm and Google keys; install docs follow the vault and capture research refresh
-- because: everlast-vault R-20260927-1, R-20260927-2, R-20260927-3, R-20260927-5; everlast-capture R-20260927-1 to 3 (skills C-20260927-1)
+- because: everlast-vault:R-20260927-1, everlast-vault:R-20260927-2, everlast-vault:R-20260927-3, everlast-vault:R-20260927-5; everlast-capture:R-20260927-1 to 3 (skills C-20260927-1)
 - files: scripts/everlast.py (`PRIVACY_PATTERNS`: `github_pat_`, `npm_` plus 36, `AIza` plus 35), scripts/test_everlast.py (`check_scan_key_shapes`: the three shapes, a trailing hyphen, backticks, a link URL, and an npm config name that must not match; 123 checks), protocol/PORTABILITY.md (Per tool: Claude Code, Cowork, Cursor and Gemini CLI rows), protocol/PROTOCOL.md §6 (one sentence, no version change), templates/INSTALL-PROMPT.txt (step 4), README.md (Cross-tool line), .claude-plugin/plugin.json (0.5.1), skills/everlast-vault and skills/everlast-capture (SKILL.md, RESEARCH.md, CHANGELOG.md)
 - Cowork loads plugin hooks and uploads a zip through Add > Upload plugin; Cursor and Gemini CLI read `~/.agents/skills`, so `export` alone covers six tools; a local-clone install loads in place, so a source edit needs no reinstall. The new patterns found nothing new in the plugin's docs or the owner's vault.
 
@@ -90,7 +90,7 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - R-20260917-1 keeps its SkillsBench v1 numbers as logged; R-20260923-6 carries v4's.
 
 ### C-20260923-9 · 2026-09-23 · CLAUDE.md and excluded mode's CLAUDE.local.md import AGENTS.md with an `@AGENTS.md` line
-- because: everlast-capture R-20260922-3 (Claude Code 2.1.277+ reads AGENTS.md itself only when no CLAUDE.md or CLAUDE.local.md exists; a prose pointer loads nothing); the contradiction flagged on everlast-setup 2026-09-22
+- because: everlast-capture:R-20260922-3 (Claude Code 2.1.277+ reads AGENTS.md itself only when no CLAUDE.md or CLAUDE.local.md exists; a prose pointer loads nothing); the contradiction flagged on everlast-setup 2026-09-22
 - files: templates/CLAUDE.md.snippet (why the import stays first; excluded-mode note), protocol/PORTABILITY.md (The always-on pointer per tool), skills/everlast-setup (SKILL.md Step 5, its C-20260923-1)
 - No script writes these files; the skill does, following Step 5.
 
@@ -145,7 +145,7 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - `CREATE_NO_WINDOW` (0x08000000) on every subprocess call, the same flag evergreen_sync.py already uses. Made in the owner's fork first and brought here unchanged in code. General fix, worth a pull request to the official repository.
 
 ### C-20260918-5 · 2026-09-18 · `project register --mode excluded` merges an existing `ai-docs/` into the scaffolded store instead of nesting it (fork 0.3.3; official 0.4.0)
-- because: L-20260918-1 in everlast-setup (registering a project whose `ai-docs/` already had `plans/` and `decisions/` moved them to `<store>/plans/plans/` because the store had been scaffolded first)
+- because: everlast-setup:L-20260918-1 in everlast-setup (registering a project whose `ai-docs/` already had `plans/` and `decisions/` moved them to `<store>/plans/plans/` because the store had been scaffolded first)
 - files: scripts/everlast.py (`cmd_project_register`, the move loop)
 - When both the source and the store hold a folder of the same name, the folder's files are moved into the store's folder and the empty source folder removed; files and folders with no counterpart move as before. General fix, worth a pull request to the official repository.
 
