@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261014-1 · 2026-10-14 · Research refresh (quiet): handoff install counts and the skill-listing note brought up to date
+- because: R-20261014-1
+- files: RESEARCH.md (Current understanding: handoff bullet, automatic skill creation bullet; Open questions; R-20261014-1)
+- SKILL.md unchanged: Claude Code 2.1.299 and the tooling baselines agree with what capture already does.
+
 ### C-20261008-1 · 2026-10-08 · Description names evergreen-wrapup for a full session wrap-up
 - because: user request (an evergreen wrap-up command that consolidates a session into skills, scripts, knowledge bases and docs; evergreen-protocol C-20261008-1); both descriptions match 'wrap up', so this one says when the other fits
 - files: SKILL.md (description)
