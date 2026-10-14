@@ -14,15 +14,15 @@
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-10-11",
-  "next_due": "2026-10-14",
+  "last_checked": "2026-10-14",
+  "next_due": "2026-10-17",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 1,
+    "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -62,12 +62,18 @@
       "m": 0.45,
       "interval_after": 3,
       "note": "refresh 2026-10-11: Agent Memory Repo (Cognition) named as peer; eval --model pin; claude-mem watcher; cost: searches 9 · fetches 29 · tool calls 55 (shared with the four skills)"
+    },
+    {
+      "date": "2026-10-14",
+      "m": 0.25,
+      "interval_after": 3,
+      "note": "refresh 2026-10-14: Claude Code 2.1.299 eval disallowed_tools, fail-closed plugin hooks (Stop timeout question), /reload-skills after compaction; claude-mem 13.36-13.39; cost: searches 10 · fetches 12 · tool calls 40 (shared with everlast-capture)"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 8,
+    "research": 9,
     "tests": 5
   },
   "consolidate_every": 25,

@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261014-1 · 2026-10-14 · Research refresh (minor) of the plugin and everlast-capture; no version change
+- because: R-20261014-1, R-20261014-2 (plugin); everlast-capture R-20261014-1
+- files: RESEARCH.md (Current understanding: packaging bullet; Open questions: fail-closed Stop hook; Search plan: best sources; two findings), skills/everlast-capture/RESEARCH.md and CHANGELOG.md (C-20261014-1), ai-docs/log.md
+- No README.md, protocol/, script, hook or SKILL.md change, so the version stays 0.6.4 (C-20261003-1 set the precedent for research-only refreshes). Claude Code 2.1.299's eval `disallowed_tools` field and its fail-closed plugin hooks are recorded for the next tuning round and a hook-timeout probe.
+
 ### C-20261011-1 · 2026-10-11 · Plugin 0.6.4: refresh of the plugin and its four skills; Agent Memory Repo named; eval harness can pin the model under test
 - because: R-20261011-1, R-20261011-2, R-20261011-3 (plugin); everlast-setup, everlast-capture, everlast-resume and everlast-vault R-20261011-1
 - files: README.md (comparable tools), scripts/eval-wsl.sh (`EVAL_MODEL`), TESTS.md (harness notes), RESEARCH.md (Current understanding, Open questions, three findings), skills/*/RESEARCH.md (one finding each; setup and vault Open questions), .claude-plugin/plugin.json and plugin.json (0.6.4)
