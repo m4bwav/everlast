@@ -10,6 +10,10 @@ Harness notes (2026-10-11, R-20261011-3): the judge stays pinned to `sonnet` (th
 
 ## Runs
 
+### T-20261017-1 · 2026-10-17 · `python scripts/test_everlast.py` (self-test only) · dev-machine, Windows 11 native · 146/146 checks
+- After C-20261017-1 (scan patterns). The plugin's `claude plugin eval` suite (five cases under WSL2, three runs per arm with the baseline, about $8) was not run, so the plugin's tests stay overdue (last full run T-20260927-1); the capture and vault trigger and decoy cases ran natively (their TESTS.md, T-20261017-1).
+- led to: none
+
 ### T-20260929-1 · 2026-09-29 · `python scripts/test_everlast.py` (the self-test; no model) · dev-machine · 146/146 checks
 - After the hidden-text check (C-20260929-2). `check_hidden` plants zero-width, right-to-left override and tag characters and harness-like tags (plain, closing, spaced, split by a zero-width space) through `note`, `handoff`, a hand-edited HANDOFF, entry and user-tier PROFILE, then checks writes, lint, scan, the SessionStart hook, search (text and JSON), recheck and clean; emoji sequences, an England flag, a leading BOM and look-alikes survive. The same checks fail against 0.5.1 (first failure: note reports nothing neutralised). A dry-run `clean` over the owner's vault and 20 registered doc sets changed nothing.
 - led to: none

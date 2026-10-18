@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-1 · 2026-10-17 · Plugin 0.6.5: the privacy scan catches prefixed key names and passwords in prose; refresh of the plugin, everlast-capture and everlast-vault
+- because: everlast-vault:R-20261017-2 (scan gaps); R-20261017-1, R-20261017-2, R-20261017-3 (plugin); everlast-capture:R-20261017-1; everlast-vault:R-20261017-1, everlast-vault:R-20261017-3
+- files: scripts/everlast.py (PRIVACY_PATTERNS), scripts/test_everlast.py (check_scan_key_shapes), .claude-plugin/plugin.json and plugin.json (0.6.5), RESEARCH.md (Current understanding: existing tools; Open questions: Stop hook, external score; Search plan: forums, best sources; three findings), skills/everlast-vault/SKILL.md (A new machine or a new agent product, step 2) with its CHANGELOG C-20261017-1, skills/*/RESEARCH.md and TESTS.md for capture and vault, ai-docs/log.md
+- The `credential assignment` pattern needed the bare keyword right before `:` or `=`, so `AWS_SECRET_ACCESS_KEY=...` and `aws_secret_access_key: ...` passed the scan; it now takes `_`- or `-`-joined name parts around the keyword (and `access_key`), so `tokenizer:` and `max_tokens` stay clean. A new `credential in prose` pattern catches "password is hunter22" when the value holds a digit or symbol, not "the password is required". The test adds three positives and two negatives; the repository and the owner's vault flag the same files before and after. The Stop-hook question is answered from the hooks docs (a timed-out Stop hook fails open).
+
 ### C-20261014-1 · 2026-10-14 · Research refresh (minor) of the plugin and everlast-capture; no version change
 - because: R-20261014-1, R-20261014-2 (plugin); everlast-capture R-20261014-1
 - files: RESEARCH.md (Current understanding: packaging bullet; Open questions: fail-closed Stop hook; Search plan: best sources; two findings), skills/everlast-capture/RESEARCH.md and CHANGELOG.md (C-20261014-1), ai-docs/log.md
