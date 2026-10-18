@@ -10,6 +10,11 @@ Case added 2026-09-22 and not yet run: selectivity-1 (at most two entries from a
 
 ## Runs
 
+### T-20261017-1 · 2026-10-17 · claude plugin eval 2.1.281 `--ablation none` (trigger, decoy) · dev-machine, Windows 11 native · 5/5
+- Refresh-day regression run on branch refresh/2026-10-17 (SKILL.md unchanged), cases from `evals/everlast-capture` (exported earlier by `evergreen.py eval-export`), three runs per case, with-plugin arm only, `-j 3`; 65 s, $1.47.
+- trigger-1 to trigger-3 invoked the skill in every run; decoy-1 and decoy-2 never did. Action and outcome cases not run (they grant Bash; native Windows has no sandbox for them).
+- led to: none
+
 ### T-20261011-1 · 2026-10-11 · claude plugin eval 2.1.281 `--ablation none` (trigger, decoy) · dev-machine, Windows 11 native · 5/5
 - Regression run after the plugin's 2026-10-11 refresh (0.6.4), from a worktree of origin/master. Cases exported from this skill's evals.json by `evergreen.py eval-export --out evals/everlast-capture` (plugin eval refuses an eval dir inside skills/), three runs per case, with-plugin arm only (no baseline arm, to hold cost).
 - trigger-1 to trigger-3: invoked 9/9 ($1.09). decoy-1, decoy-2: invoked 0/6 ($0.36). promote-decoy-1 (an action decoy with a scratch repository) not run.

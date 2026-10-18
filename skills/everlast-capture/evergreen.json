@@ -14,8 +14,8 @@
   "topic": "how AI coding agents capture session knowledge in modular, on-demand repo documentation",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-10-14",
-  "next_due": "2026-10-17",
+  "last_checked": "2026-10-17",
+  "next_due": "2026-10-20",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -68,17 +68,23 @@
       "m": 0.15,
       "interval_after": 3,
       "note": "refresh 2026-10-14: quiet; handoff counts and skill-listing note updated; cost shared with plugin pass"
+    },
+    {
+      "date": "2026-10-17",
+      "m": 0.15,
+      "interval_after": 3,
+      "note": "refresh 2026-10-17: quiet; /rewind listing fix (2.1.301), handoff 1.0M installs, claude-mem v14; trigger/decoy 5/5; cost shared with plugin pass"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 4,
-    "research": 13,
-    "tests": 7
+    "research": 14,
+    "tests": 8
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-10-11T14:17",
+    "last_run": "2026-10-17T19:15",
     "harness": "claude plugin eval 2.1.281 --ablation none (trigger, decoy)",
     "env": "dev-machine",
     "cases": 5,

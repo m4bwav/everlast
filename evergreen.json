@@ -14,8 +14,8 @@
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-10-14",
-  "next_due": "2026-10-17",
+  "last_checked": "2026-10-17",
+  "next_due": "2026-10-20",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -68,12 +68,18 @@
       "m": 0.25,
       "interval_after": 3,
       "note": "refresh 2026-10-14: Claude Code 2.1.299 eval disallowed_tools, fail-closed plugin hooks (Stop timeout question), /reload-skills after compaction; claude-mem 13.36-13.39; cost: searches 10 · fetches 12 · tool calls 40 (shared with everlast-capture)"
+    },
+    {
+      "date": "2026-10-17",
+      "m": 0.25,
+      "interval_after": 3,
+      "note": "refresh 2026-10-17: 0.6.5 scan catches prefixed key names and passwords in prose (vault R-20261017-2); Stop-hook timeout fails open per hooks docs; CC 2.1.302; claude-mem v14 paid tier; Kairos judge controls; cost: searches 10 · fetches 37 · tool calls 62 (two passes, shared with everlast-capture)"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 9,
+    "research": 10,
     "tests": 5
   },
   "consolidate_every": 25,

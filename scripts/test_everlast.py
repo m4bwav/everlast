@@ -241,12 +241,19 @@ def check_scan_key_shapes(tmp, env):
         "backticks.md": "use `ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef0123` here\n",
         "link.md": "[x](https://x.io/?t=ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef0123)\n",
         "npm-env.md": "set npm_config_cache_folder_location_for_ci before install\n",
+        "aws-env.md": "AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY\n",
+        "aws-yaml.md": "aws_secret_access_key: wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY\n",
+        "password-is.md": "the wifi password is hunter22 for guests\n",
+        "tokenizer.md": "tokenizer: sentencepiece_unigram\n",
+        "password-prose.md": "the password is required on first login\n",
     }
+    clean = {"npm-env.md", "tokenizer.md", "password-prose.md"}
     for name, text in samples.items():
         write_file(os.path.join(d, name), text)
     rc, out = run("scan", d, "--json", env=env)
     hits = {h["file"] for h in json.loads(out[out.index("["):])}
-    check(hits == set(samples) - {"npm-env.md"}, "scan catches new key shapes and boundary cases, not npm config names", out)
+    check(hits == set(samples) - clean, "scan catches new key shapes, prefixed key names (AWS_SECRET_ACCESS_KEY) and "
+          "a password in prose, not npm config names, tokenizer settings or prose about passwords", out)
 
 
 def check_hidden(tmp, env):

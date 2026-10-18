@@ -13,9 +13,9 @@
   "source": null,
   "topic": "cross-tool installation of agent skills and plugins, private git-backed knowledge stores, redaction and encryption at rest for agent notes",
   "tier": "fast",
-  "interval_days": 4.67,
-  "last_checked": "2026-10-11",
-  "next_due": "2026-10-16",
+  "interval_days": 3.11,
+  "last_checked": "2026-10-17",
+  "next_due": "2026-10-20",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -44,17 +44,23 @@
       "m": 0.35,
       "interval_after": 4.67,
       "note": "refresh 2026-10-11: CC 2.1.289 local-plugin stale-copy fix needs re-probe of installPath caveat; skills 1.7.2, betterleaks 2.0 rc; cost shared with plugin pass"
+    },
+    {
+      "date": "2026-10-17",
+      "m": 0.35,
+      "interval_after": 3.11,
+      "note": "refresh 2026-10-17: installPath still cache on 2.1.295 (#96223), step 2 names Read from and the CLAUDE_CODE_PLUGIN_DIRS Desktop route; scan gaps fixed in 0.6.5; #102186; versions unchanged; cost: searches 13 · fetches 41 · tool calls 62 (two passes)"
     }
   ],
   "counts": {
     "learnings": 1,
     "changes": 0,
-    "research": 2,
-    "tests": 1
+    "research": 3,
+    "tests": 2
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-10-11T14:17",
+    "last_run": "2026-10-17T19:15",
     "harness": "claude plugin eval 2.1.281 --ablation none (trigger, decoy)",
     "env": "dev-machine",
     "cases": 4,
