@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-1 · 2026-10-23 · claude plugin eval 2.1.281 `--ablation none` (trigger, decoy) · dev-machine, Windows 11 native · 7/7
+- Run on branch refresh/2026-10-23 after the Step 3 edit (C-20261023-1; description unchanged), cases from `evals/everlast-resume`, three runs per case, with-plugin arm only, `-j 3`: 7/7 (75 s, $1.85).
+- trigger-1 to trigger-4 invoked the skill in every run; decoy-1 to decoy-3 never did. Action and outcome cases not run (they grant Bash; native Windows has no sandbox for them). `evergreen.py worth --against HEAD`: +129 tokens, specific.
+- led to: none
+
 ### T-20261011-1 · 2026-10-11 · claude plugin eval 2.1.281 `--ablation none` (trigger, decoy) · dev-machine, Windows 11 native · 7/7
 - Regression run after the plugin's 2026-10-11 refresh (0.6.4), from a worktree of origin/master. Cases exported from this skill's evals.json by `evergreen.py eval-export --out evals/everlast-resume` (plugin eval refuses an eval dir inside skills/), three runs per case, with-plugin arm only (no baseline arm, to hold cost).
 - trigger-1 to trigger-4: invoked 12/12 ($1.29). decoy-1 to decoy-3: invoked 0/9 ($0.54).

@@ -2,7 +2,7 @@
 
 Findings that back [SKILL.md](SKILL.md). Changes they caused are logged in [CHANGELOG.md](CHANGELOG.md); procedural lessons live in [LEARNINGS.md](LEARNINGS.md); test runs and their evidence in [TESTS.md](TESTS.md); schedule and state in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Topic: how agents retrieve and consolidate prior session knowledge from repo docs (progressive disclosure, index-first loading, memory consolidation passes). Tier `fast` (moderate until the 2026-09-23 check moved it). Last refresh 2026-10-03 (minor: stale-memory over-trust, Claude Code resume fixes, consolidation literature); next due per `evergreen.json`. The suite's shared findings live in `../everlast-capture/RESEARCH.md`; this file keeps what this skill's own claims depend on.
+Topic: how agents retrieve and consolidate prior session knowledge from repo docs (progressive disclosure, index-first loading, memory consolidation passes). Tier `fast` (moderate until the 2026-09-23 check moved it). Last refresh 2026-10-23 (the code wins over a stale doc, adopted in Step 3); next due per `evergreen.json`. The suite's shared findings live in `../everlast-capture/RESEARCH.md`; this file keeps what this skill's own claims depend on.
 
 ## Current understanding
 
@@ -50,6 +50,13 @@ Best sources (primary first): code.claude.com/docs, platform.claude.com (Dreams)
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20261023-1 · 2026-10-23 · Subject: a doc that disagrees with the code wins nine times in ten unless one sentence says otherwise; Step 3 adopts the rule
+- Summary: arXiv 2610.30571 (v1 2026-10-22): with a stale instruction file, Claude Code and Codex CLI followed the file over the existing code in 90.1% of choices (Claude Code noticed the conflict in 79 of 80 runs and followed the file anyway); one user-level sentence giving the code precedence and asking for each inconsistency to be reported moved that to 91.4% following the code and every run reporting the conflicts. Step 3 forced checks only for entries already stale by date or by cited-file changes; an entry that is fresh by date but contradicts the code was not covered. Response: adopt; Step 3 now says the code wins, the mismatch is named and the entry gets `verify --failed`, and the pointer block carries the same sentence (plugin C-20261023-1). Also since 10-11 (plugin R-20261014-1, R-20261017-1, R-20261023-2): Claude Code 2.1.304 re-sends the skill list after compaction and stops re-sending it on resume; nothing changes Step 2's index-first order. Tooling: claude-mem v15 makes index, inspect, fetch its default recall, the same order as Step 2 (note). Testing: arXiv 2610.30698 (validity-state corruption costs 30 to 41 points, an oracle check restores it) backs Step 3; nothing new for the suite.
+- Track: subject, practice, tooling, testing
+- Sources: https://arxiv.org/abs/2610.30571, https://github.com/WenJing95/stale-docs-data (conditions/B_fix.md, numbers.md), https://github.com/anthropics/claude-code/releases/tag/v2.1.304, https://github.com/thedotmack/claude-mem/releases/tag/v15.0.0, https://arxiv.org/abs/2610.30698
+- Magnitude: 0.45
+- Applied: C-20261023-1 (SKILL.md Step 3)
 
 ### R-20261011-1 · 2026-10-11 · Quiet: resume-side fixes in Claude Code 2.1.293 and 2.1.295; reading docs goes with less testing
 - Summary: 2.1.295 stops an async SessionStart hook's unchanged context being re-added on every resume; 2.1.293 fixes Claude treating its own pre-compaction actions as done, and rules now load when a file is viewed with `cat` or `grep` in Bash; 2.1.290 attaches a subdirectory AGENTS.md when a file under it is @-mentioned. arXiv 2608.20195 (agent-facing files are 60.5% of agents' documentation reads; reading goes with less immediate testing, adjusted OR 0.39) supports forcing `recheck` and `verify` before acting. Tooling, practice and testing otherwise quiet (see the plugin's R-20261011-1 to 3).

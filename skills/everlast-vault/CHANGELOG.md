@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-1 · 2026-10-23 · Privacy scan: the Betterleaks command for 1.x and 2.0
+- because: R-20261023-1
+- files: SKILL.md (privacy scan paragraph)
+- `betterleaks dir <path>` stays for 1.x and `betterleaks fs <path>` is named for 2.0, whose migration guide replaces `dir`.
+
 ### C-20261017-1 · 2026-10-17 · Step 2 names the `Read from:` line and the user-reported Desktop route; research refresh
 - because: R-20261017-1, R-20261017-2, R-20261017-3
 - files: SKILL.md (A new machine or a new agent product, step 2), RESEARCH.md (header line; Current understanding: Claude Code, credential scanning; Open questions; Search plan: forums, Codex URL; three findings), LEARNINGS.md (L-001 evidence), TESTS.md (T-20261017-1); plugin scripts/everlast.py scan patterns (everlast-protocol:C-20261017-1)
