@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-1 · 2026-10-23 · Research refresh (quiet): compaction re-sends the skill list (open question resolved)
+- because: R-20261023-1
+- files: RESEARCH.md (header line; Current understanding: automatic skill creation bullet; Open questions; R-20261023-1)
+- SKILL.md unchanged.
+
 ### C-20261017-1 · 2026-10-17 · Research refresh (quiet): baselines, the `/rewind` listing fix, forum lines in the search plan
 - because: R-20261017-1
 - files: RESEARCH.md (header line; Current understanding: handoff bullet, automatic skill creation bullet, MCP and claude-mem bullet; Open questions; Search plan: Subject forums; R-20261017-1), TESTS.md (T-20261017-1)

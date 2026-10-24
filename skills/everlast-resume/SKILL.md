@@ -35,7 +35,9 @@ A stored fix is a claim with a date. Agents check a memory's source about one ti
 3. Record the result. It holds: `EVERLAST verify <entry> <repo>` (renews `verified` and `stale_after`, logs `verify`, rebuilds the index). It does not: `EVERLAST verify <entry> <repo> --failed "what broke"` (dated line in Verified by, due now, logs `verify-failed`), then find the fix that holds and hand it to `everlast-capture` with `--supersedes`. Do not apply the old fix in the meantime.
 4. Say which entry you relied on and what the check showed: fresh, rechecked and verified, or failed and superseded.
 
-A fresh entry needs no check. The detail is in [references/protocol/DOC-TYPES.md](references/protocol/DOC-TYPES.md) (Check before use).
+An entry, or an instruction file, that disagrees with the code it describes loses: follow the code's conventions, name each mismatch in the reply, and record `verify --failed` on the entry (item 3). Fresh or not, a doc that contradicts the code is stale; agents given no such rule followed a stale instruction file over the code in 90% of choices even after noticing the conflict, and one user-level sentence giving the code precedence turned that into 91% following the code (arXiv 2610.30571).
+
+A fresh entry that matches the code needs no check. The detail is in [references/protocol/DOC-TYPES.md](references/protocol/DOC-TYPES.md) (Check before use).
 
 ## Step 4: use, then feed back
 

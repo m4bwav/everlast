@@ -14,8 +14,8 @@
   "topic": "how AI coding agents capture session knowledge in modular, on-demand repo documentation",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-10-17",
-  "next_due": "2026-10-20",
+  "last_checked": "2026-10-23",
+  "next_due": "2026-10-26",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -74,12 +74,18 @@
       "m": 0.15,
       "interval_after": 3,
       "note": "refresh 2026-10-17: quiet; /rewind listing fix (2.1.301), handoff 1.0M installs, claude-mem v14; trigger/decoy 5/5; cost shared with plugin pass"
+    },
+    {
+      "date": "2026-10-23",
+      "m": 0.15,
+      "interval_after": 3,
+      "note": "refresh 2026-10-23: quiet; compaction re-sends the skill list since 2.1.304 (open question resolved); handoff 1.04M; cost shared with plugin pass"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 4,
-    "research": 14,
+    "research": 15,
     "tests": 8
   },
   "consolidate_every": 25,

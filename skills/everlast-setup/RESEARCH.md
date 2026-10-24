@@ -2,7 +2,7 @@
 
 Findings that back [SKILL.md](SKILL.md). Changes they caused are logged in [CHANGELOG.md](CHANGELOG.md); procedural lessons live in [LEARNINGS.md](LEARNINGS.md); test runs and their evidence in [TESTS.md](TESTS.md); schedule and state in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Topic: repository layouts, instruction-file conventions and hooks for AI-agent documentation. Tier `moderate`. Last refresh 2026-09-23 (the AGENTS.md loading contradiction, not a full four-track pass); next due per `evergreen.json`. The suite's shared findings (why layers, what auto-memory skips, the llm-wiki and compound-engineering shapes, benchmarks) live in `../everlast-capture/RESEARCH.md`; this file keeps only what this skill's own claims depend on.
+Topic: repository layouts, instruction-file conventions and hooks for AI-agent documentation. Tier `moderate`. Last refresh 2026-10-23 (four-track pass; the installed block gained the code-wins rule); next due per `evergreen.json`. The suite's shared findings (why layers, what auto-memory skips, the llm-wiki and compound-engineering shapes, benchmarks) live in `../everlast-capture/RESEARCH.md`; this file keeps only what this skill's own claims depend on.
 
 ## Current understanding
 
@@ -48,6 +48,13 @@ Best sources (primary first): code.claude.com/docs, docs.github.com (Copilot CLI
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20261023-1 · 2026-10-23 · Subject: the pointer block now says the code beats a stale instruction file; Copilot CLI applies path-specific instructions on read
+- Summary: arXiv 2610.30571 (v1 2026-10-22) measured the failure this skill's always-on files can cause: with an instruction file that disagreed with the code, Claude Code and Codex CLI followed the file in 90.1% of choices, and one user-level sentence giving the code precedence moved 91.4% to the code with every conflict reported. The block Step 5 installs (templates/AGENTS.md.snippet) now carries that rule in its check-before-use bullet, same eight lines (plugin C-20261023-1); SKILL.md needs no edit because it installs the template as is. Other subject items since 10-11: Claude Code 2.1.309 loads only the start of a nested CLAUDE.md over the size limit (setup writes short files); 2.1.304 re-sends the skill list after compaction; Copilot CLI 1.0.100 (10-19) applies path-specific `.github/instructions` files automatically when the agent reads or edits a matching file; Codex 0.164, Gemini CLI 0.64/0.65, OpenCode 1.19.3/1.19.4, cursor.com/changelog and the agents.md repository (no commits since 10-11): nothing on instruction files. Tooling: ctxlint last released 0.28.0 on 10-09, compound-engineering v3.31.1/v3.32.0 nothing on `docs_root`: nothing new. Practice: secondary posts repeat the CLAUDE.md-wins-over-AGENTS.md trap the `@AGENTS.md` import already handles. Testing: nothing new.
+- Track: subject, practice
+- Sources: https://arxiv.org/abs/2610.30571, https://github.com/WenJing95/stale-docs-data (conditions/B_fix.md, numbers.md), https://github.com/anthropics/claude-code/releases/tag/v2.1.309, https://github.com/github/copilot-cli/releases/tag/v1.0.100, https://github.com/openai/codex/releases/tag/rust-v0.164.0, https://github.com/google-gemini/gemini-cli/releases, https://github.com/YawLabs/ctxlint/releases
+- Magnitude: 0.45
+- Applied: plugin C-20261023-1 (templates/AGENTS.md.snippet, the block Step 5 installs); SKILL.md unchanged
 
 ### R-20261011-1 · 2026-10-11 · Subject: the AGENTS.md setting renamed; Copilot CLI reads `.claude/rules`; other tools quiet
 - Summary: Claude Code's built-in AGENTS.md plugin is now `cc-plugin-agents-md@builtin` (2.1.285; the old `agents-md@builtin` ID is still read), shown as "Project instructions" in `/config` with a new `managed-only` value; in Cowork a user-scope import that resolves outside the working directory, and a symlinked `~/.claude/CLAUDE.md`, are skipped. The `@AGENTS.md` bridge is unchanged, so Step 5 stands. Copilot CLI 1.0.89 reads `.claude/rules` files as custom instructions (1.0.92 fires one sessionEnd after Stop-hook continuations), which widens the open question on path-scoped pointers. Codex 0.162, Cursor (10-06), Gemini CLI 0.63 and the AGENTS.md spec: no memory or instruction changes. Tooling, practice, testing: nothing new for setup (see the plugin's R-20261011-1 to 3).

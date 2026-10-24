@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-1 · 2026-10-23 · claude plugin eval 2.1.281 `--ablation none` (trigger, decoy) · dev-machine, Windows 11 native · 4/4
+- Run on branch refresh/2026-10-23 after the privacy scan edit (C-20261023-1; description unchanged), cases from `evals/everlast-vault`, three runs per case, with-plugin arm only, `-j 3`: 4/4 (40 s, $1.06).
+- trigger-1 and trigger-2 invoked the skill in every run; decoy-1 and decoy-2 never did. Action and outcome cases not run (they grant Bash; native Windows has no sandbox for them). `evergreen.py worth --against HEAD`: +29 tokens, specific.
+- led to: none
+
 ### T-20261017-1 · 2026-10-17 · claude plugin eval 2.1.281 `--ablation none` (trigger, decoy) · dev-machine, Windows 11 native · 4/4
 - Run twice on branch refresh/2026-10-17, before and after the step 2 edit (C-20261017-1; description unchanged), cases from `evals/everlast-vault`, three runs per case, with-plugin arm only, `-j 3`: 4/4 both times (42 s, $1.04; 47 s, $1.05).
 - trigger-1 and trigger-2 invoked the skill in every run; decoy-1 and decoy-2 never did. Action and outcome cases not run (they grant Bash; native Windows has no sandbox for them); the scan pattern change is covered by the plugin self-test (146 checks).
