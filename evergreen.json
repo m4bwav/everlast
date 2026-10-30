@@ -13,16 +13,16 @@
   "source": null,
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
-  "interval_days": 3,
-  "last_checked": "2026-10-23",
-  "next_due": "2026-10-27",
+  "interval_days": 3.75,
+  "last_checked": "2026-10-30",
+  "next_due": "2026-11-03",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
-    "quiet": 0,
-    "pinned_min": 1,
+    "quiet": 1,
+    "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -80,12 +80,18 @@
       "m": 0.45,
       "interval_after": 3,
       "note": "refresh 2026-10-23: stale instruction files beat the code 90% (2610.30571), code-wins sentence added to the AGENTS.md pointer block; CC 2.1.303-2.1.310 re-send skills after compaction; claude-mem v15; cost: searches 1 · fetches 11 · tool calls 48 (inline, shared with the four skills)"
+    },
+    {
+      "date": "2026-10-30",
+      "m": 0.0,
+      "interval_after": 3.75,
+      "note": "quiet check, nothing new since last_checked on any track; cost: searches 4 (shared across 5 units) · fetches 0 · tool calls 8"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 11,
+    "research": 12,
     "tests": 5
   },
   "consolidate_every": 25,

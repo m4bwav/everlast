@@ -49,6 +49,8 @@ Best sources (primary first): code.claude.com/docs, platform.claude.com (Dreams)
 
 ## Findings log
 
+- R-20261030-1 (quiet check, all tracks): nothing newer since last_checked for everlast-resume; subject, tooling, practice, testing: nothing new. Sources: web searches (Claude Code changelog, arXiv agent memory, Dependabot changelog, npm compromises). m 0. applied: none.
+
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261023-1 · 2026-10-23 · Subject: a doc that disagrees with the code wins nine times in ten unless one sentence says otherwise; Step 3 adopts the rule

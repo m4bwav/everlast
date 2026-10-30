@@ -56,6 +56,8 @@ Best sources (primary first): code.claude.com plugin docs (loading, discover-plu
 
 ## Findings log
 
+- R-20261030-1 (quiet check, all tracks): nothing newer since last_checked for everlast-vault; subject, tooling, practice, testing: nothing new. Sources: web searches (Claude Code changelog, arXiv agent memory, Dependabot changelog, npm compromises). m 0. applied: none.
+
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261023-1 · 2026-10-23 · Tooling: Betterleaks 2.0 replaces `dir` with `fs`; install-path issues unchanged
