@@ -13,15 +13,15 @@
   "source": null,
   "topic": "how AI coding agents capture session knowledge in modular, on-demand repo documentation",
   "tier": "fast",
-  "interval_days": 3,
-  "last_checked": "2026-10-23",
-  "next_due": "2026-10-26",
+  "interval_days": 3.75,
+  "last_checked": "2026-10-30",
+  "next_due": "2026-11-02",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
-    "quiet": 0,
+    "quiet": 1,
     "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
@@ -80,12 +80,18 @@
       "m": 0.15,
       "interval_after": 3,
       "note": "refresh 2026-10-23: quiet; compaction re-sends the skill list since 2.1.304 (open question resolved); handoff 1.04M; cost shared with plugin pass"
+    },
+    {
+      "date": "2026-10-30",
+      "m": 0.0,
+      "interval_after": 3.75,
+      "note": "quiet check, nothing new since last_checked on any track; cost: searches 4 (shared across 5 units) · fetches 0 · tool calls 8"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 4,
-    "research": 15,
+    "research": 16,
     "tests": 8
   },
   "consolidate_every": 25,
