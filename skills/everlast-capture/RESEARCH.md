@@ -74,6 +74,8 @@ Refresh notes (2026-09-22): `skills.sh/api/search?q=` for install counts; the MC
 
 ## Findings log
 
+- R-20261103-1 (quiet check): Claude Code 2.1.311 to 2.1.317 touch compaction (PreCompact output cap 10,000 characters, idle compaction in VS Code and Desktop, earlier summary kept when compaction shortens its request) but nothing on how a capture is written or where; claude-mem v15.9.0 privacy fix noted at plugin level. Subject, tooling, practice, testing: nothing that changes the skill. Sources: https://github.com/anthropics/claude-code/releases/tag/v2.1.317, https://github.com/thedotmack/claude-mem/releases/tag/v15.9.0. m 0.1. applied: none.
+
 - R-20261030-1 (quiet check, all tracks): nothing newer since last_checked for everlast-capture; subject, tooling, practice, testing: nothing new. Sources: web searches (Claude Code changelog, arXiv agent memory, Dependabot changelog, npm compromises). m 0. applied: none.
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.

@@ -13,16 +13,16 @@
   "source": null,
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
-  "interval_days": 3.75,
-  "last_checked": "2026-10-30",
-  "next_due": "2026-11-03",
+  "interval_days": 3,
+  "last_checked": "2026-11-03",
+  "next_due": "2026-11-06",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
-    "quiet": 1,
-    "pinned_min": 0,
+    "quiet": 0,
+    "pinned_min": 1,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -86,12 +86,18 @@
       "m": 0.0,
       "interval_after": 3.75,
       "note": "quiet check, nothing new since last_checked on any track; cost: searches 4 (shared across 5 units) · fetches 0 · tool calls 8"
+    },
+    {
+      "date": "2026-11-03",
+      "m": 0.3,
+      "interval_after": 3,
+      "note": "claude-mem v15.2-15.8 prompt upload noted; MemHarmBench/MemUse leads; CC 2.1.311-317 quiet on memory; cost: searches 6 · fetches 4 · tool calls 11"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 12,
+    "research": 13,
     "tests": 5
   },
   "consolidate_every": 25,

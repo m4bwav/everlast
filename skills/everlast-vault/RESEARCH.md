@@ -56,6 +56,8 @@ Best sources (primary first): code.claude.com plugin docs (loading, discover-plu
 
 ## Findings log
 
+- R-20261103-1 (quiet check): `npx skills` 1.7.5 and 1.7.6 (11-02, 11-03): `check` reports updates without installing, copies stay copies across updates, `--dry-run` restore, symlinks nested in linked directories confined; the skill's 1.7.0 pin still works, no change. Betterleaks still 1.x stable (2.0.0-rc.6 pre-release); sops 3.13.3 unchanged since 07-23. Claude Code 2.1.311 to 2.1.317: synced claude.ai skills no longer lost or re-downloaded every ten minutes; nothing on plugin install paths. Practice and testing: nothing new. Sources: https://github.com/vercel-labs/skills/releases, https://github.com/betterleaks/betterleaks/releases, https://github.com/anthropics/claude-code/releases/tag/v2.1.317. m 0.1. applied: none.
+
 - R-20261030-1 (quiet check, all tracks): nothing newer since last_checked for everlast-vault; subject, tooling, practice, testing: nothing new. Sources: web searches (Claude Code changelog, arXiv agent memory, Dependabot changelog, npm compromises). m 0. applied: none.
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
