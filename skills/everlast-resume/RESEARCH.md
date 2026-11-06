@@ -54,7 +54,7 @@ Best sources (primary first): code.claude.com/docs, platform.claude.com (Dreams)
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261106-1 · 2026-11-06 · Quiet; takeover benchmark lead
-- Summary: arXiv 2611.07307 (listing summary only, unconfirmed) may fit the planned external score. skills.sh baseline: handoff 1,103,333 installs, claude-handoff 461,289.
+- Summary: arXiv 2611.07307, "Take It From Here: Evaluating Coding Agents On Project Takeover" (submitted 2026-11-05, abstract read 2026-11-06; ReqMemBench), may fit the planned external score. skills.sh baseline: handoff 1,103,333 installs, claude-handoff 461,289.
 - Track: testing. Sources: https://arxiv.org/list/cs.SE/new
 - magnitude 0.1 · applied: none
 

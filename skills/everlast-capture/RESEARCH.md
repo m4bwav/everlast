@@ -81,7 +81,7 @@ Refresh notes (2026-09-22): `skills.sh/api/search?q=` for install counts; the MC
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261106-1 · 2026-11-06 · Quiet; takeover benchmark lead
-- Summary: arXiv 2611.07307 (listing summary only, unconfirmed): agents taking over from full interaction history complete delivery 4.95% of the time. Confirm before citing. Claude Code 2.1.318 compaction fix only.
+- Summary: arXiv 2611.07307, "Take It From Here: Evaluating Coding Agents On Project Takeover" (submitted 2026-11-05, abstract read 2026-11-06; ReqMemBench), exists as described; the abstract says about 5% of attempts fully deliver. The 4.95% figure came from the listing, so check the paper before citing that exact number. Claude Code 2.1.318 compaction fix only.
 - Track: testing. Sources: https://arxiv.org/list/cs.SE/new
 - magnitude 0.1 · applied: none
 

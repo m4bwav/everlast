@@ -56,6 +56,11 @@ Best sources (primary first): code.claude.com/docs (changelog, memory, plugin-ev
 
 ## Findings (newest first)
 
+### R-20261106-2 · 2026-11-06 · Gemini CLI to Antigravity CLI confirmed
+- Summary: Google's post of 2026-05-19 ended Gemini CLI for AI Pro, Ultra and free Code Assist users on 2026-06-18; paid API keys and Code Assist Standard and Enterprise keep it. Antigravity's docs give the skill, hook and context paths now in protocol/PORTABILITY.md and never mention `~/.agents/skills`. Export to it is untested.
+- Track: subject, tooling. Sources: https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/, https://antigravity.google/docs/cli/gcli-migration, https://antigravity.google/docs/skills/, https://antigravity.google/docs/hooks/
+- magnitude 0.4 · applied: protocol/PORTABILITY.md
+
 ### R-20261106-1 · 2026-11-06 · Copilot CLI 1.0.106; claude-mem 15.10; Gemini CLI lead
 - Summary: Copilot CLI 1.0.106 (11-05): `@` imports follow code-fence rules, hook files with a BOM are handled, `-p` starts with memory off. Our snippet's `@AGENTS.md` is unfenced line 1 and adapters/copilot/hooks.json has no BOM, so nothing breaks. claude-mem 15.10 (11-05/06) leads setup with transcript discovery, analytics box checked, nothing sent until Discover; adds CLAUDE_MEM_OBSERVER_ENABLED. Codex 0.167 changes memory-extraction default models. Claude Code 2.1.318: compaction fix only (notes partly read). Open lead: a third-party page says Gemini CLI moves to Antigravity CLI; check Google's own announcement against the Gemini row in protocol/PORTABILITY.md. Cursor, compound-engineering and vendor forums not fetched.
 - Track: subject, tooling. Sources: https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md, https://github.com/thedotmack/claude-mem/releases, https://github.com/openai/codex/releases

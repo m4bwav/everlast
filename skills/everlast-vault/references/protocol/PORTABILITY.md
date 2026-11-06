@@ -20,7 +20,8 @@ The vault is private: `gh auth login` once per machine, or SSH keys. The plugin 
 | Codex CLI | reads `.agents/skills` up to the repo root and `~/.agents/skills`; not `.claude/skills` | `~/.codex/hooks.json` or a Codex plugin's `hooks/hooks.json` (same events as Claude; SessionEnd budget 1 s) | `everlast.py export ~`; hooks optional, not yet adapted |
 | OpenCode, Windsurf | read `~/.agents/skills` and repo `.agents/skills` | none (OpenCode: TS plugins only) | `everlast.py export ~` |
 | Cursor | reads `.cursor/skills`, `~/.cursor/skills` and `~/.agents/skills`; Agent Skills native since 2.4 | `~/.cursor/hooks.json` (`sessionStart`, `stop`) | `everlast.py export ~`; link into `~/.cursor/skills` only for Cloud Agents, which sync that folder alone |
-| Gemini CLI | reads `.gemini/skills`, `~/.gemini/skills`, with `~/.agents/skills` as an alias that wins within a tier | `settings.json` hooks or an extension's `hooks/hooks.json` | `everlast.py export ~`; a second link into `~/.gemini/skills` would list the skills twice |
+| Gemini CLI (since 2026-06-18 only with paid API keys or Code Assist Standard and Enterprise; Google moved everyone else to Antigravity CLI) | reads `.gemini/skills`, `~/.gemini/skills`, with `~/.agents/skills` as an alias that wins within a tier | `settings.json` hooks or an extension's `hooks/hooks.json` | `everlast.py export ~`; a second link into `~/.gemini/skills` would list the skills twice |
+| Antigravity CLI (`agy`) | workspace `.agents/skills` up to the repo root; global `~/.gemini/config/skills`, also `~/.gemini/antigravity-cli/skills` and `~/.gemini/skills`. Its docs do not mention `~/.agents/skills` | `.agents/hooks.json`, `~/.gemini/config/hooks.json` or a plugin's `hooks.json` (`SessionStart`, `Stop`, no session-end event listed) | not adapted or tested: `everlast.py export ~` may not reach it, so link the four skills into `~/.gemini/config/skills` by hand |
 
 `npx skills@1.7.0 add m4bwav/everlast -g -a codex -a github-copilot -a cursor -a gemini-cli -a opencode` is the community installer (vercel-labs/skills); it symlinks from `~/.agents/skills`. Verify the Claude Code link afterwards (open issue #851 sometimes skips it); the plugin install covers Claude Code anyway.
 
@@ -29,7 +30,7 @@ The vault is private: `gh auth login` once per machine, or SSH keys. The plugin 
 - Claude Code: `CLAUDE.md` imports it with an `@AGENTS.md` line. Since 2.1.277 Claude Code reads `AGENTS.md` by itself only when no `CLAUDE.md` or `CLAUDE.local.md` exists, and a pointer written in prose loads nothing, so the import line is what makes the block load whenever a `CLAUDE.md` is present (and on older versions). In `excluded` mode the block goes into `CLAUDE.local.md` (gitignored), whose first line is `@AGENTS.md` when the repository has an `AGENTS.md` (creating a `CLAUDE.local.md` switches the native reading off), or into `~/.claude/<project>.md` imported from there. Claude Code's `--worktree` copies gitignored files listed in `.worktreeinclude`.
 - Copilot: `AGENTS.md` is read natively; `.github/copilot-instructions.md` may hold the same block.
 - Codex: `AGENTS.md` (32 KiB cap) plus `~/.codex/AGENTS.md` (keep under 5 KiB).
-- Gemini: `GEMINI.md`, or `.gemini/settings.json` with `{"context": {"fileName": "AGENTS.md"}}`.
+- Gemini: `GEMINI.md`, or `.gemini/settings.json` with `{"context": {"fileName": "AGENTS.md"}}`. Antigravity CLI still reads workspace `GEMINI.md` and `AGENTS.md`, and the global `~/.gemini/GEMINI.md`.
 - Cursor: `.cursor/rules` or `AGENTS.md`.
 
 The block is `templates/AGENTS.md.snippet`, eight lines, unchanged across tools.
