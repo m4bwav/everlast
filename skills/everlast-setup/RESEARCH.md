@@ -49,6 +49,11 @@ Best sources (primary first): code.claude.com/docs, docs.github.com (Copilot CLI
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-1 · 2026-11-06 · Copilot CLI 1.0.106 import rule: templates safe
+- Summary: `@` imports now follow code-fence rules; templates/CLAUDE.md.snippet has `@AGENTS.md` unfenced on line 1, verified. `--add-dir` now loads `.agents/skills` and `.claude/skills`.
+- Track: subject. Sources: https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md
+- magnitude 0.3 · applied: none
+
 ### R-20261023-1 · 2026-10-23 · Subject: the pointer block now says the code beats a stale instruction file; Copilot CLI applies path-specific instructions on read
 - Summary: arXiv 2610.30571 (v1 2026-10-22) measured the failure this skill's always-on files can cause: with an instruction file that disagreed with the code, Claude Code and Codex CLI followed the file in 90.1% of choices, and one user-level sentence giving the code precedence moved 91.4% to the code with every conflict reported. The block Step 5 installs (templates/AGENTS.md.snippet) now carries that rule in its check-before-use bullet, same eight lines (plugin C-20261023-1); SKILL.md needs no edit because it installs the template as is. Other subject items since 10-11: Claude Code 2.1.309 loads only the start of a nested CLAUDE.md over the size limit (setup writes short files); 2.1.304 re-sends the skill list after compaction; Copilot CLI 1.0.100 (10-19) applies path-specific `.github/instructions` files automatically when the agent reads or edits a matching file; Codex 0.164, Gemini CLI 0.64/0.65, OpenCode 1.19.3/1.19.4, cursor.com/changelog and the agents.md repository (no commits since 10-11): nothing on instruction files. Tooling: ctxlint last released 0.28.0 on 10-09, compound-engineering v3.31.1/v3.32.0 nothing on `docs_root`: nothing new. Practice: secondary posts repeat the CLAUDE.md-wins-over-AGENTS.md trap the `@AGENTS.md` import already handles. Testing: nothing new.
 - Track: subject, practice

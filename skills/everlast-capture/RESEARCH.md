@@ -80,6 +80,11 @@ Refresh notes (2026-09-22): `skills.sh/api/search?q=` for install counts; the MC
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-1 · 2026-11-06 · Quiet; takeover benchmark lead
+- Summary: arXiv 2611.07307 (listing summary only, unconfirmed): agents taking over from full interaction history complete delivery 4.95% of the time. Confirm before citing. Claude Code 2.1.318 compaction fix only.
+- Track: testing. Sources: https://arxiv.org/list/cs.SE/new
+- magnitude 0.1 · applied: none
+
 ### R-20261023-1 · 2026-10-23 · Quiet for capture: compaction no longer drops skills from the listing; the code-beats-doc rule lands in resume and the pointer block
 - Summary: Claude Code 2.1.304 (10-19) sends the skill list again after compaction and `/reload-skills` now sends only new or changed skills, which answers this unit's open question: a compaction alone no longer takes a skill out of view (the 1% listing budget still evicts). 2.1.309: a nested CLAUDE.md over the size limit loads only its start. Nothing on auto-memory, MEMORY.md or the Stop and SessionEnd hooks through 2.1.310. arXiv 2610.30571 (stale instruction files override the code in 90% of choices; one sentence reverses it) is about reading, so it changed everlast-resume Step 3 and the pointer block, not capture's writing rules; capture's existing rule to supersede a fix that changed already covers the follow-up. Tooling: handoff 1,036,580 installs, claude-mem v15 three-step recall, compound-engineering v3.32.0 (nothing on `docs/solutions`): nothing new to adopt. Practice: HN memory launches of the week (Mnemolith, TenseMem, Renor) all low engagement. Testing: nothing new.
 - Track: subject, tooling, practice, testing

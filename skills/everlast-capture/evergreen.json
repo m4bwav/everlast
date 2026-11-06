@@ -14,8 +14,8 @@
   "topic": "how AI coding agents capture session knowledge in modular, on-demand repo documentation",
   "tier": "fast",
   "interval_days": 3.75,
-  "last_checked": "2026-11-03",
-  "next_due": "2026-11-06",
+  "last_checked": "2026-11-06",
+  "next_due": "2026-11-09",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -92,12 +92,18 @@
       "m": 0.1,
       "interval_after": 3.75,
       "note": "quiet; CC compaction fixes only; cost: searches 6 (shared) · fetches 4 · tool calls 11"
+    },
+    {
+      "date": "2026-11-06",
+      "m": 0.1,
+      "interval_after": 3.75,
+      "note": "quiet; cost shared with plugin"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 4,
-    "research": 17,
+    "research": 18,
     "tests": 8
   },
   "consolidate_every": 25,

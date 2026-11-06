@@ -53,6 +53,11 @@ Best sources (primary first): code.claude.com/docs, platform.claude.com (Dreams)
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261106-1 · 2026-11-06 · Quiet; takeover benchmark lead
+- Summary: arXiv 2611.07307 (listing summary only, unconfirmed) may fit the planned external score. skills.sh baseline: handoff 1,103,333 installs, claude-handoff 461,289.
+- Track: testing. Sources: https://arxiv.org/list/cs.SE/new
+- magnitude 0.1 · applied: none
+
 ### R-20261023-1 · 2026-10-23 · Subject: a doc that disagrees with the code wins nine times in ten unless one sentence says otherwise; Step 3 adopts the rule
 - Summary: arXiv 2610.30571 (v1 2026-10-22): with a stale instruction file, Claude Code and Codex CLI followed the file over the existing code in 90.1% of choices (Claude Code noticed the conflict in 79 of 80 runs and followed the file anyway); one user-level sentence giving the code precedence and asking for each inconsistency to be reported moved that to 91.4% following the code and every run reporting the conflicts. Step 3 forced checks only for entries already stale by date or by cited-file changes; an entry that is fresh by date but contradicts the code was not covered. Response: adopt; Step 3 now says the code wins, the mismatch is named and the entry gets `verify --failed`, and the pointer block carries the same sentence (plugin C-20261023-1). Also since 10-11 (plugin R-20261014-1, R-20261017-1, R-20261023-2): Claude Code 2.1.304 re-sends the skill list after compaction and stops re-sending it on resume; nothing changes Step 2's index-first order. Tooling: claude-mem v15 makes index, inspect, fetch its default recall, the same order as Step 2 (note). Testing: arXiv 2610.30698 (validity-state corruption costs 30 to 41 points, an oracle check restores it) backs Step 3; nothing new for the suite.
 - Track: subject, practice, tooling, testing
