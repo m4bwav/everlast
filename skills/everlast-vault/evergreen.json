@@ -13,16 +13,16 @@
   "source": null,
   "topic": "cross-tool installation of agent skills and plugins, private git-backed knowledge stores, redaction and encryption at rest for agent notes",
   "tier": "fast",
-  "interval_days": 3.75,
-  "last_checked": "2026-11-03",
-  "next_due": "2026-11-07",
+  "interval_days": 3,
+  "last_checked": "2026-11-07",
+  "next_due": "2026-11-10",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 0,
+    "pinned_min": 1,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -68,12 +68,18 @@
       "m": 0.1,
       "interval_after": 3.75,
       "note": "quiet; npx skills 1.7.6, betterleaks 1.x, sops unchanged; cost: searches 6 (shared) · fetches 4 · tool calls 11"
+    },
+    {
+      "date": "2026-11-07",
+      "m": 0.35,
+      "interval_after": 3,
+      "note": "hook and sync caveats, skills pin; cost: searches 12 · fetches 30 · tool calls 48"
     }
   ],
   "counts": {
     "learnings": 1,
     "changes": 0,
-    "research": 6,
+    "research": 7,
     "tests": 3
   },
   "consolidate_every": 25,

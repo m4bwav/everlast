@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261107-1 · 2026-11-07 · Install notes: cloud hooks, sync limits, Cursor roots, skills pin
+- because: R-20261107-1
+- files: SKILL.md (install steps 3 and 4)
+- Qualifies hook and sync claims with the open reports, names Cursor's compatibility roots, and moves the pin to 1.7.6.
+
 ### C-20261023-1 · 2026-10-23 · Privacy scan: the Betterleaks command for 1.x and 2.0
 - because: R-20261023-1
 - files: SKILL.md (privacy scan paragraph)
