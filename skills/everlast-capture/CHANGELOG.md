@@ -2,7 +2,12 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261114-1 · 2026-11-14 · Description shortened to 707 chars (was 1,192)
+- because: user request (Agent Skills spec limit of 1,024 chars)
+- files: SKILL.md (description)
+- Every trigger phrase kept; detail moved out of the description is already in the body.
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261023-1 · 2026-10-23 · Research refresh (quiet): compaction re-sends the skill list (open question resolved)
 - because: R-20261023-1

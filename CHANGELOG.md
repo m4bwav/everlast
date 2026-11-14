@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261114-1 · 2026-11-14 · Plugin 0.6.6: everlast-capture description under the 1,024-char limit
+- because: user request (Agent Skills spec caps description at 1,024 chars; it was 1,192)
+- files: .claude-plugin/plugin.json (version), skills/everlast-capture/SKILL.md (description) with its CHANGELOG C-20261114-1
+- Shortened to 707 chars with every trigger phrase kept.
+
 ### C-20261023-1 · 2026-10-23 · Refresh of the plugin and its four skills: the code beats a stale doc; Betterleaks 2.0 command; no version change
 - because: R-20261023-1, R-20261023-2, R-20261023-3 (plugin); everlast-resume:R-20261023-1, everlast-setup:R-20261023-1, everlast-vault:R-20261023-1, everlast-capture:R-20261023-1
 - files: templates/AGENTS.md.snippet (check-before-use bullet), AGENTS.md (everlast block, same bullet), RESEARCH.md (Current understanding: check before use, existing tools; three findings), skills/everlast-resume/SKILL.md (Step 3) with its CHANGELOG C-20261023-1, skills/everlast-vault/SKILL.md (Privacy scan: Betterleaks command) with its CHANGELOG C-20261023-1, skills/*/RESEARCH.md (one finding each), ai-docs/log.md
