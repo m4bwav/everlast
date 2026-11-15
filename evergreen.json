@@ -14,15 +14,15 @@
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-11-06",
-  "next_due": "2026-11-09",
+  "last_checked": "2026-11-15",
+  "next_due": "2026-11-18",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
     "quiet": 0,
-    "pinned_min": 2,
+    "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
   },
@@ -98,12 +98,18 @@
       "m": 0.3,
       "interval_after": 3,
       "note": "Copilot CLI 1.0.106 fence rule, templates safe; claude-mem 15.10; cost: searches 6 · fetches 6 · tool calls 19 (shared)"
+    },
+    {
+      "date": "2026-11-15",
+      "m": 0.1,
+      "interval_after": 3,
+      "note": "quiet: no Claude Code memory/AGENTS.md change since 11-06; unconfirmed 'read both files' setting to check; cost: searches 1 · fetches 0 · tool calls 2"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 14,
+    "research": 15,
     "tests": 5
   },
   "consolidate_every": 25,

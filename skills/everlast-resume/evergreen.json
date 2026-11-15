@@ -13,15 +13,15 @@
   "source": null,
   "topic": "how agents retrieve and consolidate prior session knowledge from repo docs (progressive disclosure, index-first loading, memory consolidation passes)",
   "tier": "fast",
-  "interval_days": 6.25,
-  "last_checked": "2026-11-06",
-  "next_due": "2026-11-12",
+  "interval_days": 7.81,
+  "last_checked": "2026-11-15",
+  "next_due": "2026-11-23",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
   "events": [],
   "streak": {
-    "quiet": 0,
+    "quiet": 1,
     "pinned_min": 0,
     "pinned_max": 0,
     "vau_quiet": 0
@@ -68,12 +68,18 @@
       "m": 0.1,
       "interval_after": 6.25,
       "note": "quiet; cost shared with plugin"
+    },
+    {
+      "date": "2026-11-15",
+      "m": 0.0,
+      "interval_after": 7.81,
+      "note": "quiet; cost: shared plugin searches"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 2,
-    "research": 7,
+    "research": 8,
     "tests": 6
   },
   "consolidate_every": 25,
