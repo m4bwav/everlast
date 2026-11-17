@@ -4,6 +4,12 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261117-1 · 2026-11-17 · Plugin 0.6.7: Evidence line on solutions
+- because: technique harvest D18, WikiTrace evidence-linked memory (https://huggingface.co/papers/2611.14320): lessons cut loose from their evidence make agents fail tasks they solve without memory
+- files: scripts/everlast.py (solution template), skills/everlast-capture/SKILL.md (Verified by rule), .claude-plugin/plugin.json
+- The solution template gains an `Evidence:` line under `## Verified by`; capture says to open it when entries conflict or a lesson came from a failed attempt.
+- verified: python scripts/test_everlast.py
+
 ### C-20261114-1 · 2026-11-14 · Plugin 0.6.6: everlast-capture description under the 1,024-char limit
 - because: user request (Agent Skills spec caps description at 1,024 chars; it was 1,192)
 - files: .claude-plugin/plugin.json (version), skills/everlast-capture/SKILL.md (description) with its CHANGELOG C-20261114-1
