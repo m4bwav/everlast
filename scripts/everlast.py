@@ -87,6 +87,7 @@ TEMPLATES = {
 
 ## Verified by
 <The command that proves it, and what it printed. Copy-pasteable.>
+Evidence: <where the raw record lives: log line, transcript date, PR or commit, output file>
 
 ## Applies when
 <Scope: which files, versions, environments. When this stops applying, mark status: superseded.>

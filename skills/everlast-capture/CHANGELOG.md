@@ -2,6 +2,10 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261117-1 · 2026-11-17 · Evidence line on solutions
+- because: plugin C-20261117-1 (WikiTrace, https://huggingface.co/papers/2611.14320)
+- files: SKILL.md (Verified by rule)
+
 Entry shape: `### C-20261114-1 · 2026-11-14 · Description shortened to 707 chars (was 1,192)
 - because: user request (Agent Skills spec limit of 1,024 chars)
 - files: SKILL.md (description)
