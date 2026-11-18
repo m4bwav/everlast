@@ -2325,7 +2325,7 @@ def cmd_project_sync(a):
         if rc != 0:
             return
         gitdir = gitdir if os.path.isabs(gitdir) else os.path.join(repo, gitdir)
-        flags = (getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | NO_WINDOW) if os.name == "nt" else 0
+        flags = (getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | NO_WINDOW) if os.name == "nt" else 0  # no DETACHED_PROCESS: it cancels NO_WINDOW and children flash consoles
         log = open(os.path.join(gitdir, "everlast-sync.log"), "ab")
         subprocess.Popen(args, cwd=repo, stdout=log, stderr=log, stdin=subprocess.DEVNULL, creationflags=flags, start_new_session=(os.name != "nt"))
         return
@@ -2441,7 +2441,7 @@ def cmd_vault_sync(a):
         args = [sys.executable, os.path.abspath(__file__), "vault", "sync"] + (["--if-changed"] if a.if_changed else []) + (["--message", a.message] if a.message else [])
         flags = 0
         if os.name == "nt":
-            flags = getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | NO_WINDOW
+            flags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | NO_WINDOW  # no DETACHED_PROCESS: it cancels NO_WINDOW and children flash consoles
         log = open(os.path.join(v, ".sync.log"), "ab")
         subprocess.Popen(args, cwd=v, stdout=log, stderr=log, stdin=subprocess.DEVNULL, creationflags=flags, start_new_session=(os.name != "nt"))
         return
