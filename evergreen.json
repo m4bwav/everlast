@@ -14,8 +14,8 @@
   "topic": "how AI coding agents persist what they learn across sessions, models and tools: doc types that pay, two-tier user and project knowledge, privacy splitting, cross-tool packaging",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-11-15",
-  "next_due": "2026-11-18",
+  "last_checked": "2026-11-20",
+  "next_due": "2026-11-23",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -104,12 +104,18 @@
       "m": 0.1,
       "interval_after": 3,
       "note": "quiet: no Claude Code memory/AGENTS.md change since 11-06; unconfirmed 'read both files' setting to check; cost: searches 1 · fetches 0 · tool calls 2"
+    },
+    {
+      "date": "2026-11-20",
+      "m": 0.15,
+      "interval_after": 3,
+      "note": "quiet: Claude Code 2.1.322-330 no memory-file change; claude-mem 16 UI release; cost: searches 3 · fetches 1 · tool calls 10 (shared)"
     }
   ],
   "counts": {
     "learnings": 3,
     "changes": 1,
-    "research": 15,
+    "research": 16,
     "tests": 5
   },
   "consolidate_every": 25,

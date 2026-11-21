@@ -14,8 +14,8 @@
   "topic": "repository layouts, instruction-file conventions and hooks for AI-agent documentation",
   "tier": "fast",
   "interval_days": 3,
-  "last_checked": "2026-11-15",
-  "next_due": "2026-11-18",
+  "last_checked": "2026-11-20",
+  "next_due": "2026-11-24",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -62,12 +62,18 @@
       "m": 0.1,
       "interval_after": 3,
       "note": "quiet: unconfirmed setting to read both CLAUDE.md and AGENTS.md, check next time; cost: shared plugin searches"
+    },
+    {
+      "date": "2026-11-20",
+      "m": 0.1,
+      "interval_after": 3,
+      "note": "quiet, shared pass with plugin; cost: shared"
     }
   ],
   "counts": {
     "learnings": 1,
     "changes": 1,
-    "research": 6,
+    "research": 7,
     "tests": 3
   },
   "consolidate_every": 25,

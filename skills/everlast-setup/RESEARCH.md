@@ -47,6 +47,11 @@ Best sources (primary first): code.claude.com/docs, docs.github.com (Copilot CLI
 
 ## Findings log
 
+### R-20261120-1 · 2026-11-20 · Quiet (shared pass with the plugin)
+- Summary: covered by the plugin's R-20261120-1: Claude Code 2.1.322 to 2.1.330 quiet on memory files; claude-mem 16 is a UI release. Nothing changes this skill. Tooling, practice, testing: nothing new.
+- Magnitude: 0.1
+- applied: none
+
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
 ### R-20261106-1 · 2026-11-06 · Copilot CLI 1.0.106 import rule: templates safe
