@@ -56,6 +56,13 @@ Best sources (primary first): code.claude.com/docs (changelog, memory, plugin-ev
 
 ## Findings (newest first)
 
+### R-20261120-1 · 2026-11-20 · Quiet: Claude Code 2.1.322 to 2.1.330 leave memory files alone; claude-mem 16
+- Summary: Claude Code releases 2.1.322 to 2.1.330 (gh release view) change nothing about CLAUDE.md, AGENTS.md or auto memory loading. Related minor items: 2.1.327 lists broken skill, agent and command files in /status (a free check for our skills); 2.1.323 adds engines["claude-code"] to plugin.json; 2.1.329 trust dialog names where a folder's hooks are declared. claude-mem 16.0.0 (2026-11-18) rebuilds its My Work UI and removes the TV page and CLAUDE_MEM_TV_TOKEN; nothing on memory format. Web search for handoff/AGENTS.md practice since 11-15 returned only undated community posts. Tooling: nothing new adopted. Testing: nothing new.
+- Track: subject, tooling, practice, testing
+- Sources: https://github.com/anthropics/claude-code/releases (v2.1.322 to v2.1.330); https://github.com/thedotmack/claude-mem/releases/tag/v16.0.0
+- Magnitude: 0.15
+- applied: none (RESEARCH only)
+
 ### R-20261106-2 · 2026-11-06 · Gemini CLI to Antigravity CLI confirmed
 - Summary: Google's post of 2026-05-19 ended Gemini CLI for AI Pro, Ultra and free Code Assist users on 2026-06-18; paid API keys and Code Assist Standard and Enterprise keep it. Antigravity's docs give the skill, hook and context paths now in protocol/PORTABILITY.md and never mention `~/.agents/skills`. Export to it is untested.
 - Track: subject, tooling. Sources: https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/, https://antigravity.google/docs/cli/gcli-migration, https://antigravity.google/docs/skills/, https://antigravity.google/docs/hooks/
