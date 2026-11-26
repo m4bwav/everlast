@@ -4,7 +4,7 @@ Rules for any agent working in this repository (the Everlast Protocol plugin). C
 
 ## What this is
 
-A Claude Code plugin (also exported to other agents) whose skills keep what AI sessions learn in two tiers of markdown with a privacy split. Spec: `protocol/PROTOCOL.md`. Script: `scripts/everlast.py` (stdlib only, fails soft). Tests: `python scripts/test_everlast.py`.
+An agent plugin (Claude Code, Copilot, Codex, Cursor, Gemini CLI) whose skills keep what AI sessions learn in two tiers of markdown with a privacy split. Spec: `protocol/PROTOCOL.md`. Script: `scripts/everlast.py` (stdlib only, fails soft). Tests: `python scripts/test_everlast.py`.
 
 ## Rules
 
