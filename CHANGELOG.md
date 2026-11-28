@@ -4,6 +4,12 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261127-2 · 2026-11-27 · Plugin 0.8.0: the log is one file per event under log/
+- because: user request (the shared ai-docs/log.md made every pair of open pull requests conflict: in SpaceDeckBuilder2.1 seven PRs conflicted twice in one day on log.md alone)
+- files: scripts/everlast.py (log_event, log_lines, migrate_log, cmd_log --body, log-show, migrate-log, lint, init, change_summary order), scripts/test_everlast.py (check_migrate_log), protocol/DOC-TYPES.md, protocol/PROTOCOL.md, protocol/PORTABILITY.md, skills/everlast-capture/SKILL.md, skills/everlast-resume/SKILL.md, .claude-plugin/plugin.json
+Every write that used to append to `log.md` now creates `log/YYYY-MM-DD-HHMMSS-op-xxxx.md`; two branches never touch the same file, so the log cannot conflict. `migrate-log` moves an old `log.md` to `log/ARCHIVE.md`, and when a branch that still appended to `log.md` is merged later it turns only the new blocks into event files (idempotent). `log-show [--tail N]` prints the history in order. The 400-line archive rule is gone; lint now flags any `log.md`.
+- verified: python scripts/test_everlast.py (150 checks)
+
 ### C-20261127-1 · 2026-11-27 · Plugin 0.7.0: note warns on near-duplicate titles
 - because: L-012; harvest improvements chain item 10 (ACE's rule: small IDed additions, near duplicates merged, no whole-store rewrites)
 - files: scripts/everlast.py (near_duplicate_titles, cmd_note), scripts/test_everlast.py, skills/everlast-capture/SKILL.md (Step 5), .claude-plugin/plugin.json.

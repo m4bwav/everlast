@@ -20,7 +20,7 @@ Six principles decide most edge cases:
 
 | Tier | Where | Holds | Shared with |
 |---|---|---|---|
-| user | `<vault>/user/` | `PROFILE.md` (how the user wants work done, each rule with its reason), `ENVIRONMENTS.md` (machines, tools, paths, what works where), `INDEX.md`, `HANDOFF.md` (what the user was doing across projects), `log.md`, `decisions/ solutions/ plans/ notes/` for cross-project lessons | nobody; the vault is private |
+| user | `<vault>/user/` | `PROFILE.md` (how the user wants work done, each rule with its reason), `ENVIRONMENTS.md` (machines, tools, paths, what works where), `INDEX.md`, `HANDOFF.md` (what the user was doing across projects), `log/` (one file per event), `decisions/ solutions/ plans/ notes/` for cross-project lessons | nobody; the vault is private |
 | project, mode `repo` | `<repo>/ai-docs/` | the project doc set (DOC-TYPES.md) | whoever reads the repository |
 | project, mode `excluded` | `<vault>/projects/<slug>/ai-docs/`, junctioned to `<repo>/ai-docs/` and listed in `.git/info/exclude` | the same doc set, for a repository that must not carry it (work, client, open source) | nobody |
 | private sidecar | `<vault>/projects/<slug>/private/` | the entries a project produces that fail PRIVACY.md, in the same shapes | nobody |
