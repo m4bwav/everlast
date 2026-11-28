@@ -964,6 +964,26 @@ def cmd_clean(a):
     print(f"clean: {changed} of {len(files)} file(s) {verb}" + ("" if changed or not files else "; nothing hidden"))
 
 
+NEAR_DUP_SHARE = 0.6   # share of the new title's words found in an existing entry's title
+
+
+def near_duplicate_titles(root, title, limit=3):
+    """Existing entries whose title holds most of the new title's words (small deltas, not a second copy: ACE)."""
+    words = set(tokenize(title))
+    if len(words) < 2:
+        return []
+    try:
+        hits, _ = search_entries([(root, lambda p: os.path.relpath(p, root))], title)
+    except Exception:
+        return []
+    out = []
+    for h in hits[:10]:
+        share = len(words & set(tokenize(h.get("title") or ""))) / len(words)
+        if share >= NEAR_DUP_SHARE:
+            out.append((h["path"], share))
+    return out[:limit]
+
+
 def cmd_note(a):
     root = docs_root(a.repo, a.root, a.private, a.user)
     if not os.path.isdir(root):
@@ -1004,6 +1024,9 @@ def cmd_note(a):
         if hits:
             fail("privacy scan flagged this entry for the repo-safe root: " + "; ".join(f"{l} ({s})" for l, s in hits[:5])
                  + ". Write it with --private (sidecar), or --allow-private if the reviewer decided it is safe.")
+    for p, share in near_duplicate_titles(root, a.title):
+        note(f"  near duplicate: {p} shares {share:.0%} of its title words; update that entry (keep its file) instead "
+             "of adding a second one, unless the topic really differs")
     d = today()
     raw_sa = (a.stale_after or "").strip()
     if raw_sa.lower() == "never":

@@ -58,6 +58,9 @@ def main():
         with open(body, "w", encoding="utf-8") as f:
             f.write("## Problem\nx\n\n## Fix\ny\n\n## Verified by\n`echo ok` printed ok\n")
         rc, out = run("note", r1, "--kind", "solution", "--title", "Public fix", "--body-file", body, env=env)
+        rc2, out2 = run("note", r1, "--kind", "solution", "--title", "Gradle cache corrupts after branch switch", "--body-file", body, env=env)
+        rc2, out2 = run("note", r1, "--kind", "solution", "--title", "Gradle cache corrupts on branch switch again", "--body-file", body, env=env)
+        check(rc2 == 0 and "near duplicate:" in out2 and "gradle-cache-corrupts-after-branch-switch" in out2, "note warns on a near-duplicate title", out2)
         check(os.path.isfile(os.path.join(r1, "ai-docs", "solutions", out.strip().splitlines()[-1].split("solutions")[-1].strip("/\\"))) or "wrote solutions/" in out, "note writes to the project root", out)
         idx = open(os.path.join(r1, "ai-docs", "INDEX.md"), encoding="utf-8").read()
         check("Public fix" in idx, "INDEX.md lists the entry", idx)
