@@ -196,6 +196,7 @@ def main():
         rc, out = run("hook", "run", env=env, stdin=payload)
         check("local only" not in out, "SessionStart stops asking once the vault has a remote", out)
         check_040(tmp, env)
+        check_migrate_log(tmp, env)
         check_050(tmp, env)
         check_scan_key_shapes(tmp, env)
         check_hidden(tmp, env)
@@ -218,6 +219,29 @@ def write_file(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
+
+
+def read_log(root):
+    """Every log event under root/log/ (one file per event), joined in name order."""
+    d = os.path.join(root, "log")
+    return "".join(read_file(os.path.join(d, n)) for n in sorted(os.listdir(d)) if n.endswith(".md") and n != "README.md")
+
+
+def check_migrate_log(tmp, env):
+    docs = os.path.join(tmp, "migrate", "ai-docs")
+    os.makedirs(docs)
+    legacy = os.path.join(docs, "log.md")
+    with open(legacy, "w", encoding="utf-8") as f:
+        f.write("# Log\n\n## [2026-01-01] add | first\n## [2026-01-02] update | second\n")
+    rc, out = run("migrate-log", os.path.dirname(docs), env=env)
+    check(not os.path.exists(legacy) and "first" in read_file(os.path.join(docs, "log", "ARCHIVE.md")), "migrate-log moves log.md to log/ARCHIVE.md", out)
+    with open(legacy, "w", encoding="utf-8") as f:   # a branch that still appended to log.md gets merged
+        f.write("# Log\n\n## [2026-01-01] add | first\n## [2026-01-02] update | second\n## [2026-01-03] change | third\nwith a detail line\n")
+    rc, out = run("migrate-log", os.path.dirname(docs), env=env)
+    events = [n for n in os.listdir(os.path.join(docs, "log")) if n not in ("README.md", "ARCHIVE.md")]
+    check(not os.path.exists(legacy) and len(events) == 1 and "with a detail line" in read_log(docs), "migrate-log turns only the new blocks into event files", out)
+    rc, out = run("log-show", os.path.dirname(docs), "--tail", "1", env=env)
+    check(out.strip().startswith("## [2026-01-03] change | third"), "log-show --tail prints the last event", out)
 
 
 def read_file(path):
@@ -478,7 +502,7 @@ def check_040(tmp, env):
     text = read_file(spath)
     check("Recheck failed 2026-09-23: selftest now raises ImportError from app.text" in text.split("## Verified by", 1)[1]
           and "stale_after: 2026-09-23" in text, "verify --failed appends to Verified by and sets stale_after to today", text)
-    log = read_file(os.path.join(docs, "log.md"))
+    log = read_log(docs)
     check("verify-failed | ImportError slugify from app.helpers" in log and "--supersedes" in out, "verify --failed logs and says what to do next", out + log[-300:])
     check("(recheck due)" in line("ImportError slugify from app.helpers"), "after a failed recheck the index flags the entry", line("ImportError slugify from app.helpers"))
     rc, out = run("verify", "slugify", r3, "--failed", "the token ghp_abcdefghijklmnopqrstuvwxyz0123456789 expired", env=e_sep)
@@ -488,7 +512,7 @@ def check_040(tmp, env):
     rc, out = run("verify", spath, r3, "--note", "selftest ok after the new import", env=e_sep)
     text = read_file(spath)
     check("verified: 2026-09-23" in text and "stale_after: 2026-12-22" in text, "verify sets verified to today and stale_after to today + window", text[:400])
-    check("verify | ImportError slugify from app.helpers: selftest ok" in read_file(os.path.join(docs, "log.md"))
+    check("verify | ImportError slugify from app.helpers: selftest ok" in read_log(docs)
           and "(recheck due)" not in line("ImportError slugify from app.helpers"), "verify logs and clears the index flag", line("ImportError slugify from app.helpers"))
     rc, out = run("verify", "Asset naming", r3, env=e_sep)
     check("stale_after never" in out and "stale_after: never" in read_file(os.path.join(docs, "notes", "2026-05-02-asset-naming.md")),
@@ -501,7 +525,7 @@ def check_040(tmp, env):
     rc, out = run("recheck", "Dock drops", r3, "--user", env=e_sep)
     check("STALE" in out and os.path.join("vault", "user") in out.replace("/", os.sep), "recheck finds a user-tier entry with --user", out)
     rc, out = run("verify", "Dock drops", r3, "--user", env=e_sep)
-    check("verified solutions/" in out and "verify | Dock drops the second monitor" in read_file(os.path.join(env["EVERLAST_VAULT"], "user", "log.md")),
+    check("verified solutions/" in out and "verify | Dock drops the second monitor" in read_log(os.path.join(env["EVERLAST_VAULT"], "user")),
           "verify writes the user tier's entry and log with --user", out)
     rc, out = run("note", r3, "--kind", "solution", "--title", "Staging deploy key rotation", "--body-file", tier_body, "--private", env=e_may)
     rc, out = run("recheck", "deploy key", r3, "--private", env=e_sep)
@@ -602,7 +626,7 @@ def check_040(tmp, env):
           and "(archive/plans/2026-03-01-old-rollout.md)" in read_file(os.path.join(docs, "HANDOFF.md"))
           and "(../../decisions/2026-09-01-nightly-builds.md)" in read_file(moved), "maintain --apply rewrites links to, and inside, the moved entry", read_file(moved))
     idx = read_file(os.path.join(docs, "INDEX.md"))
-    check("## Archive" in idx and "(archive/plans/2026-03-01-old-rollout.md) (done)" in idx and "prune | archived 1 entry" in read_file(os.path.join(docs, "log.md")),
+    check("## Archive" in idx and "(archive/plans/2026-03-01-old-rollout.md) (done)" in idx and "prune | archived 1 entry" in read_log(docs),
           "the index lists archived entries under Archive and the log says prune", idx[-600:])
     rc, out = run("lint", r3, env=e_sep)
     check("old-rollout" not in out, "no dead link is left after the archive move", out)

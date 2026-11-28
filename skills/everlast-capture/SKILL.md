@@ -5,7 +5,7 @@ description: "Record what a session learned so no later agent relearns it: dead 
 
 # everlast capture (never relearn what a session already paid for)
 
-Outcome: the non-derivable knowledge from this session exists as small files in the right tier, listed in that tier's `INDEX.md`, logged in its `log.md`, with the project `HANDOFF.md` telling the next session where to start; every solution carries a proof the next session can re-run. Nothing naming people, politics or credentials is in a shared repository. Evidence: the paths the script prints.
+Outcome: the non-derivable knowledge from this session exists as small files in the right tier, listed in that tier's `INDEX.md`, logged as an event file in its `log/` (`everlast.py log`; never a shared `log.md`, which conflicts on every merge), with the project `HANDOFF.md` telling the next session where to start; every solution carries a proof the next session can re-run. Nothing naming people, politics or credentials is in a shared repository. Evidence: the paths the script prints.
 
 ## Step 0: freshness (every use, one read)
 

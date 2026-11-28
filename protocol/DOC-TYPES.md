@@ -34,7 +34,7 @@ Provenance matters: artifact-anchored facts (tied to a file, commit, or command 
 | 2 | `decisions/*.md` | when touching that design | Context, Decision, Reasons, Rejected alternatives, Consequences | 80 lines |
 | 2 | `plans/*.md` | when continuing that work | Goal, Status, Steps, Open questions, Next single action | 80 lines |
 | 2 | `notes/*.md` | when the task matches | Summary, Details | 80 lines |
-| 3 | `log.md` | almost never (history, blame) | `## [date] op \| title`, append-only | archive at 400 lines |
+| 3 | `log/*.md` | almost never (history, blame; `everlast.py log-show`) | one file per event, `YYYY-MM-DD-HHMMSS-op-xxxx.md`, holding `## [date] op \| title` and a few lines of detail; never edited. `log/ARCHIVE.md` is the frozen pre-split log | none: a file per event never conflicts across branches |
 | user | `user/PROFILE.md` | once per new environment | how the user wants work done, each rule with its reason | 200 lines |
 | user | `user/ENVIRONMENTS.md` | once per new environment, the machine's section | per machine and tool: paths, ports, what works, what breaks | 60 lines per section |
 
