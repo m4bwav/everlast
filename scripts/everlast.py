@@ -291,6 +291,11 @@ def has_log(root):
     return os.path.exists(os.path.join(root, "log.md")) or os.path.isdir(os.path.join(root, "log"))
 
 
+def _relink_down(text):
+    """Relative markdown links written in ai-docs/log.md, rewritten for a file one folder deeper (ai-docs/log/)."""
+    return re.sub(r"\]\((?![a-zA-Z][\w+.-]*:|#|/)([^)\s]+)\)", lambda m: "](../" + m.group(1) + ")", text)
+
+
 def migrate_log(root):
     """Move a single log.md into log/. The first time it becomes log/ARCHIVE.md. When a log.md shows up again
     (a branch that still appended to it was merged), every block not already in log/ becomes its own event file.
@@ -305,7 +310,7 @@ def migrate_log(root):
     arch = os.path.join(d, "ARCHIVE.md")
     text = read(legacy)
     if not os.path.exists(arch):
-        write(arch, text)
+        write(arch, _relink_down(text))
         os.remove(legacy)
         return "log.md -> log/ARCHIVE.md"
     known = set()
@@ -322,9 +327,9 @@ def migrate_log(root):
         blocks.append(cur)
     n = 0
     for b in blocks:
-        if not b[0].startswith("## [") or b[0] in known:
+        if not b[0].startswith("## [") or b[0] in known or _relink_down(b[0]) in known:
             continue
-        log_event(root, "\n".join(b).rstrip() + "\n")
+        log_event(root, _relink_down("\n".join(b).rstrip() + "\n"))
         n += 1
     os.remove(legacy)
     return f"log.md removed; {n} new event(s) moved to log/"
