@@ -50,7 +50,7 @@ Apply [PRIVACY.md](references/protocol/PRIVACY.md) to each candidate. Private by
 
 ## Step 5: write it (the action, with evidence)
 
-For each surviving candidate, check the tier's `INDEX.md` for an entry on the same problem or decision (`EVERLAST search "<terms>" <repo>` when no line matches, since an earlier session may have worded it differently). Same topic: update that file (add the new dead end or command, tighten the fix), record that it was confirmed with `EVERLAST verify <entry> <repo>`, and log `update`. Contradicted: write the new entry with `--supersedes <old relpath>`. Otherwise write the body to a temp file with the required headings, then:
+For each surviving candidate, check the tier's `INDEX.md` for an entry on the same problem or decision (`EVERLAST search "<terms>" <repo>` when no line matches, since an earlier session may have worded it differently). Same topic: update that file (add the new dead end or command, tighten the fix; `note` warns `near duplicate:` when a title mostly repeats an existing one: small IDed deltas, never a second copy and never a whole-store rewrite), record that it was confirmed with `EVERLAST verify <entry> <repo>`, and log `update`. Contradicted: write the new entry with `--supersedes <old relpath>`. Otherwise write the body to a temp file with the required headings, then:
 
 ```
 EVERLAST note <repo> --kind solution|decision|plan|note --title "<short, searchable>" --tags a,b [--aliases "a,b"] [--alias "exact error text"] [--summary "when to read it"] [--entities a,b] [--evidence src] [--stale-after YYYY-MM-DD|never] --body-file <tmp> [--private | --user]

@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261127-1 · 2026-11-27 · Plugin 0.7.0: note warns on near-duplicate titles
+- because: L-012; harvest improvements chain item 10 (ACE's rule: small IDed additions, near duplicates merged, no whole-store rewrites)
+- files: scripts/everlast.py (near_duplicate_titles, cmd_note), scripts/test_everlast.py, skills/everlast-capture/SKILL.md (Step 5), .claude-plugin/plugin.json.
+`everlast.py note` searches the tier first and prints `near duplicate: <path>` for any entry whose title holds 60% or more of the new title's words, so the agent updates that entry instead of writing a second one. It warns and still writes; evergreen 1.4.0's `evergreen.py dup` does the same for LEARNINGS files.
+
 ### C-20261117-1 · 2026-11-17 · Plugin 0.6.7: Evidence line on solutions
 - because: technique harvest D18, WikiTrace evidence-linked memory (https://huggingface.co/papers/2611.14320): lessons cut loose from their evidence make agents fail tasks they solve without memory
 - files: scripts/everlast.py (solution template), skills/everlast-capture/SKILL.md (Verified by rule), .claude-plugin/plugin.json

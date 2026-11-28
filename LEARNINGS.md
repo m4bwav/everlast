@@ -6,6 +6,13 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-012 · 2026-11-27 · Second copies of the same lesson pile up unless writing warns
+- Trigger: harvest improvements chain item 10: captures added a new entry on a topic an older entry already held, worded differently, so later searches returned both.
+- Hypothesis: a title-word share check after the tier search catches most restatements without blocking a genuinely new topic.
+- Rule: `note` warns `near duplicate:` at 60% title-word share; update the named entry instead of adding one. It warns, never refuses.
+- Evidence: C-20261127-1; scripts/test_everlast.py check "note warns on a near-duplicate title".
+- helpful: 0 · harmful: 0
+
 ### L-011 · 2026-09-26 · The vault lookup read the working directory, not the repo the command named, so a private note could land in an unset-up ~/everlast-vault
 - Trigger: privacy eval, 2026-09-26 confirming run: 2 of 3 runs called `everlast.py note <repo> --private` from outside the repo; `vault_path()` checked only `cwd/.everlast-vault`, fell through to `~/everlast-vault` and wrote the private entry there (`home/everlast-vault/projects/cwd/private`), a vault nobody had set up; the grader found nothing where the project's vault is. The run that did `cd` first passed.
 - Hypothesis: the workspace-local vault rule was written for evals whose agents work from the repo root; agents often pass absolute paths instead of changing directory.
