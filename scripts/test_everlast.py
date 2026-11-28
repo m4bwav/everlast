@@ -232,11 +232,13 @@ def check_migrate_log(tmp, env):
     os.makedirs(docs)
     legacy = os.path.join(docs, "log.md")
     with open(legacy, "w", encoding="utf-8") as f:
-        f.write("# Log\n\n## [2026-01-01] add | first\n## [2026-01-02] update | second\n")
+        f.write("# Log\n\n## [2026-01-01] add | first, see [x](notes/x.md) and [web](https://e.com)\n## [2026-01-02] update | second\n")
     rc, out = run("migrate-log", os.path.dirname(docs), env=env)
     check(not os.path.exists(legacy) and "first" in read_file(os.path.join(docs, "log", "ARCHIVE.md")), "migrate-log moves log.md to log/ARCHIVE.md", out)
+    arch = read_file(os.path.join(docs, "log", "ARCHIVE.md"))
+    check("](../notes/x.md)" in arch and "](https://e.com)" in arch, "migrate-log repoints relative links in the archive one folder up", arch)
     with open(legacy, "w", encoding="utf-8") as f:   # a branch that still appended to log.md gets merged
-        f.write("# Log\n\n## [2026-01-01] add | first\n## [2026-01-02] update | second\n## [2026-01-03] change | third\nwith a detail line\n")
+        f.write("# Log\n\n## [2026-01-01] add | first, see [x](notes/x.md) and [web](https://e.com)\n## [2026-01-02] update | second\n## [2026-01-03] change | third\nwith a detail line\n")
     rc, out = run("migrate-log", os.path.dirname(docs), env=env)
     events = [n for n in os.listdir(os.path.join(docs, "log")) if n not in ("README.md", "ARCHIVE.md")]
     check(not os.path.exists(legacy) and len(events) == 1 and "with a detail line" in read_log(docs), "migrate-log turns only the new blocks into event files", out)

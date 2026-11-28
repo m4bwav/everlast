@@ -4,6 +4,11 @@ Every change to [README.md](README.md), [protocol/](protocol/PROTOCOL.md), `scri
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261128-1 · 2026-11-28 · Plugin 0.8.1: migrate-log repoints relative links
+- because: user request (log migration rollout: link checks failed in seven repos because log/ARCHIVE.md sits one folder deeper than log.md, so links like notes/x.md broke)
+- files: scripts/everlast.py (_relink_down, migrate_log), scripts/test_everlast.py (check_migrate_log), .claude-plugin/plugin.json
+Relative links in the archive and in event files made from a late log.md get a `../` prefix; URLs and anchors are left alone.
+
 ### C-20261127-2 · 2026-11-27 · Plugin 0.8.0: the log is one file per event under log/
 - because: user request (the shared ai-docs/log.md made every pair of open pull requests conflict: in SpaceDeckBuilder2.1 seven PRs conflicted twice in one day on log.md alone)
 - files: scripts/everlast.py (log_event, log_lines, migrate_log, cmd_log --body, log-show, migrate-log, lint, init, change_summary order), scripts/test_everlast.py (check_migrate_log), protocol/DOC-TYPES.md, protocol/PROTOCOL.md, protocol/PORTABILITY.md, skills/everlast-capture/SKILL.md, skills/everlast-resume/SKILL.md, .claude-plugin/plugin.json
